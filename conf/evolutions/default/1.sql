@@ -29,7 +29,9 @@ CREATE TABLE cities_tournaments
   tournament_id integer references tournaments NOT NULL
 );
 
-INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, 1);
+INSERT INTO territories VALUES (3, 'Poland', 1, NULL);
+
+INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, 3);
 INSERT INTO cities(name, population, container) VALUES ('Rzeszów', 182028, 1);
 INSERT INTO cities(name, population, container) VALUES ('Przemyśl', 64276, 1);
 INSERT INTO cities(name, population, container) VALUES ('Stalowa Wola', 64189, 1);
@@ -81,12 +83,16 @@ INSERT INTO cities(name, population, container) VALUES ('Baranów Sandomierski',
 INSERT INTO cities(name, population, container) VALUES ('Ulanów', 1482, 1);
 INSERT INTO cities(name, population, container) VALUES ('Kołaczyce', 1447, 1);
 
-INSERT INTO territories VALUES (2, 'Lubelskie', 2129951, 2);
+INSERT INTO territories VALUES (2, 'Lubelskie', 2129951, 3);
 INSERT INTO cities(name, population, container) VALUES ('Dublin', 1447, 2);
+
+INSERT INTO tournaments VALUES (1);
+INSERT INTO cities_tournaments VALUES(1, 11, 1);
+INSERT INTO cities_tournaments VALUES(2, 12, 1);
 
 # --- !Downs
 
+DROP TABLE IF EXISTS cities_tournaments;
 DROP TABLE IF EXISTS cities;
 DROP TABLE IF EXISTS territories;
 DROP TABLE IF EXISTS tournaments;
-DROP TABLE IF EXISTS cities_tournaments;

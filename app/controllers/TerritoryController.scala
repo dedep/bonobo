@@ -1,35 +1,40 @@
 package controllers
 
+import com.typesafe.scalalogging.slf4j.Logger
+import models.db_model.{Tournament, Territory, CitiesTournaments}
+import org.slf4j.LoggerFactory
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import play.api.mvc._
 import play.api.Play.current
-import scala.slick.lifted.TableQuery
-import models.{City, Territory, TerritoriesTable}
-import models.dedep.bonobo.core.tournament.TournamentImpl
+import models._
 
 object TerritoryController extends Controller {
-  val territories = TableQuery[TerritoriesTable]
+  val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   def find(id: Long) = DBAction { implicit rs =>
-    (for (territory <- territories if territory.id === id) yield territory).firstOption match {
+    Territory.fromId(id) match {
       case None => NotFound("Territory not found")
       case Some(t: Territory) => Ok(views.html.territory(t))
     }
   }
 
   def startTournament(id: Long) = DBAction { implicit rs =>
-    (for (territory <- territories ; city <- CityController.cities if territory.id === id && city.territoryId === territory.id) yield (territory, city)).list match {
-      case Nil => NotFound("Territory not found")
-      case l: List[(Territory, City)] => {
-        if (l.size < 2)
+    Territory.fromId(id) match {
+      case None => NotFound("Territory not found")
+      case Some(t: Territory) =>
+        val cities = Territory.getAllChildrenCities(t)
+        if (cities.length < 2) {
           PreconditionFailed("Tournament requires at least 2 cities in territory")
-        else {
-          val tournament = TournamentImpl(l.map(_._2))
-          Ok(tournament.teams.map(_.name).mkString(", "))
         }
-      }
+        else {
+          val newIndex = Tournament.ds.foldLeft(0l){ Math.max } + 1
+          Tournament.ds.forceInsert(newIndex)
+          CitiesTournaments.autoIncInsert
+            .insertAll(cities.map(city => (city.id, newIndex)):_*)
+
+          Ok("Tournament with ID=" + newIndex + " has been created successfully")
+        }
     }
   }
-
 }

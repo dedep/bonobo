@@ -1,6 +1,9 @@
+@import models.db_model.Territory
+
 @(territory: Territory)
 
 @main {
+    @territory.getContainers.map(_.name).mkString(", ")
     <article>
         <h1>@territory.name</h1>
     </article>

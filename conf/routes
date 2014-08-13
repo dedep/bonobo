@@ -3,14 +3,17 @@
 # ~~~~
 
 # Home page
-GET        /                                     controllers.Application.index
+GET        /                          controllers.AppController.index
 
 # Cities
-GET        /city/:c                              controllers.CityController.find(c: Long)
+GET        /city/:c                   controllers.CityController.find(c: Long)
 
 # Territories
-GET        /territory/:t/start_tournament        controllers.TerritoryController.startTournament(t: Long)
-GET        /territory/:t                         controllers.TerritoryController.find(t: Long)
+GET        /territory/:t/start        controllers.TerritoryController.startTournament(t: Long)
+GET        /territory/:t              controllers.TerritoryController.find(t: Long)
+
+# Tournaments
+GET        /tournament/:t             controllers.TournamentController.find(t: Long)
 
 # Static resources
-GET        /assets/*file                         controllers.Assets.at(path="/public", file)
+GET        /assets/*file              controllers.Assets.at(path="/public", file)
