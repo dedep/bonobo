@@ -1,1 +1,1 @@
-web: target/universal/stage/bin/bonobo -Dhttp.port=$5432 -DapplyEvolutions.default=true -Ddb.default.driver=org.postgresql.Driver -Ddb.default.url=postgres://zsnxsxdybszhdw:7M3E5OiuSSALAAJcFF4skKZRiE@ec2-54-217-239-27.eu-west-1.compute.amazonaws.com:5432/d56gpbm5liaffe 
+web: target/universal/stage/bin/bonobo -Djava.net.preferIPv4Stack=true -Dhttp.port=$5432 -DapplyEvolutions.default=true -Ddb.default.driver=org.postgresql.Driver -Ddb.default.url=postgres://zsnxsxdybszhdw:7M3E5OiuSSALAAJcFF4skKZRiE@ec2-54-217-239-27.eu-west-1.compute.amazonaws.com:5432/d56gpbm5liaffe 
