@@ -12,24 +12,24 @@ import models._
 
 class DBSpec extends Specification {
 
-  "List" should {
-    "return all records" in new play.api.test.WithApplication(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-      val cats = TableQuery[CitiesTable]
-      //see a way to architect your app in the computers-database play-slick sample
-      //http://github.com/playframework/play-slick/tree/master/samples/play-slick-sample
-
-      DB.withSession { implicit s: Session =>
-        val testKitties = Seq(
-          (0l, "Lublin", 500, 500, 1l),
-          (1l, "Lublin", 500, 500, 1l),
-          (2l, "Gublin", 500, 500, 1l))
-
-        cats.insertAll(testKitties: _*)
-        cats.list must equalTo(testKitties)
-      }
-    }
-  }
-}
+//  "List" should {
+//    "return all records" in new play.api.test.WithApplication(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+//      val cats = TableQuery[CitiesTable]
+//      //see a way to architect your app in the computers-database play-slick sample
+//      //http://github.com/playframework/play-slick/tree/master/samples/play-slick-sample
+//
+//      DB.withSession { implicit s: Session =>
+//        val testKitties = Seq(
+//          (0l, "Lublin", 500, 500, 1l),
+//          (1l, "Lublin", 500, 500, 1l),
+//          (2l, "Gublin", 500, 500, 1l))
+//
+//        cats.insertAll(testKitties: _*)
+//        cats.list must equalTo(testKitties)
+//      }
+//    }
+//  }
+//}
 
 
 //class DBSpec extends Specification {
