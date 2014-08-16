@@ -10,9 +10,8 @@ object RoundController extends Controller {
   def find(id: Long) = DBAction {
     implicit rs =>
       Round.fromId(id) match {
-        case None => NotFound("Round not found")
-        case Some(r: Round) => Ok("Round, \ncities: " + r.teams.map(_.name).mkString(", ") + "\nstep: " + r.stepIndex)
+        case None => NotFound(views.html.error("Round not found"))
+        case Some(r: Round) => Ok(views.html.round(r))
       }
   }
-
 }

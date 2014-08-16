@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 
 class Match(val aTeam: Team, val bTeam: Team) {
 
-  val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   def eval(implicit matchEvaluator: MatchEvaluator): MatchResult = matchEvaluator.eval(this)
 

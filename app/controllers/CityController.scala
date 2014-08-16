@@ -10,7 +10,7 @@ object CityController extends Controller {
   def find(id: Long) = DBAction {
     implicit rs =>
       City.fromId(id) match {
-        case None => NotFound("City not found")
+        case None => NotFound(views.html.error("City not found"))
         case Some(c: City) => Ok(views.html.city(c))
       }
   }

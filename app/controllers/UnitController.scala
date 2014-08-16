@@ -9,9 +9,8 @@ object UnitController extends Controller {
   def find(id: Long) = DBAction {
     implicit rs =>
       Unit.fromId(id) match {
-        case None => NotFound("Unit not found")
-        case Some(u: RoundUnit) =>
-          Ok("Unit, \n" + u)
+        case None => NotFound(views.html.error("Unit not found"))
+        case Some(u: RoundUnit) => Ok(views.html.unit(u))
       }
   }
 }

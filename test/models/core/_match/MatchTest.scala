@@ -6,17 +6,6 @@ import models.core.team.Team
 import org.scalatest.FunSuite
 
 class MatchTest extends FunSuite {
-  test("to string format") {
-    //given
-    val m = Match(new Team(100, 12), new Team(80, 19))
-
-    //when
-    val format = m.toString
-
-    //then
-    assert(format == "12 vs 19")
-  }
-
   test("eval generates result") {
     for (i <- 0 to 10) {
       //given

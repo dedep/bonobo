@@ -14,7 +14,7 @@ trait RoundUnit {
   val teams: List[Team]
 
   lazy val fixturesCount: Int = fixtures.size
-  val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   def evalResults: List[TeamResult] = teams.map(TeamResult(_))
 

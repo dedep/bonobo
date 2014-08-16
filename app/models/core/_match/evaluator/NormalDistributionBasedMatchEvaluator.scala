@@ -9,7 +9,7 @@ import scala.util.Random
 
 object NormalDistributionBasedMatchEvaluator extends MatchEvaluator {
 
-  val log = Logger(LoggerFactory.getLogger(NormalDistributionBasedMatchEvaluator.getClass))
+  private val log = Logger(LoggerFactory.getLogger(NormalDistributionBasedMatchEvaluator.getClass))
 
   override def eval(m: Match): MatchResult = {
     require(m.bTeam.value > 0 && m.aTeam.value > 0)

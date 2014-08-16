@@ -29,7 +29,7 @@ class PlayoffRound(teamsCbn: => List[Team],
   override lazy val pots = potsCbn
   override lazy val units = unitsCbn
 
-  val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   override def drawUnits(): Round = {
     require(pots.nonEmpty)

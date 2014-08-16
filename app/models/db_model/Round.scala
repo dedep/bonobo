@@ -17,7 +17,7 @@ object Round {
   val ds = TableQuery[RoundsTable]
   val autoIncInsert = ds.map(e => ()) returning ds.map(_.id)
 
-  val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   def fromId(id: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[models.core.round.Round] =
     (for (round <- Round.ds if round.id === id) yield round).firstOption match {

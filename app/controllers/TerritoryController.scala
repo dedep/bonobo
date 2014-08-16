@@ -9,11 +9,11 @@ import play.api.mvc._
 import play.api.Play.current
 
 object TerritoryController extends Controller {
-  val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   def find(id: Long) = DBAction { implicit rs =>
     Territory.fromId(id) match {
-      case None => NotFound("Territory not found")
+      case None => NotFound(views.html.error("Territory not found"))
       case Some(t: Territory) => Ok(views.html.territory(t))
     }
   }
