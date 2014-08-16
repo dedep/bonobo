@@ -8,8 +8,10 @@ import models.core.round.pair.PlayoffRound
 import models.core.team.Team
 import models.core.utils.MathUtils
 
-case class TournamentImpl(override val teams: List[Team], override val rounds: List[Round] = Nil) extends Tournament {
+class TournamentImpl(override val teams: List[Team], roundsCbn: => List[Round] = Nil) extends Tournament {
   require(teams.size >= 2)
+
+  override lazy val rounds = roundsCbn
 
   def doStep(): Tournament = {
     val lastRound: Option[Round] = rounds.headOption
@@ -25,20 +27,20 @@ case class TournamentImpl(override val teams: List[Team], override val rounds: L
         case _ => createNextRound(lastRound.get.getPromotedTeams)
       }
     }
-    else TournamentImpl(teams, rounds.updated(rounds.indexOf(lastRound), lastRound.get.doStep()))
+    else new TournamentImpl(teams, rounds.updated(rounds.indexOf(lastRound), lastRound.get.doStep()))
   }
 
   private def createFirstRound(): Tournament =
     if (isPreliminaryRoundRequired)
-      TournamentImpl(teams, PlayoffRound(getPreliminaryRoundTeams, preliminary = true) :: rounds)
+      new TournamentImpl(teams, new PlayoffRound(getPreliminaryRoundTeams, Nil, Nil, 0, true) :: rounds)
     else
       createNextRound(teams)
 
   private def createNextRound(teams: List[Team]): Tournament =
     if (teams.length >= 32)
-      TournamentImpl(teams, GroupRound(teams) :: rounds)
+      new TournamentImpl(teams, new GroupRound(teams) :: rounds)
     else
-      TournamentImpl(teams, new PlayoffRound(teams) :: rounds)
+      new TournamentImpl(teams, new PlayoffRound(teams) :: rounds)
 
   private def isPreliminaryRoundRequired: Boolean = !MathUtils.isPowerOfTwo(teams.size)
 

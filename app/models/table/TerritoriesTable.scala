@@ -1,6 +1,6 @@
 package models.table
 
-import scala.slick.driver.PostgresDriver.simple._
+import play.api.db.slick.Config.driver.simple._
 
 class TerritoriesTable(tag: Tag) extends Table[(Long, String, Long, Option[Long])](tag, "territories") {
    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)

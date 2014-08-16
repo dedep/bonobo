@@ -7,7 +7,6 @@ import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import play.api.mvc._
 import play.api.Play.current
-import models._
 
 object TerritoryController extends Controller {
   val log = Logger(LoggerFactory.getLogger(this.getClass))

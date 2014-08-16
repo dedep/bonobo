@@ -40,7 +40,6 @@ object Territory {
       City.ds.filter(_.territoryId === t.id).list.map(a => City.fromId(a._1).get)
   }
 
-  //TODO: test
   def getAllChildrenCities(t: Territory)(implicit rs: DBSessionRequest[AnyContent]): List[City] = {
     val childrenTerritories = (for (territory <- Territory.ds if territory.containerId === t.id) yield territory)
       .list.map(a => Territory.fromId(a._1).get)

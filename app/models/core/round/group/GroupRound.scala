@@ -8,10 +8,16 @@ import models.core.team.Team
 
 import scala.util.Random
 
-case class GroupRound(override val teams: List[Team],
-                      override val pots: List[Pot] = Nil,
-                      override val units: List[RoundUnit] = Nil,
+class GroupRound(teamsCbn: => List[Team],
+                      potsCbn: => List[Pot] = Nil,
+                      unitsCbn: => List[RoundUnit] = Nil,
                       override val stepIndex: Int = 0) extends Round {
+
+  require(teams.size % GROUP_SIZE == 0)
+
+  override lazy val teams = teamsCbn
+  override lazy val pots = potsCbn
+  override lazy val units = unitsCbn
 
   override def drawUnits(): Round = {
     require(pots.nonEmpty)

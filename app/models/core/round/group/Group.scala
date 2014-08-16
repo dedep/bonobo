@@ -4,11 +4,15 @@ import models.core.Common
 import Common._
 import models.core._match.Match
 import models.core.round.RoundUnit
+import models.core.round.result.TeamResult
 import models.core.team.Team
 
-case class Group(override val teams: List[Team]) extends RoundUnit {
-  override val fixtures: List[Fixture] = {
+class Group(teamsCbn: => List[Team], fixturesCbn: => List[Fixture] = Nil, resultsCbn: => List[TeamResult] = Nil) extends RoundUnit {
+  override lazy val results = if (resultsCbn.nonEmpty) resultsCbn else evalResults
+  
+  override lazy val teams = teamsCbn
 
+  override lazy val fixtures: List[Fixture] = if (fixturesCbn.nonEmpty) fixturesCbn else {
     def uniqueMatchesInFixture(fix: Fixture): List[Fixture] = {
       fix.foldLeft(List.empty[Fixture]) { (p, c) => {
 

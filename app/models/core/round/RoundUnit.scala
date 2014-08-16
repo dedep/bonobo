@@ -1,17 +1,22 @@
 package models.core.round
 
+import com.typesafe.scalalogging.slf4j.Logger
 import models.core.Common
 import Common._
 import models.core._match.PlayedMatch
 import models.core.round.result.TeamResult
 import models.core.team.Team
+import org.slf4j.LoggerFactory
 
 trait RoundUnit {
   val fixtures: List[Fixture]
-  lazy val results: List[TeamResult] = teams.map(TeamResult(_))
-
+  val results: List[TeamResult]
   val teams: List[Team]
+
   lazy val fixturesCount: Int = fixtures.size
+  val log = Logger(LoggerFactory.getLogger(this.getClass))
+
+  def evalResults: List[TeamResult] = teams.map(TeamResult(_))
 
   def playFixture(fixtureNum: Int): RoundUnit = {
     require(fixtureNum < fixturesCount)
@@ -23,11 +28,13 @@ trait RoundUnit {
 
     val parentTeams = teams
 
-    //todo: przemśleć to jeszcze
-    new RoundUnit {
-      override val teams: List[Team] = parentTeams
-      override val fixtures: List[Fixture] = updatedFixtures
-      override lazy val results: List[TeamResult] = updatedResults
+    try {
+      this.getClass
+        .getConstructor(classOf[() => List[Team]], classOf[() => List[Fixture]], classOf[() => List[TeamResult]])
+        .newInstance(() => parentTeams, () => updatedFixtures, () => updatedResults)
+    } catch {
+      case cnfe: ClassNotFoundException => log.error("Cannot find saved in database class", cnfe) ; this
+      case cce: ClassCastException => log.error("Cannot cast saved in database class into Round", cce) ; this
     }
   }
 

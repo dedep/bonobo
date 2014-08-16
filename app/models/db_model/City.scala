@@ -6,6 +6,7 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
 import play.api.mvc.AnyContent
 
+//TODO: wywalić ID z modelu !!!
 class City(val id: Long, override val name: String, val population: Int, val points: Int, container: => Territory)
   extends Team(population, points, name) with Containable {
 
@@ -25,5 +26,8 @@ object City {
         Some(new City(id, name, population, points, Territory.fromId(container)
           .getOrElse(throw new IllegalStateException("City " + name + " references to non-existent territory"))))
     }
+
+  def +=(cities: Seq[City])(implicit rs: DBSessionRequest[AnyContent]) =
+    ds.insertAll(cities.map(c => (c.id, c.name, c.population, c.points, c.territory.id)): _*)
 }
 

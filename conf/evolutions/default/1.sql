@@ -2,31 +2,76 @@
 
 CREATE TABLE territories
 (
-  id serial PRIMARY KEY,
+  id bigserial PRIMARY KEY,
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
-  container integer references territories NULL
+  container bigint references territories NULL
 );
 
 CREATE TABLE cities
 (
-  id serial PRIMARY KEY,
+  id bigserial PRIMARY KEY,
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
   points int NOT NULL DEFAULT 0,
-  container integer references territories NOT NULL
+  container bigint references territories NOT NULL
 );
 
 CREATE TABLE tournaments
 (
-  id serial PRIMARY KEY
+  id bigserial PRIMARY KEY
 );
 
 CREATE TABLE cities_tournaments
 (
-  id serial PRIMARY KEY,
-  city_id integer references cities NOT NULL,
-  tournament_id integer references tournaments NOT NULL
+  id bigserial PRIMARY KEY,
+  city_id bigint references cities NOT NULL,
+  tournament_id bigint references tournaments NOT NULL
+);
+
+CREATE TABLE rounds
+(
+  id bigserial PRIMARY KEY,
+  class varchar(255) NOT NULL,
+  step integer NOT NULL,
+  is_preliminary boolean NOT NULL,
+  tournament_id bigint references tournaments NOT NULL
+);
+
+CREATE TABLE rounds_cities
+(
+  id bigserial PRIMARY KEY,
+  round_id bigint references rounds NOT NULL,
+  city_id bigint references cities NOT NULL,
+  pot integer NOT NULL
+);
+
+CREATE TABLE units
+(
+  id bigserial PRIMARY KEY,
+  round_id bigint references rounds,
+  class varchar(255) NOT NULL
+);
+
+CREATE TABLE matches
+(
+  id bigserial PRIMARY KEY,
+  unit_id bigint references units NOT NULL,
+  fixture integer NOT NULL,
+  a_team_id bigint references cities NOT NULL,
+  a_team_goals integer NULL,
+  b_team_id bigint references cities NOT NULL,
+  b_team_goals integer NULL
+);
+
+CREATE TABLE units_cities
+(
+  id bigserial PRIMARY KEY,
+  city_id bigint references cities NOT NULL,
+  unit_id bigint references units NOT NULL,
+  points integer NOT NULL CHECK(points >= 0),
+  goals_scored integer NOT NULL CHECK(goals_scored >= 0),
+  goals_conceded integer NOT NULL CHECK(goals_conceded >= 0)
 );
 
 INSERT INTO territories VALUES (3, 'Poland', 1, NULL);
@@ -89,10 +134,25 @@ INSERT INTO cities(name, population, container) VALUES ('Dublin', 1447, 2);
 INSERT INTO tournaments VALUES (1);
 INSERT INTO cities_tournaments VALUES(1, 11, 1);
 INSERT INTO cities_tournaments VALUES(2, 12, 1);
+INSERT INTO cities_tournaments VALUES(3, 12, 1);
+
+INSERT INTO rounds VALUES(1, 'models.core.round.group.GroupRound', 0, FALSE, 1);
+INSERT INTO rounds_cities VALUES (1, 1, 10, 1);
+INSERT INTO rounds_cities VALUES(2, 1, 11, 1);
+INSERT INTO rounds_cities VALUES(3, 1, 12, 2);
+INSERT INTO rounds_cities VALUES(4, 1, 13, 2);
+
+INSERT INTO units VALUES(1, 1, 'models.core.round.group.Group');
+INSERT INTO units VALUES(2, 1, 'models.core.round.group.Group');
 
 # --- !Downs
 
 DROP TABLE IF EXISTS cities_tournaments;
+DROP TABLE IF EXISTS units_cities;
+DROP TABLE IF EXISTS rounds_cities;
+DROP TABLE IF EXISTS matches;
 DROP TABLE IF EXISTS cities;
 DROP TABLE IF EXISTS territories;
+DROP TABLE IF EXISTS units;
+DROP TABLE IF EXISTS rounds;
 DROP TABLE IF EXISTS tournaments;

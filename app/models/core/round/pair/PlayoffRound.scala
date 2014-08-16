@@ -1,19 +1,35 @@
 package models.core.round.pair
 
+import com.typesafe.scalalogging.slf4j.Logger
 import models.core.Common
 import Common._
 import models.core.round.{Round, RoundUnit}
 import models.core.team.Team
+import org.slf4j.LoggerFactory
 
 import scala.util.Random
 
-case class PlayoffRound(override val teams: List[Team],
-                        override val pots: List[Pot] = Nil,
-                        override val units: List[RoundUnit] = Nil,
-                        override val stepIndex: Int = 0,
-                        preliminary: Boolean = false) extends Round {
+class PlayoffRound(teamsCbn: => List[Team],
+                        potsCbn: => List[Pot],
+                        unitsCbn: => List[RoundUnit],
+                        override val stepIndex: Int,
+                        val preliminary: Boolean) extends Round {
+
+  def this(tms: => List[Team],
+    pts: => List[Pot] = Nil,
+    uts: => List[RoundUnit] = Nil,
+    i: Int = 0) {
+
+    this(tms, pts, uts, i, false)
+  }
 
   require(teams.size % 2 == 0)
+
+  override lazy val teams = teamsCbn
+  override lazy val pots = potsCbn
+  override lazy val units = unitsCbn
+
+  val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   override def drawUnits(): Round = {
     require(pots.nonEmpty)

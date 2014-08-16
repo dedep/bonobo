@@ -1,6 +1,6 @@
 package models.table
 
-import scala.slick.driver.PostgresDriver.simple._
+import play.api.db.slick.Config.driver.simple._
 
 class CitiesTournamentsTable(tag: Tag) extends Table[(Long, Long, Long)](tag, "cities_tournaments") {
    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -8,4 +8,4 @@ class CitiesTournamentsTable(tag: Tag) extends Table[(Long, Long, Long)](tag, "c
    def tournamentId = column[Long]("tournament_id", O.NotNull)
 
    def * = (id, cityId, tournamentId)
- }
+}
