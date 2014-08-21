@@ -3,26 +3,27 @@
 # ~~~~
 
 # Home page
-GET        /                          controllers.AppController.index
+GET         /                          controllers.AppController.index
 
 # Cities
-GET        /city/:c                   controllers.CityController.find(c: Long)
+GET         /city/:c                   controllers.CityController.find(c: Long)
 
 # Territories
 GET        /territory/:t/start        controllers.TerritoryController.startTournament(t: Long)
-GET        /territory/:t              controllers.TerritoryController.find(t: Long)
+GET         /territory/:t              controllers.TerritoryController.find(t: Long)
 
 # Tournaments
-GET        /tournament/:t             controllers.TournamentController.find(t: Long)
+#POST        /tournament/:t/process     controllers.TournamentController.processNextStep(t: Long)
+GET         /tournament/:t             controllers.TournamentController.find(t: Long)
 
 # Rounds
-GET        /round/:t                  controllers.RoundController.find(t: Long)
+GET         /round/:t                  controllers.RoundController.find(t: Long)
 
 # Matches
-GET        /match/:t                  controllers.MatchController.find(t: Long)
+GET         /match/:t                  controllers.MatchController.find(t: Long)
 
 # Units
-GET        /unit/:t                   controllers.UnitController.find(t: Long)
+GET         /unit/:t                   controllers.UnitController.find(t: Long)
 
 # Static resources
-GET        /assets/*file              controllers.Assets.at(path="/public", file)
+GET         /assets/*file              controllers.Assets.at(path="/public", file)

@@ -1,6 +1,7 @@
 package controllers
 
 import com.typesafe.scalalogging.slf4j.Logger
+import models.core.tournament.TournamentImpl
 import models.db_model.{Tournament, Territory, CitiesTournaments}
 import org.slf4j.LoggerFactory
 import play.api.db.slick._
@@ -27,11 +28,7 @@ object TerritoryController extends Controller {
           PreconditionFailed("Tournament requires at least 2 cities in territory")
         }
         else {
-          val newIndex = Tournament.ds.foldLeft(0l){ Math.max } + 1
-          Tournament.ds.forceInsert(newIndex)
-          CitiesTournaments.autoIncInsert
-            .insertAll(cities.map(city => (city.id, newIndex)):_*)
-
+          val newIndex = Tournament.saveNew(new TournamentImpl(cities))
           Ok("Tournament with ID=" + newIndex + " has been created successfully")
         }
     }

@@ -2,7 +2,7 @@ package models.db_model
 
 import com.typesafe.scalalogging.slf4j.Logger
 import models.core.Common.Pot
-import models.core.round.RoundUnit
+import models.core.round.{Round, RoundUnit}
 import models.core.team.Team
 import models.table.RoundsTable
 import org.slf4j.LoggerFactory
@@ -46,6 +46,10 @@ object Round {
           case cce: ClassCastException => log.error("Cannot cast saved in database class into Round", cce) ; None
         }
     }
+
+  def saveOrUpdate(r: Round)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] = {
+    None
+  }
 
   //todo: może to przenieść do objectu RoundsCities?
   private def getRoundCitiesAndPots(roundId: Long)(implicit rs: DBSessionRequest[AnyContent]): List[(City, Int)] =
