@@ -9,7 +9,7 @@ class NormalDistributionBasedMatchEvaluatorTest extends FunSuite {
 
   test("test balance point calculation - A 2x bigger than B") {
     //given
-    val m = Match(new Team(200, 0), new Team(100, 0))
+    val m = Match(new Team(1, 200, 0), new Team(2, 100, 0))
 
     //when
     val bp = NormalDistributionBasedMatchEvaluator.calcBalancePoint(m)
@@ -20,7 +20,7 @@ class NormalDistributionBasedMatchEvaluatorTest extends FunSuite {
 
   test("test balance point calculation - B 2x bigger than A") {
     //given
-    val m = Match(new Team(100, 0), new Team(200, 0))
+    val m = Match(new Team(1, 100, 0), new Team(2, 200, 0))
 
     //when
     val bp = NormalDistributionBasedMatchEvaluator.calcBalancePoint(m)
@@ -31,7 +31,7 @@ class NormalDistributionBasedMatchEvaluatorTest extends FunSuite {
 
   test("test balance point calculation - A equals B ") {
     //given
-    val m = Match(new Team(100, 0), new Team(100, 0))
+    val m = Match(new Team(1, 100, 0), new Team(2, 100, 0))
 
     //when
     val bp = NormalDistributionBasedMatchEvaluator.calcBalancePoint(m)
@@ -42,7 +42,7 @@ class NormalDistributionBasedMatchEvaluatorTest extends FunSuite {
 
   test("test balance point calculation - A 4x bigger B ") {
     //given
-    val m = Match(new Team(400, 0), new Team(100, 0))
+    val m = Match(new Team(1, 400, 0), new Team(2, 100, 0))
 
     //when
     val bp = NormalDistributionBasedMatchEvaluator.calcBalancePoint(m)
@@ -53,7 +53,7 @@ class NormalDistributionBasedMatchEvaluatorTest extends FunSuite {
 
   test("test balance point calculation - B 4x bigger A ") {
     //given
-    val m = Match(new Team(100, 0), new Team(400, 0))
+    val m = Match(new Team(1, 100, 0), new Team(2, 400, 0))
 
     //when
     val bp = NormalDistributionBasedMatchEvaluator.calcBalancePoint(m)

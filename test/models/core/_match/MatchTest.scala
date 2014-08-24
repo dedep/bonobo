@@ -9,7 +9,7 @@ class MatchTest extends FunSuite {
   test("eval generates result") {
     for (i <- 0 to 10) {
       //given
-      val m = Match(new Team(100, 12), new Team(100, 19))
+      val m = Match(new Team(1, 100, 12), new Team(2, 100, 19))
 
       //when
       val result = m.eval

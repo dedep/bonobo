@@ -19,14 +19,15 @@ CREATE TABLE cities
 
 CREATE TABLE tournaments
 (
-  id bigserial PRIMARY KEY
+  id bigserial PRIMARY KEY,
+  name varchar(255) NOT NULL
 );
 
 CREATE TABLE cities_tournaments
 (
-  id bigserial PRIMARY KEY,
   city_id bigint references cities NOT NULL,
-  tournament_id bigint references tournaments NOT NULL
+  tournament_id bigint references tournaments NOT NULL,
+  PRIMARY KEY(tournament_id, city_id)
 );
 
 CREATE TABLE rounds
@@ -40,10 +41,10 @@ CREATE TABLE rounds
 
 CREATE TABLE rounds_cities
 (
-  id bigserial PRIMARY KEY,
   round_id bigint references rounds NOT NULL,
   city_id bigint references cities NOT NULL,
-  pot integer NOT NULL
+  pot integer NOT NULL,
+  PRIMARY KEY(round_id, city_id)
 );
 
 CREATE TABLE units
@@ -66,12 +67,12 @@ CREATE TABLE matches
 
 CREATE TABLE units_cities
 (
-  id bigserial PRIMARY KEY,
   city_id bigint references cities NOT NULL,
   unit_id bigint references units NOT NULL,
   points integer NOT NULL CHECK(points >= 0),
   goals_scored integer NOT NULL CHECK(goals_scored >= 0),
-  goals_conceded integer NOT NULL CHECK(goals_conceded >= 0)
+  goals_conceded integer NOT NULL CHECK(goals_conceded >= 0),
+  PRIMARY KEY(city_id, unit_id)
 );
 
 INSERT INTO territories VALUES (3, 'Poland', 1, NULL);
@@ -130,20 +131,6 @@ INSERT INTO cities(name, population, container) VALUES ('Kołaczyce', 1447, 1);
 
 INSERT INTO territories VALUES (2, 'Lubelskie', 2129951, 3);
 INSERT INTO cities(name, population, container) VALUES ('Dublin', 1447, 2);
-
-INSERT INTO tournaments VALUES (1);
-INSERT INTO cities_tournaments VALUES(1, 11, 1);
-INSERT INTO cities_tournaments VALUES(2, 12, 1);
-INSERT INTO cities_tournaments VALUES(3, 12, 1);
-
-INSERT INTO rounds VALUES(1, 'models.core.round.group.GroupRound', 0, FALSE, 1);
-INSERT INTO rounds_cities VALUES (1, 1, 10, 1);
-INSERT INTO rounds_cities VALUES(2, 1, 11, 1);
-INSERT INTO rounds_cities VALUES(3, 1, 12, 2);
-INSERT INTO rounds_cities VALUES(4, 1, 13, 2);
-
-INSERT INTO units VALUES(1, 1, 'models.core.round.group.Group');
-INSERT INTO units VALUES(2, 1, 'models.core.round.group.Group');
 
 # --- !Downs
 

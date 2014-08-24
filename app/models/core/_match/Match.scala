@@ -6,7 +6,7 @@ import models.core._match.result.MatchResult
 import models.core.team.Team
 import org.slf4j.LoggerFactory
 
-class Match(val aTeam: Team, val bTeam: Team) {
+class Match(val aTeam: Team, val bTeam: Team, val id: Option[Long] = None) {
 
   private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
@@ -16,5 +16,5 @@ class Match(val aTeam: Team, val bTeam: Team) {
 }
 
 object Match {
-  def apply(aTeam: Team, bTeam: Team) = new Match(aTeam, bTeam)
+  def apply(aTeam: Team, bTeam: Team, id: Option[Long] = None) = new Match(aTeam, bTeam, id)
 }

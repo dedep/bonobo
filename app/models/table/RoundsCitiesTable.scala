@@ -2,12 +2,12 @@ package models.table
 
 import play.api.db.slick.Config.driver.simple._
 
-//TODO: klucz jako kombinacja kolumn
-class RoundsCitiesTable(tag: Tag) extends Table[(Long, Long, Long, Int)](tag, "rounds_cities") {
-  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+class RoundsCitiesTable(tag: Tag) extends Table[(Long, Long, Option[Int])](tag, "rounds_cities") {
   def roundId = column[Long]("round_id", O.NotNull)
   def cityId = column[Long]("city_id", O.NotNull)
-  def pot = column[Int]("pot", O.Nullable)
+  def pot = column[Option[Int]]("pot", O.Nullable)
 
-  def * = (id, roundId, cityId, pot)
+  def * = (roundId, cityId, pot)
+
+  def pk = primaryKey("pk_a", (roundId, cityId))
 }

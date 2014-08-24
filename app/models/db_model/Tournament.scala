@@ -1,26 +1,26 @@
 package models.db_model
 
 import models.core.tournament.{Tournament, TournamentImpl}
-import models.table.TournamentsTable
+import models.table.{CitiesTournamentsTable, TournamentsTable}
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
 import play.api.mvc.AnyContent
 
-import scala.xml.XML
-
 object Tournament {
   val ds = TableQuery[TournamentsTable]
-  val autoIncInsert = ds.map(e => ()) returning ds.map(_.id)
+  val citiesDs = TableQuery[CitiesTournamentsTable]
 
   def fromId(id: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[models.core.tournament.Tournament] =
     (for (tournament <- Tournament.ds if tournament.id === id) yield tournament).firstOption match {
       case None => None
-      case _    => Some(
-        new TournamentImpl(
-          CitiesTournaments.ds.filter(_.tournamentId === id).list.map(a => City.fromId(a._2)
+      case Some((name: String)) => Some(
+        new TournamentImpl( //todo: do osobnych metod --- UWAGA RZEŹBA ---
+          citiesDs.filter(_.tournamentId === id).list.map(a => City.fromId(a._2)
             .getOrElse(throw new IllegalStateException())),
 
-          Round.ds.filter(_.tournamentId === id).list().map(a => Round.fromId(a._5)
+          name,
+
+          Round.ds.filter(_.tournamentId === id).map(_.id).list.map(Round.fromId(_)
             .getOrElse(throw new IllegalStateException())),
 
           Some(id)
@@ -28,23 +28,32 @@ object Tournament {
       )
     }
 
-  //todo: wywalić to saveNew na rzecz normalnego save
-  //todo: zwracanie None w przypadku niepowodzenia
-  def saveNew(t: Tournament)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] = {
-    val newIndex = Tournament.ds.foldLeft(0l){ Math.max } + 1
-    Tournament.ds.forceInsert(newIndex)
-    CitiesTournaments.autoIncInsert
-      .insertAll(t.teams.map(city => (city.asInstanceOf[City].id, newIndex)):_*)
+  //todo: wypadałoby sprawdzić przed updatem czy id istnieje
+  def saveOrUpdate(t: Tournament)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] = {
+    try {
+      val index = if (t.id.isEmpty) save(t) else update(t)
+      if (t.rounds.nonEmpty) t.rounds.foreach(Round.saveOrUpdate(_, index))
 
-    Some(newIndex)
+      Some(index)
+    } catch {
+      case e: Exception => {
+        //TODO: ++ log
+        None
+      }
+    }
   }
 
-  def update(t: Tournament)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] = {
-    ds.where(_.id === t.id.get).update(t.id.get)
+  //todo: zwracanie None w przypadku fackupu
+  private def save(t: Tournament)(implicit rs: DBSessionRequest[AnyContent]): Long = {
+    val newIndex = (ds returning ds.map(_.id)) += t.name
+    citiesDs ++= t.teams.map(city => (city.id, newIndex))
+    newIndex
+  }
 
-    if (t.rounds.nonEmpty) t.rounds.foreach(Round.saveOrUpdate)
-    //todo: update rund itd...
-
-    Some(t.id.get)
+  //todo: zwracanie None w przypadku fackupu
+  private def update(t: Tournament)(implicit rs: DBSessionRequest[AnyContent]): Long = {
+    ds.filter(_.id === t.id.get).update(t.name)
+    t.teams.foreach(city => citiesDs.insertOrUpdate(city.id, t.id.get))
+    t.id.get
   }
 }

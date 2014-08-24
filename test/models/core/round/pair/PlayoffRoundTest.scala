@@ -9,8 +9,8 @@ class PlayoffRoundTest extends FunSuite {
 
   test("is final round") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
 
     //when
     val r = new PlayoffRound(List(t1, t2))
@@ -21,10 +21,10 @@ class PlayoffRoundTest extends FunSuite {
 
   test("teams test") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 3)
-    val t4 = new Team(4, 4)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 3)
+    val t4 = new Team(4, 4, 4)
 
     //when
     val r = new PlayoffRound(List(t1, t2, t3, t4))
@@ -40,10 +40,10 @@ class PlayoffRoundTest extends FunSuite {
 
   test("teams pots drawing") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 3)
-    val t3 = new Team(3, 2)
-    val t4 = new Team(4, 4)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 3)
+    val t3 = new Team(3, 3, 2)
+    val t4 = new Team(4, 4, 4)
 
     val r = new PlayoffRound(List(t1, t2, t3, t4))
 
@@ -65,10 +65,10 @@ class PlayoffRoundTest extends FunSuite {
   test("teams units drawing") {
     for (i <- 0 to 15) {
       //given
-      val t1 = new Team(1, 1)
-      val t2 = new Team(2, 3)
-      val t3 = new Team(3, 2)
-      val t4 = new Team(4, 4)
+      val t1 = new Team(1, 1, 1)
+      val t2 = new Team(2, 2, 3)
+      val t3 = new Team(3, 3, 2)
+      val t4 = new Team(4, 4, 4)
 
       val r = new PlayoffRound(List(t1, t2, t3, t4))
 
@@ -90,10 +90,10 @@ class PlayoffRoundTest extends FunSuite {
 
   test("play fixture") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 3)
-    val t3 = new Team(3, 2)
-    val t4 = new Team(4, 4)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 3)
+    val t3 = new Team(3, 3, 2)
+    val t4 = new Team(4, 4, 4)
 
     val r = new PlayoffRound(List(t1, t2, t3, t4))
 
@@ -115,10 +115,10 @@ class PlayoffRoundTest extends FunSuite {
 
   test("stepping test") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 3)
-    val t3 = new Team(3, 2)
-    val t4 = new Team(4, 4)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 3)
+    val t3 = new Team(3, 3, 2)
+    val t4 = new Team(4, 4, 4)
 
     val r = new PlayoffRound(List(t1, t2, t3, t4))
 
@@ -167,10 +167,10 @@ class PlayoffRoundTest extends FunSuite {
   test("promoted teams test") {
     for (i <- 0 to 30) {
       //given
-      val t1 = new Team(1, 1)
-      val t2 = new Team(2, 3)
-      val t3 = new Team(3, 2)
-      val t4 = new Team(4, 4)
+      val t1 = new Team(1, 1, 1)
+      val t2 = new Team(2, 2, 3)
+      val t3 = new Team(3, 3, 2)
+      val t4 = new Team(4, 4, 4)
 
       val r = new PlayoffRound(List(t1, t2, t3, t4))
 

@@ -10,6 +10,7 @@ trait Round {
   val pots: List[Pot]
   val units: List[RoundUnit]
   val stepIndex: Int
+  val id: Option[Long]
 
   def isFinalRound(): Boolean
 

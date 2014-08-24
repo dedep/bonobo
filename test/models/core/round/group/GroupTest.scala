@@ -10,10 +10,10 @@ class GroupTest extends FunSuite {
 
   test("test teams") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 3)
-    val t4 = new Team(4, 4)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 3)
+    val t4 = new Team(4, 4, 4)
     val group = new Group(List(t1, t2, t3, t4))
 
     //then
@@ -22,10 +22,10 @@ class GroupTest extends FunSuite {
 
   test("test group fixtures count") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 3)
-    val t4 = new Team(4, 4)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 3)
+    val t4 = new Team(4, 4, 4)
     val group = new Group(List(t1, t2, t3, t4))
 
     //then
@@ -34,10 +34,10 @@ class GroupTest extends FunSuite {
 
   test("test group fixtures") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 3)
-    val t4 = new Team(4, 4)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 3)
+    val t4 = new Team(4, 4, 4)
     val group = new Group(List(t1, t2, t3, t4))
 
     //then
@@ -60,9 +60,9 @@ class GroupTest extends FunSuite {
 
   test("test 3-group fixtures") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 3)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 3)
     val group = new Group(List(t1, t2, t3))
 
     //then
@@ -76,10 +76,10 @@ class GroupTest extends FunSuite {
   }
 
   test("test default results") {
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 3)
-    val t4 = new Team(4, 4)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 3)
+    val t4 = new Team(4, 4, 4)
     val group = new Group(List(t1, t2, t3, t4))
 
     assert(group.results.size == 4)
@@ -97,10 +97,10 @@ class GroupTest extends FunSuite {
 
   test("test results update - one fixture") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 3)
-    val t4 = new Team(4, 4)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 3)
+    val t4 = new Team(4, 4, 4)
     val group = new Group(List(t1, t2, t3, t4))
 
     val m1 = PlayedMatch(t1, t2, Draw(1))
@@ -136,10 +136,10 @@ class GroupTest extends FunSuite {
 
   test("playing fixture test - first fixture") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 3)
-    val t4 = new Team(4, 4)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 3)
+    val t4 = new Team(4, 4, 4)
     val group = new Group(List(t1, t2, t3, t4))
 
     //when
@@ -173,10 +173,10 @@ class GroupTest extends FunSuite {
 
   test("playing fixture test - two fixtures") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 3)
-    val t4 = new Team(4, 4)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 3)
+    val t4 = new Team(4, 4, 4)
     val group = new Group(List(t1, t2, t3, t4))
 
     //when

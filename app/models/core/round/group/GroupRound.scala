@@ -9,9 +9,10 @@ import models.core.team.Team
 import scala.util.Random
 
 class GroupRound(teamsCbn: => List[Team],
-                      potsCbn: => List[Pot] = Nil,
-                      unitsCbn: => List[RoundUnit] = Nil,
-                      override val stepIndex: Int = 0) extends Round {
+                 potsCbn: => List[Pot] = Nil,
+                 unitsCbn: => List[RoundUnit] = Nil,
+                 override val stepIndex: Int = 0,
+                 override val id: Option[Long] = None) extends Round {
 
   require(teams.size % GROUP_SIZE == 0)
 
@@ -31,7 +32,7 @@ class GroupRound(teamsCbn: => List[Team],
         .map(new Group(_))
         .toList
 
-    new GroupRound(this.teams, this.pots, newUnits, this.stepIndex)
+    new GroupRound(teams, pots, newUnits, stepIndex, id)
   }
 
   override def isFinalRound(): Boolean = false
@@ -42,7 +43,7 @@ class GroupRound(teamsCbn: => List[Team],
     val potSize = teams.size / GROUP_SIZE
     val newPots = (0 until GROUP_SIZE).map(i => teams.sortBy(_.rankPoints).reverse.drop(i * potSize).take(potSize)).toList
 
-    new GroupRound(this.teams, newPots, this.units, this.stepIndex)
+    new GroupRound(teams, newPots, units, stepIndex, id)
   }
 
   override def isFinished(): Boolean = stepIndex == (GROUP_SIZE - 1) * 2
@@ -51,7 +52,7 @@ class GroupRound(teamsCbn: => List[Team],
     require(units.nonEmpty)
 
     val newUnits = units.map(_.playFixture(stepIndex))
-    new GroupRound(this.teams, this.pots, newUnits, stepIndex + 1)
+    new GroupRound(teams, pots, newUnits, stepIndex + 1, id)
   }
 
   override def getPromotedTeamsCount: Int = GROUP_SIZE / 2

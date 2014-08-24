@@ -1,7 +1,7 @@
 package controllers
 
 import models.core.tournament.Tournament
-import models.db_model.{CitiesTournaments, Tournament}
+import models.db_model.Tournament
 import play.api.db.slick._
 import play.api.mvc._
 
@@ -19,7 +19,7 @@ object TournamentController extends Controller {
         case Some(t: (Tournament)) => {
           if (!t.isFinished()) {
             val nTournament = t.doStep()
-            Tournament.update(nTournament)
+            Tournament.saveOrUpdate(nTournament)
           }
           Ok
         }

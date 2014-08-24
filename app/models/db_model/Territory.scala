@@ -26,7 +26,7 @@ object Territory {
       case None => None
       case Some((id: Long, name: String, population: Long, containerId: Option[Long])) => {
         val cities: List[City] =
-          City.ds.filter(_.territoryId === id).list.map(a => City.fromId(a._1).get)
+          City.ds.filter(_.territoryId === id).map(_.id).list.map(City.fromId(_).get)
 
         containerId match {
           case None => Some(new Territory(id, name, population, None))
@@ -37,7 +37,7 @@ object Territory {
   }
 
   def getDirectCities(t: Territory)(implicit rs: DBSessionRequest[AnyContent]): List[City] = {
-      City.ds.filter(_.territoryId === t.id).list.map(a => City.fromId(a._1).get)
+      City.ds.filter(_.territoryId === t.id).map(_.id).list.map(City.fromId(_).get)
   }
 
   def getAllChildrenCities(t: Territory)(implicit rs: DBSessionRequest[AnyContent]): List[City] = {

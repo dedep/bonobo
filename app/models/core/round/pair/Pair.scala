@@ -6,7 +6,8 @@ import models.core.round.RoundUnit
 import models.core.round.result.TeamResult
 import models.core.team.Team
 
-class Pair(teamsCbn: => List[Team], fixturesCbn: => List[Fixture] = Nil, resultsCbn: => List[TeamResult] = Nil) extends RoundUnit {
+class Pair(teamsCbn: => List[Team], fixturesCbn: => List[Fixture] = Nil, resultsCbn: => List[TeamResult] = Nil,
+            override val id: Option[Long] = None) extends RoundUnit {
   require(teams.size == 2, "Pair size must equal 2")
 
   def this(p: (Team, Team)) = this(List(p._1, p._2))

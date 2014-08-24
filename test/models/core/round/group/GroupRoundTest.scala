@@ -9,10 +9,10 @@ class GroupRoundTest extends FunSuite {
 
   test("is final round") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 3)
-    val t4 = new Team(4, 4)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 3)
+    val t4 = new Team(4, 4, 4)
 
     //when
     val r = new GroupRound(List(t1, t2, t3, t4))
@@ -23,14 +23,14 @@ class GroupRoundTest extends FunSuite {
 
   test("teams test") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 3)
-    val t4 = new Team(4, 4)
-    val t5 = new Team(5, 5)
-    val t6 = new Team(6, 6)
-    val t7 = new Team(7, 7)
-    val t8 = new Team(8, 8)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 3)
+    val t4 = new Team(4, 4, 4)
+    val t5 = new Team(5, 5, 5)
+    val t6 = new Team(6, 6, 6)
+    val t7 = new Team(7, 7, 7)
+    val t8 = new Team(8, 8, 8)
 
     //when
     val r = new GroupRound(List(t1, t2, t3, t4, t5, t6, t7, t8))
@@ -50,14 +50,14 @@ class GroupRoundTest extends FunSuite {
 
   test("teams pots drawing") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 8)
-    val t4 = new Team(4, 4)
-    val t5 = new Team(5, 5)
-    val t6 = new Team(6, 6)
-    val t7 = new Team(7, 7)
-    val t8 = new Team(8, 3)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 8)
+    val t4 = new Team(4, 4, 4)
+    val t5 = new Team(5, 5, 5)
+    val t6 = new Team(6, 6, 6)
+    val t7 = new Team(7, 7, 7)
+    val t8 = new Team(8, 8, 3)
 
     val r = new GroupRound(List(t1, t2, t3, t4, t5, t6, t7, t8))
 
@@ -83,14 +83,14 @@ class GroupRoundTest extends FunSuite {
   test("teams units drawing") {
     for (i <- 0 to 15) {
       //given
-      val t1 = new Team(1, 1)
-      val t2 = new Team(2, 2)
-      val t3 = new Team(3, 8)
-      val t4 = new Team(4, 4)
-      val t5 = new Team(5, 5)
-      val t6 = new Team(6, 6)
-      val t7 = new Team(7, 7)
-      val t8 = new Team(8, 3)
+      val t1 = new Team(1, 1, 1)
+      val t2 = new Team(2, 2, 2)
+      val t3 = new Team(3, 3, 8)
+      val t4 = new Team(4, 4, 4)
+      val t5 = new Team(5, 5, 5)
+      val t6 = new Team(6, 6, 6)
+      val t7 = new Team(7, 7, 7)
+      val t8 = new Team(8, 8, 3)
 
       val r = new GroupRound(List(t1, t2, t3, t4, t5, t6, t7, t8))
 
@@ -117,14 +117,14 @@ class GroupRoundTest extends FunSuite {
 
   test("play fixture") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 8)
-    val t4 = new Team(4, 4)
-    val t5 = new Team(5, 5)
-    val t6 = new Team(6, 6)
-    val t7 = new Team(7, 7)
-    val t8 = new Team(8, 3)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 8)
+    val t4 = new Team(4, 4, 4)
+    val t5 = new Team(5, 5, 5)
+    val t6 = new Team(6, 6, 6)
+    val t7 = new Team(7, 7, 7)
+    val t8 = new Team(8 ,8, 3)
 
     val r = new GroupRound(List(t1, t2, t3, t4, t5, t6, t7, t8))
 
@@ -146,14 +146,14 @@ class GroupRoundTest extends FunSuite {
 
   test("stepping test") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
-    val t3 = new Team(3, 8)
-    val t4 = new Team(4, 4)
-    val t5 = new Team(5, 5)
-    val t6 = new Team(6, 6)
-    val t7 = new Team(7, 7)
-    val t8 = new Team(8, 3)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
+    val t3 = new Team(3, 3, 8)
+    val t4 = new Team(4, 4, 4)
+    val t5 = new Team(5, 5, 5)
+    val t6 = new Team(6, 6, 6)
+    val t7 = new Team(7, 7, 7)
+    val t8 = new Team(8, 8, 3)
 
     val r = new GroupRound(List(t1, t2, t3, t4, t5, t6, t7, t8))
 
@@ -204,14 +204,14 @@ class GroupRoundTest extends FunSuite {
   test("promoted teams test") {
     for (i <- 0 to 30) {
       //given
-      val t1 = new Team(1, 1)
-      val t2 = new Team(2, 2)
-      val t3 = new Team(3, 8)
-      val t4 = new Team(4, 4)
-      val t5 = new Team(5, 5)
-      val t6 = new Team(6, 6)
-      val t7 = new Team(7, 7)
-      val t8 = new Team(8, 3)
+      val t1 = new Team(1, 1, 1)
+      val t2 = new Team(2, 2, 2)
+      val t3 = new Team(3, 3, 8)
+      val t4 = new Team(4, 4, 4)
+      val t5 = new Team(5, 5, 5)
+      val t6 = new Team(6, 6, 6)
+      val t7 = new Team(7, 7, 7)
+      val t8 = new Team(8, 8, 3)
 
       val r = new GroupRound(List(t1, t2, t3, t4, t5, t6, t7, t8))
 

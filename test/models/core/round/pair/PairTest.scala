@@ -10,8 +10,8 @@ class PairTest extends FunSuite {
 
   test("test teams") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
     val pair = new Pair((t1, t2))
 
     //then
@@ -20,8 +20,8 @@ class PairTest extends FunSuite {
 
   test("test pair fixtures count") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
     val pair = new Pair((t1, t2))
 
     //then
@@ -30,8 +30,8 @@ class PairTest extends FunSuite {
 
   test("test pair fixtures") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
     val pair = new Pair((t1, t2))
 
     //then
@@ -43,8 +43,8 @@ class PairTest extends FunSuite {
   }
 
   test("test default results") {
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
     val pair = new Pair((t1, t2))
 
     assert(pair.results.size == 2)
@@ -62,8 +62,8 @@ class PairTest extends FunSuite {
 
   test("test results update - one doubled fixture") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
     val pair = new Pair((t1, t2))
 
     val m1 = PlayedMatch(t1, t2, Draw(1))
@@ -89,8 +89,8 @@ class PairTest extends FunSuite {
 
   test("playing fixture test - first fixture") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
     val pair = new Pair((t1, t2))
 
     //when
@@ -118,8 +118,8 @@ class PairTest extends FunSuite {
 
   test("playing fixture test - two fixtures") {
     //given
-    val t1 = new Team(1, 1)
-    val t2 = new Team(2, 2)
+    val t1 = new Team(1, 1, 1)
+    val t2 = new Team(2, 2, 2)
     val pair = new Pair((t1, t2))
 
     //when
