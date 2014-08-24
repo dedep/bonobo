@@ -10,11 +10,13 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
 import play.api.mvc.AnyContent
 
+import scala.slick.jdbc.JdbcBackend
+
 object Unit {
   val ds = TableQuery[UnitsTable]
   val citiesDs = TableQuery[UnitsCitiesTable]
 
-  def fromId(id: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[RoundUnit] =
+  def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[RoundUnit] =
     (for (m <- ds if m.id === id) yield m).firstOption match {
       case None => None
       case Some((roundId: Long, clazz: String)) => {
@@ -41,11 +43,11 @@ object Unit {
   private def groupMatchesByFixture(matchFixtureList: List[(models.core._match.Match, Int)]): List[Fixture] =
     matchFixtureList.groupBy(_._2).toList.map(_._2.map(_._1))
 
-  def saveOrUpdate(u: RoundUnit, parentRoundId: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] =
+  def saveOrUpdate(u: RoundUnit, parentRoundId: Long)(implicit rs: JdbcBackend#Session): Option[Long] =
     if (u.id.nonEmpty) update(u, parentRoundId) else save(u, parentRoundId)
 
   //todo: zwracanie None w przypadku fackupu
-  private def save(u: RoundUnit, parentRoundId: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] = {
+  private def save(u: RoundUnit, parentRoundId: Long)(implicit rs: JdbcBackend#Session): Option[Long] = {
     val newIndex = (ds returning ds.map(_.id)) += (parentRoundId, u.getClass.getName)
 
     citiesDs ++= u.teams.map(team => {
@@ -59,6 +61,6 @@ object Unit {
   }
 
   //todo: zwracanie None w przypadku fackupu
-  private def update(t: RoundUnit, parentRoundId: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] = { ???
+  private def update(t: RoundUnit, parentRoundId: Long)(implicit rs: JdbcBackend#Session): Option[Long] = { ???
   }
 }

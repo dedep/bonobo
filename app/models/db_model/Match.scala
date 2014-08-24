@@ -8,10 +8,12 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
 import play.api.mvc.AnyContent
 
+import scala.slick.jdbc.JdbcBackend
+
 object Match {
   val ds = TableQuery[MatchesTable]
 
-  def fromId(id: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[models.core._match.Match] =
+  def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[models.core._match.Match] =
     (for (m <- ds if m.id === id) yield m).firstOption match {
       case None => None
       case Some((unitId: Long, fixtureNum: Int, aTeamId: Long, aTeamGoals: Option[Int], bTeamId: Long, bTeamGoals: Option[Int])) =>
@@ -31,11 +33,11 @@ object Match {
         }
     }
 
-  def saveOrUpdate(m: models.core._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] =
+  def saveOrUpdate(m: models.core._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: JdbcBackend#Session): Option[Long] =
     if (m.id.nonEmpty) update(m, fixtureNum, unitId) else save(m, fixtureNum, unitId)
 
   //todo: zwracanie None w przypadku fackupu
-  private def save(m: models.core._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] = {
+  private def save(m: models.core._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: JdbcBackend#Session): Option[Long] = {
     val newIndex = (ds returning ds.map(_.id)) += (unitId, fixtureNum, m.aTeam.id,
       m match {
         case playedMatch: PlayedMatch => Some(playedMatch.result.aGoals)
@@ -51,6 +53,6 @@ object Match {
   }
 
   //todo: zwracanie None w przypadku fackupu
-  private def update(m: models.core._match.Match, fixtureNum: Long, unitId: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] = { ???
+  private def update(m: models.core._match.Match, fixtureNum: Long, unitId: Long)(implicit rs: JdbcBackend#Session): Option[Long] = { ???
   }
 }

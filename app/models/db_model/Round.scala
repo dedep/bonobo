@@ -13,6 +13,7 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
 import play.api.mvc.AnyContent
 
+import scala.slick.jdbc.JdbcBackend
 import scala.slick.lifted.TableQuery
 
 object Round {
@@ -21,7 +22,7 @@ object Round {
 
   private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
-  def fromId(id: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[models.core.round.Round] =
+  def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[models.core.round.Round] =
     (for (round <- Round.ds if round.id === id) yield round).firstOption match {
       case None => None
       case Some((clazz: String, step: Int, isPreliminary: Boolean, tournamentId: Long)) =>
@@ -50,11 +51,11 @@ object Round {
     }
 
   //todo: trykacz
-  def saveOrUpdate(r: Round, parentTournamentId: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] =
+  def saveOrUpdate(r: Round, parentTournamentId: Long)(implicit rs: JdbcBackend#Session): Option[Long] =
     if (r.id.isEmpty) save(r, parentTournamentId)
     else update(r, parentTournamentId)
 
-  private def save(r: Round, parentTournamentId: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] = {
+  private def save(r: Round, parentTournamentId: Long)(implicit rs: JdbcBackend#Session): Option[Long] = {
     val newIndex = (ds returning ds.map(_.id)) += (r.getClass.getName, r.stepIndex,
       r.isInstanceOf[PlayoffRound] && r.asInstanceOf[PlayoffRound].preliminary, parentTournamentId)
 
@@ -66,7 +67,7 @@ object Round {
     Some(newIndex)
   }
 
-  private def update(r: Round, parentTournamentId: Long)(implicit rs: DBSessionRequest[AnyContent]): Option[Long] = {
+  private def update(r: Round, parentTournamentId: Long)(implicit rs: JdbcBackend#Session): Option[Long] = {
     ds.filter(_.id === r.id.get).update((r.getClass.getName, r.stepIndex,
       r.isInstanceOf[PlayoffRound] && r.asInstanceOf[PlayoffRound].preliminary, parentTournamentId))
 
@@ -78,7 +79,7 @@ object Round {
     r.id
   }
 
-  private def getRoundCitiesAndPots(roundId: Long)(implicit rs: DBSessionRequest[AnyContent]): List[(City, Option[Int])] =
+  private def getRoundCitiesAndPots(roundId: Long)(implicit rs: JdbcBackend#Session): List[(City, Option[Int])] =
     (for (roundCity <- citiesDs if roundCity.roundId === roundId) yield roundCity)
       .list.map(rc => (City.fromId(rc._2).get, rc._3))
 

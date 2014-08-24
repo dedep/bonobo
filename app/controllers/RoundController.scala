@@ -9,7 +9,7 @@ object RoundController extends Controller {
 
   def find(id: Long) = DBAction {
     implicit rs =>
-      Round.fromId(id) match {
+      Round.fromId(id)(rs.dbSession) match {
         case None => NotFound(views.html.error("Round not found"))
         case Some(r: Round) => Ok(views.html.round(r))
       }
