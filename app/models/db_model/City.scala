@@ -28,7 +28,19 @@ object City {
           .getOrElse(throw new IllegalStateException("City " + name + " references to non-existent territory"))))
     }
 
-  def saveOrUpdate(c: City)(implicit rs: JdbcBackend#Session): Long =
+  def saveOrUpdate(c: City)(implicit rs: JdbcBackend#Session): Long = {
+    if (Territory.fromId(c.territory.id).isEmpty)
+      throw new IllegalStateException("City cannot refer to non-existent territory")
+
+    Territory.update(c.territory)
+
+    if (fromId(c.id).isEmpty) save(c) else update(c)
+  }
+
+  private def save(c: City)(implicit rs: JdbcBackend#Session): Long =
     (ds returning ds.map(_.id)) += (c.name, c.population, c.points, c.territory.id)
+
+  private def update(c: City)(implicit rs: JdbcBackend#Session): Long =
+    ds.filter(_.id === c.id).update(c.name, c.population, c.points, c.territory.id)
 }
 

@@ -30,38 +30,29 @@ object Tournament {
       )
     }
 
-  //todo: wypadałoby sprawdzić przed updatem czy id istnieje
-  def saveOrUpdate(t: Tournament)(implicit rs: JdbcBackend#Session): Option[Long] = {
-    /*try */{
-      val index = if (t.id.isEmpty) save(t) else update(t)
-      if (t.rounds.nonEmpty) t.rounds.foreach(Round.saveOrUpdate(_, index))
+  def saveOrUpdate(t: Tournament)(implicit rs: JdbcBackend#Session): Long = {
+    if (t.teams.exists(team => City.fromId(team.id).isEmpty))
+      throw new IllegalStateException("Tournament cannot refer to non-existent city")
 
-      Some(index)
-    }/* catch {
-      case e: Exception => {
-        //TODO: ++ log
-        println(e.getMessage)
-        None
-      }
-    }*/
+    t.teams.foreach(team => City.saveOrUpdate(team.asInstanceOf[City]))
+    val index = if (t.id.nonEmpty && Tournament.fromId(t.id.get).nonEmpty) update(t) else save(t)
+    if (t.rounds.nonEmpty) t.rounds.foreach(Round.saveOrUpdate(_, index))
+
+    index
   }
 
-  //todo: zwracanie None w przypadku fackupu
   private def save(t: Tournament)(implicit rs: JdbcBackend#Session): Long = {
     val newIndex = (ds returning ds.map(_.id)) += t.name
-    t.teams.foreach(team => {
-      val city = team.asInstanceOf[City]
-
-      City.ds.insert(city.name, city.population, city.points, city.territory.id)
-    })
+    citiesDs.filter(_.tournamentId === newIndex).delete
     citiesDs ++= t.teams.map(city => (city.id, newIndex))
+
     newIndex
   }
 
-  //todo: zwracanie None w przypadku fackupu
   private def update(t: Tournament)(implicit rs: JdbcBackend#Session): Long = {
     ds.filter(_.id === t.id.get).update(t.name)
-    t.teams.foreach(city => citiesDs.insertOrUpdate(city.id, t.id.get))
+//    t.teams.map(a => (a.id, t.id.get)).foreach(citiesDs.update)
+
     t.id.get
   }
 }

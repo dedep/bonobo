@@ -46,5 +46,10 @@ object Territory {
       case _   => getDirectCities(t) ::: childrenTerritories.flatMap(getAllChildrenCities)
     }
   }
+
+  def update(t: Territory)(implicit rs: JdbcBackend#Session): Long = {
+    t.container.foreach(update)
+    ds.filter(_.id === t.id).update(t.id, t.name, t.population, t.container.map(_.id))
+  }
 }
 

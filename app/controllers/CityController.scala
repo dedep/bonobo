@@ -7,6 +7,7 @@ import play.api.Play.current
 
 object CityController extends Controller {
 
+  //todo: trykacze na wszystkich kontrolerach
   def find(id: Long) = DBAction {
     implicit rs =>
       City.fromId(id) match {

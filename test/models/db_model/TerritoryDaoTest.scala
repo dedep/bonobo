@@ -83,4 +83,62 @@ class TerritoryDaoTest extends Specification {
       assert(directCities.exists(_.name == "Budapest"))
     }
   }
+
+  "Territory updating test" in new WithApplication {
+    play.api.db.slick.DB("test").withSession { implicit session =>
+      //given
+      session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
+
+      val t1 = new Territory(1, "Mazowieckie", 1000, None)
+
+      //when
+      Territory.update(t1)
+
+      //then
+      val query = session.prepareStatement("SELECT id, name, population, container FROM territories WHERE territories.id = ?")
+      query.setLong(1, 1)
+      val result = query.executeQuery()
+      result.next()
+
+      assert(result.getLong(1) === 1)
+      assert(result.getString(2) === "Mazowieckie")
+      assert(result.getLong(3) === 1000)
+      assert(result.getObject(4) === null)
+    }
+  }
+
+  "Cascade territory updating test" in new WithApplication {
+    play.api.db.slick.DB("test").withSession { implicit session =>
+      //given
+      session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (2, 'Polska', 2129951, NULL);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, 1);")
+
+      val t2 = new Territory(2, "Wielkopolskie", 10000, None)
+      val t1 = new Territory(1, "Mazowieckie", 1000, Some(t2))
+
+      //when
+      Territory.update(t1)
+
+      //then
+      val query = session.prepareStatement("SELECT id, name, population, container FROM territories WHERE territories.id = ?")
+
+      query.setLong(1, 1)
+      val result = query.executeQuery()
+      result.next()
+      assert(result.getLong(1) === 1)
+      assert(result.getString(2) === "Mazowieckie")
+      assert(result.getLong(3) === 1000)
+      assert(result.getObject(4) === 2)
+
+      query.setLong(1, 2)
+      val result2 = query.executeQuery()
+      result2.next()
+      assert(result2.getLong(1) === 2)
+      assert(result2.getString(2) === "Wielkopolskie")
+      assert(result2.getLong(3) === 10000)
+      assert(result2.getObject(4) === null)
+    }
+  }
 }
