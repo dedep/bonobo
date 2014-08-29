@@ -43,7 +43,7 @@ CREATE TABLE rounds_cities
 (
   round_id bigint references rounds NOT NULL,
   city_id bigint references cities NOT NULL,
-  pot integer NOT NULL,
+  pot integer NULL,
   PRIMARY KEY(round_id, city_id)
 );
 

@@ -1,5 +1,7 @@
 package models.db_model
 
+import models.core.round.Round
+import models.core.team.Team
 import models.core.tournament.{Tournament, TournamentImpl}
 import models.table.{CitiesTournamentsTable, TournamentsTable}
 import play.api.db.slick.Config.driver.simple._
@@ -16,19 +18,14 @@ object Tournament {
     (for (tournament <- Tournament.ds if tournament.id === id) yield tournament).firstOption match {
       case None => None
       case Some((name: String)) => Some(
-        new TournamentImpl( //todo: do osobnych metod --- UWAGA RZEŹBA ---
-          citiesDs.filter(_.tournamentId === id).list.map(a => City.fromId(a._1)
-            .getOrElse(throw new IllegalStateException())),
-
-          name,
-
-          Round.ds.filter(_.tournamentId === id).map(_.id).list.map(Round.fromId(_)
-            .getOrElse(throw new IllegalStateException())),
-
-          Some(id)
-        )
-      )
+        new TournamentImpl(getTournamentCities(id), name, getTournamentRounds(id), Some(id)))
     }
+
+  private def getTournamentCities(id: Long)(implicit rs: JdbcBackend#Session): List[Team] =
+    citiesDs.filter(_.tournamentId === id).list.map(a => City.fromId(a._1).getOrElse(throw new IllegalStateException()))
+
+  private def getTournamentRounds(id: Long)(implicit rs: JdbcBackend#Session): List[Round] =
+    Round.ds.filter(_.tournamentId === id).map(_.id).list.map(Round.fromId(_).getOrElse(throw new IllegalStateException()))
 
   def saveOrUpdate(t: Tournament)(implicit rs: JdbcBackend#Session): Long = {
     if (t.teams.exists(team => City.fromId(team.id).isEmpty))
@@ -51,7 +48,7 @@ object Tournament {
 
   private def update(t: Tournament)(implicit rs: JdbcBackend#Session): Long = {
     ds.filter(_.id === t.id.get).update(t.name)
-//    t.teams.map(a => (a.id, t.id.get)).foreach(citiesDs.update)
+    t.teams.foreach(team => citiesDs.filter(c => c.cityId === team.id && c.tournamentId === t.id).update(team.id, t.id.get))
 
     t.id.get
   }

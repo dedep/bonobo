@@ -34,7 +34,6 @@ class TerritoryDaoTest extends Specification {
       session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
       session.createStatement().executeUpdate("TRUNCATE cities CASCADE;")
       session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-
       session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Rzeszów', 182028, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Przemyśl', 64276, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Stalowa Wola', 64189, 1);")

@@ -19,7 +19,7 @@ object Unit {
   def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[RoundUnit] =
     (for (m <- ds if m.id === id) yield m).firstOption match {
       case None => None
-      case Some((roundId: Long, clazz: String)) => {
+      case Some((roundId: Long, clazz: String)) => { //todo: refaktor
         val fixtures =
           groupMatchesByFixture(Match.ds.filter(_.unitId === id).map(m => (m.id, m.fixtureNum)).list.map(a => (Match.fromId(a._1).get, a._2)))
 

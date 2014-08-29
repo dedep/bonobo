@@ -14,7 +14,7 @@ class GroupRound(teamsCbn: => List[Team],
                  override val stepIndex: Int = 0,
                  override val id: Option[Long] = None) extends Round {
 
-  require(teams.size % GROUP_SIZE == 0)
+  require(teams.size % GROUP_SIZE == 0, "Group round can contain n times " + GROUP_SIZE + " teams, where n is natural number")
 
   override lazy val teams = teamsCbn
   override lazy val pots = potsCbn
