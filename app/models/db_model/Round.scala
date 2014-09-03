@@ -65,13 +65,15 @@ object Round {
 
     r.teams.foreach(team => City.saveOrUpdate(team.asInstanceOf[City]))
 
-    if (r.id.isEmpty) save(r, parentTournamentId)
-    else update(r, parentTournamentId)
+    if (r.id.nonEmpty && Round.fromId(r.id.get).nonEmpty) update(r, parentTournamentId)
+    else save(r, parentTournamentId)
   }
 
   private def save(r: Round, parentTournamentId: Long)(implicit rs: JdbcBackend#Session): Long = {
     val newIndex = (ds returning ds.map(_.id)) += (r.getClass.getName, r.stepIndex,
       r.isInstanceOf[PlayoffRound] && r.asInstanceOf[PlayoffRound].preliminary, parentTournamentId)
+
+    println("SIZE " + r.teams.size)
 
     citiesDs.filter(_.roundId === newIndex).delete
     citiesDs ++= r.teams.map(city => (newIndex, city.id,

@@ -22,10 +22,12 @@ class TournamentImpl(override val teams: List[Team], override val name: String,
     else if (lastRound.get.isFinished()) {
       lastRound.get match {
         case round: PlayoffRound =>
-          if (round.preliminary)
+          if (round.preliminary) {
             createNextRound(teams.diff(lastRound.get.teams) ++ lastRound.get.getPromotedTeams)
-          else
+          }
+          else {
             createNextRound(lastRound.get.getPromotedTeams)
+          }
         case _ => createNextRound(lastRound.get.getPromotedTeams)
       }
     }

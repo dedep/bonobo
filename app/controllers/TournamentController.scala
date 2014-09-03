@@ -19,9 +19,13 @@ object TournamentController extends Controller {
         case Some(t: (Tournament)) => {
           if (!t.isFinished()) {
             val nTournament = t.doStep()
-            Tournament.saveOrUpdate(nTournament)
+            val nTournamentId = Tournament.saveOrUpdate(nTournament)
+
+            Ok(views.html.tournament(Tournament.fromId(nTournamentId).get))
+          } else {
+            PreconditionFailed(views.html.error("Tournament is already finished"))
           }
-          Ok
+
         }
       }
     }

@@ -130,7 +130,7 @@ INSERT INTO cities(name, population, container) VALUES ('Ulanów', 1482, 1);
 INSERT INTO cities(name, population, container) VALUES ('Kołaczyce', 1447, 1);
 
 INSERT INTO territories VALUES (2, 'Lubelskie', 2129951, 3);
-INSERT INTO cities(name, population, container) VALUES ('Dublin', 1447, 2);
+INSERT INTO cities(name, population, container) VALUES ('Dublin', 14472, 2);
 
 # --- !Downs
 

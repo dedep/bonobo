@@ -228,4 +228,17 @@ class RoundDaoTest extends Specification {
       Round.saveOrUpdate(r, tr.id.get) must throwA(new IllegalStateException("Round cannot contain cities that are not from parent tournament"))
     }
   }
+
+  "Round.fromId returns None when there is no such a round" in new WithApplication {
+    play.api.db.slick.DB("test").withSession { implicit session =>
+      //given
+      TestUtils.truncateTestTables(session)
+
+      //when
+      val round = Round.fromId(1)
+
+      //then
+      assert(round.isEmpty)
+    }
+  }
 }

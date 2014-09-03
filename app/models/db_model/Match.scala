@@ -33,26 +33,35 @@ object Match {
         }
     }
 
-  def saveOrUpdate(m: models.core._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: JdbcBackend#Session): Option[Long] =
-    if (m.id.nonEmpty) update(m, fixtureNum, unitId) else save(m, fixtureNum, unitId)
+  def saveOrUpdate(m: models.core._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: JdbcBackend#Session): Long = {
+    if (Unit.fromId(unitId).isEmpty)
+      throw new IllegalStateException("Match cannot refer to non-existent unit")
 
-  //todo: zwracanie None w przypadku fackupu
-  private def save(m: models.core._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: JdbcBackend#Session): Option[Long] = {
-    val newIndex = (ds returning ds.map(_.id)) += (unitId, fixtureNum, m.aTeam.id,
-      m match {
-        case playedMatch: PlayedMatch => Some(playedMatch.result.aGoals)
-        case _ => None
-      },
-      m.bTeam.id,
-      m match {
-        case playedMatch: PlayedMatch => Some(playedMatch.result.bGoals)
-        case _ => None
-      })
+    val parentUnitTeams = Unit.fromId(unitId).get.teams
+    if (!parentUnitTeams.exists(team => team.id == m.aTeam.id) || !parentUnitTeams.exists(team => team.id == m.bTeam.id))
+      throw new IllegalStateException("Match cannot contain cities that are not from parent unit")
 
-    Some(newIndex)
+    City.saveOrUpdate(m.aTeam.asInstanceOf[City])
+    City.saveOrUpdate(m.bTeam.asInstanceOf[City])
+
+    if (m.id.nonEmpty && Match.fromId(m.id.get).nonEmpty) update(m, fixtureNum, unitId)
+    else save(m, fixtureNum, unitId)
   }
 
-  //todo: zwracanie None w przypadku fackupu
-  private def update(m: models.core._match.Match, fixtureNum: Long, unitId: Long)(implicit rs: JdbcBackend#Session): Option[Long] = { ???
-  }
+  private def save(m: models.core._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: JdbcBackend#Session): Long =
+    (ds returning ds.map(_.id)) += mapMatchToMatchesTable(m, fixtureNum, unitId)
+
+  private def update(m: models.core._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: JdbcBackend#Session): Long =
+    ds.filter(_.id === m.id.get).update(mapMatchToMatchesTable(m, fixtureNum, unitId))
+
+  private def mapMatchToMatchesTable(m: models.core._match.Match, fixtureNum: Int, unitId: Long) = (unitId, fixtureNum, m.aTeam.id,
+    m match {
+      case playedMatch: PlayedMatch => Some(playedMatch.result.aGoals)
+      case _ => None
+    },
+    m.bTeam.id,
+    m match {
+      case playedMatch: PlayedMatch => Some(playedMatch.result.bGoals)
+      case _ => None
+    })
 }
