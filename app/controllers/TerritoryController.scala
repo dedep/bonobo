@@ -8,6 +8,7 @@ import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import play.api.mvc._
 import play.api.Play.current
+import utils.AlertsHelper._
 
 object TerritoryController extends Controller {
   private val log = Logger(LoggerFactory.getLogger(this.getClass))
@@ -16,28 +17,32 @@ object TerritoryController extends Controller {
   def find(id: Long) = DBAction { implicit rs =>
     Territory.fromId(id) match {
       case None => NotFound(views.html.error("Territory not found"))
-      case Some(t: Territory) => Ok(views.html.territory(t))
+      case Some(t: Territory) => Ok(views.html.territory(t)(None))
     }
   }
 
   def findByCode(id: String) = DBAction { implicit rs =>
     Territory.fromCode(id) match {
       case None => NotFound(views.html.error("Territory not found"))
-      case Some(t: Territory) => Ok(views.html.territory(t))
+      case Some(t: Territory) => Ok(views.html.territory(t)(None))
     }
   }
 
   def startTournament(id: Long) = DBAction { implicit rs =>
     Territory.fromId(id) match {
-      case None => NotFound("Territory not found")
+      case None => NotFound(views.html.error("Territory not found"))
       case Some(t: Territory) =>
         val cities = Territory.getAllChildrenCities(t)
         if (cities.length < 2) {
-          PreconditionFailed("Tournament requires at least 2 cities in territory")
+          PreconditionFailed(views.html.territory(t)
+            (fail("Tournament requires at least 2 cities in territory."))
+          )
         }
         else {
           val newIndex = Tournament.saveOrUpdate(new TournamentImpl(cities, "Tities Tournament"))
-          Ok("Tournament with ID=" + newIndex + " has been created successfully")
+          val successMsg = success("Tournament with ID=" + newIndex + " has been created successfully.")
+
+          Ok(views.html.territory(t)(successMsg))
         }
     }
   }

@@ -1,0 +1,18 @@
+@(alert: utils.AlertsHelper.Alert)
+
+@if(alert.nonEmpty) {
+    @alert.get match {
+        case Left(x) => {
+            <div id="alert-box" class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                @x
+            </div>
+        }
+        case Right(x) => {
+            <div id="alert-box" class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                @x
+            </div>
+        }
+    }
+}

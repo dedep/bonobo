@@ -1,8 +1,7 @@
-@(tournament: models.core.tournament.Tournament)
+@(tournament: models.core.tournament.Tournament)(msg: utils.AlertsHelper.Alert = None)
 
-@main(Nil) {
+@main(List((routes.TournamentController.processNextStep(tournament.id.get).url, "Process tournament")), msg) {
     <article>
         <h1>Tournament @tournament.id</h1>
-        @*<button>*@
     </article>
 }
