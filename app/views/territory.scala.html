@@ -1,10 +1,15 @@
-@import models.db_model.Territory
+@(territory: models.db_model.Territory)
+@import java.util.Locale
 
-@(territory: Territory)
 
-@main {
-    @territory.getContainers.map(_.name).mkString(", ")
-    <article>
-        <h1>@territory.name</h1>
-    </article>
+@main(Nil) {
+    <h1>@territory.name</h1>
+    <h4 style="margin-left: 50px">Total population: @java.text.NumberFormat.getNumberInstance(Locale.US).format(territory.population)</h4>
+    <h4 style="margin-left: 50px">Container:
+        @if(territory.container.nonEmpty) {
+            <a href="@routes.TerritoryController.find(territory.container.get.id)">@territory.container.map(_.name)</a>
+        }
+    </h4>
+
+    @map(territory.code.take(2))
 }

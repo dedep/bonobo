@@ -1,0 +1,53 @@
+@(territoryCode: String = "W", markers: List[(String, Double, Double)] = Nil)
+
+@import play.api.libs.json.Json
+
+<link rel="stylesheet" href="@routes.Assets.at("stylesheets/jquery-jvectormap-1.2.2.css")" type="text/css" media="screen"/>
+<script src="@routes.Assets.at("javascripts/jquery-jvectormap-1.2.2.min.js")"></script>
+<script src="@routes.Assets.at("javascripts/jquery-jvectormap-world-mill-en.js")" type="text/javascript"></script>
+
+<h2>Map:</h2>
+<div id="bonobo-world-map" style="width: 1000px; height: 600px; border: #555 5px solid;"></div>
+
+<script>
+
+//  TODO:  REFAKTOR
+    var citsa = @Html(markers.map(m => Json.obj("name" -> m._1, "latLng" -> Json.arr(m._2, m._3)))
+        .foldLeft(play.api.libs.json.JsArray())((acc, x) => acc ++ Json.arr(x)).toString())
+
+var cities = [
+{latLng: [52.50, 13.39], name: 'Berlin'},
+{latLng: [53.56, 10.00], name: 'Hamburg'}
+];
+
+    $(function() {
+
+        $('#bonobo-world-map').vectorMap({
+            map: 'world_mill_en',
+            regionsSelectable: true,
+            backgroundColor: '#555',
+            zoomMax: 100,
+            markers: citsa,
+            focusOn: '@territoryCode',
+            regionStyle: {
+                initial: {
+                    fill: '#B8E186'
+                },
+                selected: {
+                    fill: '#B8E186'
+                }
+            },
+            series: {
+                regions: [{
+                    scale: ['#C8EEFF', '#0071A4'],
+                    normalizeFunction: 'polynomial'
+                }]
+            },
+            onRegionSelected: function(e, code, isSelected, selectedRegions) {
+                if (isSelected) {
+                    window.location="/territory/" + code;
+                }
+            }
+        });
+    });
+</script>

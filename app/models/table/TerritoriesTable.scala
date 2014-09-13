@@ -2,11 +2,12 @@ package models.table
 
 import play.api.db.slick.Config.driver.simple._
 
-class TerritoriesTable(tag: Tag) extends Table[(Long, String, Long, Option[Long])](tag, "territories") {
+class TerritoriesTable(tag: Tag) extends Table[(Long, String, Long, Option[Long], String)](tag, "territories") {
    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
    def name = column[String]("name", O.NotNull)
    def population = column[Long]("population", O.NotNull)
-   def containerId = column[Option[Long]]("container",O.Nullable)
+   def containerId = column[Option[Long]]("container", O.Nullable)
+   def code = column[String]("code", O.NotNull)
 
-   def * = (id, name, population, containerId)
+   def * = (id, name, population, containerId, code)
  }

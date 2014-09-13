@@ -1,0 +1,17 @@
+@(hyperlinks: List[(String, String)])
+
+<div id="sidebar-wrapper">
+    <ul class="sidebar-nav">
+        <li class="sidebar-brand">
+            <a href="/">
+                Bonobo
+            </a>
+        </li>
+
+        @for((key, value) <- hyperlinks) {
+            <li>
+                <a href="@key">@value</a>
+            </li>
+        }
+    </ul>
+</div>

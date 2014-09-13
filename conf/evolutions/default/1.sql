@@ -5,7 +5,8 @@ CREATE TABLE territories
   id bigserial PRIMARY KEY,
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
-  container bigint references territories NULL
+  container bigint references territories NULL,
+  code varchar(20)
 );
 
 CREATE TABLE cities
@@ -14,7 +15,9 @@ CREATE TABLE cities
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
   points int NOT NULL DEFAULT 0,
-  container bigint references territories NOT NULL
+  container bigint references territories NOT NULL,
+  latitude double precision NULL,
+  longitude double precision NULL
 );
 
 CREATE TABLE tournaments
@@ -75,62 +78,64 @@ CREATE TABLE units_cities
   PRIMARY KEY(city_id, unit_id)
 );
 
-INSERT INTO territories VALUES (3, 'Poland', 1, NULL);
+INSERT INTO territories VALUES (4, 'World', 7243000000, NULL, 'W');
+INSERT INTO territories VALUES (3, 'Poland', 1, 4, 'PL');
+INSERT INTO territories VALUES (5, 'Great Britain', 1, 4, 'GB');
 
-INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, 3);
-INSERT INTO cities(name, population, container) VALUES ('Rzeszów', 182028, 1);
-INSERT INTO cities(name, population, container) VALUES ('Przemyśl', 64276, 1);
-INSERT INTO cities(name, population, container) VALUES ('Stalowa Wola', 64189, 1);
-INSERT INTO cities(name, population, container) VALUES ('Mielec', 61238, 1);
-INSERT INTO cities(name, population, container) VALUES ('Tarnobrzeg', 48558, 1);
-INSERT INTO cities(name, population, container) VALUES ('Krosno', 47307, 1);
-INSERT INTO cities(name, population, container) VALUES ('Dębica', 47180, 1);
-INSERT INTO cities(name, population, container) VALUES ('Jarosław', 39426, 1);
-INSERT INTO cities(name, population, container) VALUES ('Sanok', 39375, 1);
-INSERT INTO cities(name, population, container) VALUES ('Jasło', 36641, 1);
-INSERT INTO cities(name, population, container) VALUES ('Łańcut', 18143, 1);
-INSERT INTO cities(name, population, container) VALUES ('Przeworsk', 15915, 1);
-INSERT INTO cities(name, population, container) VALUES ('Ropczyce', 15655, 1);
-INSERT INTO cities(name, population, container) VALUES ('Nisko', 15479, 1);
-INSERT INTO cities(name, population, container) VALUES ('Leżajsk', 14448, 1);
-INSERT INTO cities(name, population, container) VALUES ('Lubaczów', 12552, 1);
-INSERT INTO cities(name, population, container) VALUES ('Nowa Dęba', 11507, 1);
-INSERT INTO cities(name, population, container) VALUES ('Ustrzyki Dolne', 9521, 1);
-INSERT INTO cities(name, population, container) VALUES ('Kolbuszowa', 9341, 1);
-INSERT INTO cities(name, population, container) VALUES ('Strzyżów', 8930, 1);
-INSERT INTO cities(name, population, container) VALUES ('Brzozów', 7631, 1);
-INSERT INTO cities(name, population, container) VALUES ('Sędziszów Małopolski', 7481, 1);
-INSERT INTO cities(name, population, container) VALUES ('Rudnik nad Sanem', 6883, 1);
-INSERT INTO cities(name, population, container) VALUES ('Nowa Sarzyna', 6287, 1);
-INSERT INTO cities(name, population, container) VALUES ('Dynów', 6195, 1);
-INSERT INTO cities(name, population, container) VALUES ('Głogów Małopolski', 6014, 1);
-INSERT INTO cities(name, population, container) VALUES ('Boguchwała', 5796, 1);
-INSERT INTO cities(name, population, container) VALUES ('Jedlicze', 5782, 1);
-INSERT INTO cities(name, population, container) VALUES ('Lesko', 5674, 1);
-INSERT INTO cities(name, population, container) VALUES ('Radymno', 5528, 1);
-INSERT INTO cities(name, population, container) VALUES ('Zagórz', 5100, 1);
-INSERT INTO cities(name, population, container) VALUES ('Pilzno', 4762, 1);
-INSERT INTO cities(name, population, container) VALUES ('Sokołów Małopolski', 4028, 1);
-INSERT INTO cities(name, population, container) VALUES ('Rymanów', 3753, 1);
-INSERT INTO cities(name, population, container) VALUES ('Pruchnik', 3716, 1);
-INSERT INTO cities(name, population, container) VALUES ('Tyczyn', 3602, 1);
-INSERT INTO cities(name, population, container) VALUES ('Kańczuga', 3242, 1);
-INSERT INTO cities(name, population, container) VALUES ('Oleszyce', 3108, 1);
-INSERT INTO cities(name, population, container) VALUES ('Radomyśl Wielki', 3079, 1);
-INSERT INTO cities(name, population, container) VALUES ('Brzostek', 2697, 1);
-INSERT INTO cities(name, population, container) VALUES ('Sieniawa', 2198, 1);
-INSERT INTO cities(name, population, container) VALUES ('Dukla', 2194, 1);
-INSERT INTO cities(name, population, container) VALUES ('Błażowa', 2182, 1);
-INSERT INTO cities(name, population, container) VALUES ('Narol', 2100, 1);
-INSERT INTO cities(name, population, container) VALUES ('Cieszanów', 1962, 1);
-INSERT INTO cities(name, population, container) VALUES ('Iwonicz-Zdrój', 1904, 1);
-INSERT INTO cities(name, population, container) VALUES ('Przecław', 1682, 1);
-INSERT INTO cities(name, population, container) VALUES ('Baranów Sandomierski', 1508, 1);
-INSERT INTO cities(name, population, container) VALUES ('Ulanów', 1482, 1);
-INSERT INTO cities(name, population, container) VALUES ('Kołaczyce', 1447, 1);
+INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, 3, 'PLPK');
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Rzeszów', 182028, 1, 50.33, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Przemyśl', 64276, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Stalowa Wola', 64189, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Mielec', 61238, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Tarnobrzeg', 48558, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Krosno', 47307, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Dębica', 47180, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Jarosław', 39426, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Sanok', 39375, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Jasło', 36641, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Łańcut', 18143, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Przeworsk', 15915, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Ropczyce', 15655, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Nisko', 15479, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Leżajsk', 14448, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Lubaczów', 12552, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Nowa Dęba', 11507, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Ustrzyki Dolne', 9521, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Kolbuszowa', 9341, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Strzyżów', 8930, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Brzozów', 7631, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Sędziszów Małopolski', 7481, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Rudnik nad Sanem', 6883, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Nowa Sarzyna', 6287, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Dynów', 6195, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Głogów Małopolski', 6014, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Boguchwała', 5796, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Jedlicze', 5782, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Lesko', 5674, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Radymno', 5528, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Zagórz', 5100, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Pilzno', 4762, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Sokołów Małopolski', 4028, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Rymanów', 3753, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Pruchnik', 3716, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Tyczyn', 3602, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Kańczuga', 3242, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Oleszyce', 3108, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Radomyśl Wielki', 3079, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Brzostek', 2697, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Sieniawa', 2198, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Dukla', 2194, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Błażowa', 2182, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Narol', 2100, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Cieszanów', 1962, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Iwonicz-Zdrój', 1904, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Przecław', 1682, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Baranów Sandomierski', 1508, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Ulanów', 1482, 1, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Kołaczyce', 1447, 1, 52.02, 22);
 
-INSERT INTO territories VALUES (2, 'Lubelskie', 2129951, 3);
-INSERT INTO cities(name, population, container) VALUES ('Dublin', 14472, 2);
+INSERT INTO territories VALUES (2, 'Lubelskie', 2129951, 3, 'PLLU');
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Dublin', 14472, 2, 52.02, 22);
 
 # --- !Downs
 

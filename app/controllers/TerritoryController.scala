@@ -12,8 +12,16 @@ import play.api.Play.current
 object TerritoryController extends Controller {
   private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
+  //todo: powtórzony kod
   def find(id: Long) = DBAction { implicit rs =>
     Territory.fromId(id) match {
+      case None => NotFound(views.html.error("Territory not found"))
+      case Some(t: Territory) => Ok(views.html.territory(t))
+    }
+  }
+
+  def findByCode(id: String) = DBAction { implicit rs =>
+    Territory.fromCode(id) match {
       case None => NotFound(views.html.error("Territory not found"))
       case Some(t: Territory) => Ok(views.html.territory(t))
     }

@@ -5,7 +5,8 @@ CREATE TABLE territories
   id bigserial PRIMARY KEY,
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
-  container bigint references territories NULL
+  container bigint references territories NULL,
+  code varchar(20)
 );
 
 CREATE TABLE cities

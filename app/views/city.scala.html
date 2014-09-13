@@ -1,7 +1,10 @@
 @(city: models.db_model.City)
 
-@main {
+@main(Nil) {
     <article>
         <h1>@city.name</h1>
     </article>
+
+    @*ten substring to do osobnej metody*@
+    @map(city.territory.code.take(2), List((city.name, city.latitude, city.longitude)))
 }

@@ -25,7 +25,6 @@ object TournamentController extends Controller {
           } else {
             PreconditionFailed(views.html.error("Tournament is already finished"))
           }
-
         }
       }
     }
