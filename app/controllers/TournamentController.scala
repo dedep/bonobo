@@ -1,12 +1,16 @@
 package controllers
 
+import com.typesafe.scalalogging.slf4j.Logger
 import models.core.tournament.Tournament
 import models.db_model.Tournament
+import org.slf4j.LoggerFactory
 import play.api.db.slick._
 import play.api.mvc._
 import utils.AlertsHelper._
 
 object TournamentController extends Controller {
+  private val log = Logger(LoggerFactory.getLogger(this.getClass))
+
   def find(id: Long) = DBAction { implicit rs =>
     Tournament.fromId(id) match {
       case None => NotFound(views.html.error("Tournament not found"))
@@ -29,7 +33,7 @@ object TournamentController extends Controller {
             }
           } catch {
             case e: Exception =>
-              //todo: logi
+              log.error("Error occurred while processing tournament: " + e + " ST: " + e.getStackTrace.mkString("\n"))
               InternalServerError(views.html.tournament(t)(fail("Error occurred while processing tournament: " + e)))
           }
         }

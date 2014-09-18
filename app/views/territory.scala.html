@@ -2,7 +2,7 @@
 @import java.util.Locale
 
 
-@main(List((routes.TerritoryController.startTournament(territory.id).url, "Start tournament")), alerts) {
+@main(List((routes.TerritoryController.startTournament(territory.id), "Start tournament")), alerts) {
 
     <h1>@territory.name</h1>
     <h4 style="margin-left: 50px">Total population: @java.text.NumberFormat.getNumberInstance(Locale.US).format(territory.population)</h4>

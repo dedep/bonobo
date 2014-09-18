@@ -39,7 +39,7 @@ object TerritoryController extends Controller {
           )
         }
         else {
-          val newIndex = Tournament.saveOrUpdate(new TournamentImpl(cities, "Tities Tournament"))
+          val newIndex = Tournament.saveOrUpdate(new TournamentImpl(cities, "Custom name tournament"))
           val successMsg = success("Tournament with ID=" + newIndex + " has been created successfully.")
 
           Ok(views.html.territory(t)(successMsg))

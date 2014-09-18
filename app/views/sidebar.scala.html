@@ -1,16 +1,16 @@
-@(hyperlinks: List[(String, String)])
+@(hyperlinks: List[(Call, String)])
 
 <div id="sidebar-wrapper">
     <ul class="sidebar-nav">
         <li class="sidebar-brand">
-            <a href="/">
-                Bonobo
-            </a>
+            <a href="/">Bonobo</a>
         </li>
 
         @for((key, value) <- hyperlinks) {
             <li>
-                <a href="@key">@value</a>
+                @helper.form(key) {
+                    <a><input type="submit" value="@value" style="border: 0; background: none;"></a>
+                }
             </li>
         }
     </ul>

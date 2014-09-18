@@ -35,18 +35,26 @@ class TournamentImpl(override val teams: List[Team], override val name: String,
   }
 
   private def createFirstRound(): Tournament =
-    if (isPreliminaryRoundRequired)
-      new TournamentImpl(teams, name, new PlayoffRound(getPreliminaryRoundTeams, Nil, Nil, 0, true) :: rounds, id)
-    else
-      createNextRound(teams)
-
-  private def createNextRound(teams: List[Team]): Tournament =
-    if (teams.length >= 32) {
-      new TournamentImpl(teams, name, new GroupRound(teams) :: rounds, id)
+    if (isPreliminaryRoundRequired) {
+      val roundName = "Preliminary round"
+      new TournamentImpl(teams, name, new PlayoffRound(roundName, getPreliminaryRoundTeams, Nil, Nil, 0, true) :: rounds, id)
     }
     else {
-      new TournamentImpl(teams, name, new PlayoffRound(teams) :: rounds, id)
+      createNextRound(teams)
     }
+
+  private def createNextRound(teams: List[Team]): Tournament = {
+    val roundIndex = if (isPreliminaryRoundRequired) rounds.size else rounds.size + 1
+
+    if (teams.length >= 32) {
+      val roundName = "Round " + roundIndex
+      new TournamentImpl(teams, name, new GroupRound(roundName, teams) :: rounds, id)
+    }
+    else {
+      val roundName = "Round " + roundIndex
+      new TournamentImpl(teams, name, new PlayoffRound(roundName, teams) :: rounds, id)
+    }
+  }
 
   private def isPreliminaryRoundRequired: Boolean = !MathUtils.isPowerOfTwo(teams.size)
 
@@ -57,5 +65,19 @@ class TournamentImpl(override val teams: List[Team], override val name: String,
   override def isFinished(): Boolean = rounds.headOption match {
     case None => false
     case Some(r: Round) => r.isFinished() && r.isFinalRound()
+  }
+
+  //todo: TEST
+  lazy val teamsWithTheirLastRound: Map[Team, String] = {
+    def updateTeamRoundPairs(rs: List[Round])(acc: List[(Team, String)]): List[(Team, String)] = {
+      rs.headOption match {
+        case None => acc
+        case Some(r) =>
+          val prevRoundsAcc = acc.filterNot(r.teams.contains(_))
+          updateTeamRoundPairs(rs.tail)(prevRoundsAcc ::: r.teams.map((_, r.name)))
+      }
+    }
+
+    updateTeamRoundPairs(rounds.reverse)(Nil).toMap
   }
 }

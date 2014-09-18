@@ -15,7 +15,7 @@ class GroupRoundTest extends FunSuite {
     val t4 = new Team(4, 4, 4)
 
     //when
-    val r = new GroupRound(List(t1, t2, t3, t4))
+    val r = new GroupRound("", List(t1, t2, t3, t4))
 
     //then
     assert(!r.isFinalRound())
@@ -33,7 +33,7 @@ class GroupRoundTest extends FunSuite {
     val t8 = new Team(8, 8, 8)
 
     //when
-    val r = new GroupRound(List(t1, t2, t3, t4, t5, t6, t7, t8))
+    val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))
 
     //then
     assert(r.teams.size == 8)
@@ -59,7 +59,7 @@ class GroupRoundTest extends FunSuite {
     val t7 = new Team(7, 7, 7)
     val t8 = new Team(8, 8, 3)
 
-    val r = new GroupRound(List(t1, t2, t3, t4, t5, t6, t7, t8))
+    val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))
 
     //when
     val drawnPotsRound = r.drawPots()
@@ -92,7 +92,7 @@ class GroupRoundTest extends FunSuite {
       val t7 = new Team(7, 7, 7)
       val t8 = new Team(8, 8, 3)
 
-      val r = new GroupRound(List(t1, t2, t3, t4, t5, t6, t7, t8))
+      val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))
 
       //when
       val drawnUnitsRound = r.drawPots().drawUnits()
@@ -126,7 +126,7 @@ class GroupRoundTest extends FunSuite {
     val t7 = new Team(7, 7, 7)
     val t8 = new Team(8 ,8, 3)
 
-    val r = new GroupRound(List(t1, t2, t3, t4, t5, t6, t7, t8))
+    val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))
 
     //when
     val round = r.drawPots().drawUnits().playFixture()
@@ -155,7 +155,7 @@ class GroupRoundTest extends FunSuite {
     val t7 = new Team(7, 7, 7)
     val t8 = new Team(8, 8, 3)
 
-    val r = new GroupRound(List(t1, t2, t3, t4, t5, t6, t7, t8))
+    val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))
 
     assert(r.teams.size == 8)
     assert(r.pots == Nil)
@@ -213,7 +213,7 @@ class GroupRoundTest extends FunSuite {
       val t7 = new Team(7, 7, 7)
       val t8 = new Team(8, 8, 3)
 
-      val r = new GroupRound(List(t1, t2, t3, t4, t5, t6, t7, t8))
+      val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))
 
       //when
       val round = r.doStep().doStep().doStep().doStep().doStep().doStep().doStep().doStep()

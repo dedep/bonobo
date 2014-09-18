@@ -1,7 +1,53 @@
 @(round: models.core.round.Round)
+@import models.core.Common._
 
 @main(Nil, None) {
     <article>
-        <h1>Round: Step = @round.stepIndex</h1>
+        <h1>@round.name</h1>
+
+        <h3>Round status:</h3>
+        <dl class="dl-horizontal">
+            <dt>Current status:</dt>
+            <dd>@round.status</dd>
+
+            <dt>Current step:</dt>
+            <dd>@round.stepIndex</dd>
+        </dl>
+
+        <h3>Pots:</h3>
+        <ul class="list-unstyled">
+            @for(pot <- round.pots) {
+                <li>Pot @{round.pots.indexOf(pot) + 1}:
+                    <ul>
+                        @for(team <- pot) {
+                            <a href="@routes.CityController.find(team.id)">
+                                <li>@team.name</li>
+                            </a>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+
+        <h3>Units:</h3>
+        <ul>
+            @for(unit <- round.units) {
+                <a href="@routes.UnitController.find(unit.id.get)">
+                    <li>@unit.name</li>
+                </a>
+            }
+        </ul>
+
+        <h3>Promoted teams:</h3>
+        <ul>
+            @if(round.isFinished()){
+                @for(team <- round.getPromotedTeams) {
+                    <a href="@routes.CityController.find(team.id)">
+                        <li>@team.name</li>
+                    </a>
+                }
+            }
+        </ul>
+
     </article>
 }

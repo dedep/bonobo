@@ -11,12 +11,12 @@ class TournamentDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1, 0, 0);")
 
       val tr = Territory.fromId(1).get
-      val c1 = new City(1, "RzeszówEDIT", 182028, 0, tr)
+      val c1 = new City(1, "RzeszówEDIT", 182028, 0, tr, 0, 0)
       val c2 = City.fromId(2).get
       val t = new TournamentImpl(List(c1, c2), "New tournament")
 
@@ -38,16 +38,16 @@ class TournamentDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1, 0, 0);")
       session.createStatement().executeUpdate("INSERT INTO tournaments VALUES (1, 'Test tournament');")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (1, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (2, 1);")
 
       val tr = Territory.fromId(1).get
       val c1 = City.fromId(1).get
-      val c2 = new City(2, "Poznań", 2, 0, tr)
+      val c2 = new City(2, "Poznań", 2, 0, tr, 0, 0)
       val t = new TournamentImpl(List(c1, c2), "New tournament", id = Some(1))
 
       //when
@@ -67,16 +67,16 @@ class TournamentDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1, 0, 0);")
       session.createStatement().executeUpdate("INSERT INTO tournaments VALUES (1, 'Test tournament');")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (1, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (2, 1);")
 
       val tr = Territory.fromId(1).get
       val c1 = City.fromId(1).get
-      val c2 = new City(2, "Poznań", 2, 0, tr)
+      val c2 = new City(2, "Poznań", 2, 0, tr, 0, 0)
       val t = new TournamentImpl(List(c1, c2), "New tournament", id = Some(1))
 
       //when
@@ -99,9 +99,9 @@ class TournamentDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1, 0, 0);")
 
       session.createStatement().executeUpdate("INSERT INTO tournaments VALUES (1, 'Test tournament');")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (1, 1);")
@@ -126,12 +126,12 @@ class TournamentDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
 
       val tr = Territory.fromId(1).get
       val c1 = City.fromId(1).get
-      val c2 = new City(2, "Lublin", 1600000, 100, tr)
+      val c2 = new City(2, "Lublin", 1600000, 100, tr, 0, 0)
       val t = new TournamentImpl(List(c1, c2), "New tournament")
 
       Tournament.saveOrUpdate(t) must throwA(new IllegalStateException("Tournament cannot refer to non-existent city"))
@@ -142,9 +142,9 @@ class TournamentDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1, 0, 0);")
 
       val tr = Territory.fromId(1).get
       val c1 = City.fromId(1).get
@@ -177,11 +177,11 @@ class TournamentDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (3, 'Ustrzyki Dolne', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (4, 'Ustrzyki Górne', 61276, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (3, 'Ustrzyki Dolne', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (4, 'Ustrzyki Górne', 61276, 0, 1, 0, 0);")
 
       val tr = Territory.fromId(1).get
       val c1 = City.fromId(1).get
@@ -191,7 +191,7 @@ class TournamentDaoTest extends Specification {
 
       val u1 = new Pair(List(c1, c4))
       val u2 = new Pair(List(c2, c3))
-      val r = new PlayoffRound(List(c1, c2, c3, c4), List(List(c1, c3), List(c2, c4)), List(u1, u2))
+      val r = new PlayoffRound("", List(c1, c2, c3, c4), List(List(c1, c3), List(c2, c4)), List(u1, u2))
       val t = new TournamentImpl(List(c1, c2, c3, c4), "New tournament", List(r))
 
       //when

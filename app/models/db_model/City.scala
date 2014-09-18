@@ -1,7 +1,9 @@
 package models.db_model
 
+import com.typesafe.scalalogging.slf4j.Logger
 import models.core.team.Team
 import models.table.CitiesTable
+import org.slf4j.LoggerFactory
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
 import play.api.libs.json._
@@ -19,6 +21,8 @@ class City(override val id: Long, override val name: String, val population: Int
 }
 
 object City {
+  private val log = Logger(LoggerFactory.getLogger(this.getClass))
+
   val ds = TableQuery[CitiesTable]
 
   def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[City] =
@@ -33,16 +37,20 @@ object City {
     if (Territory.fromId(c.territory.id).isEmpty)
       throw new IllegalStateException("City cannot refer to non-existent territory")
 
-    Territory.update(c.territory)
+//    Territory.update(c.territory) TODO: na co to ??
 
     if (fromId(c.id).isEmpty) save(c) else update(c)
   }
 
-  private def save(c: City)(implicit rs: JdbcBackend#Session): Long =
+  private def save(c: City)(implicit rs: JdbcBackend#Session): Long = {
+    log.info("Saving new city " + c)
     (ds returning ds.map(_.id)) += (c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude)
+  }
 
-  private def update(c: City)(implicit rs: JdbcBackend#Session): Long =
+  private def update(c: City)(implicit rs: JdbcBackend#Session): Long = {
+    log.info("Updating city " + c)
     ds.filter(_.id === c.id).update(c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude)
+  }
 
   implicit object CityFormat extends Format[City] {
 

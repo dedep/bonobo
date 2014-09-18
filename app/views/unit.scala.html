@@ -2,6 +2,35 @@
 
 @main(Nil, None) {
     <article>
-        <h1>RoundUnit: @unit</h1>
+        <h1>@unit.name</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>City</th>
+                    <th>Matches</th>
+                    <th>Wins</th>
+                    <th>Draws</th>
+                    <th>Loses</th>
+                    <th>Goals</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(result <- unit.results) {
+                    <tr>
+                        <td>@{unit.results.indexOf(result) + 1}</td>
+                        <td>@result.team.name</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>@result.goalsScored - @result.goalsConceded</td>
+                        <td>@result.points</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </article>
 }

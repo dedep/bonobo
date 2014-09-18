@@ -41,8 +41,8 @@ object Match {
     if (!parentUnitTeams.exists(team => team.id == m.aTeam.id) || !parentUnitTeams.exists(team => team.id == m.bTeam.id))
       throw new IllegalStateException("Match cannot contain cities that are not from parent unit")
 
-    City.saveOrUpdate(m.aTeam.asInstanceOf[City])
-    City.saveOrUpdate(m.bTeam.asInstanceOf[City])
+//    City.saveOrUpdate(m.aTeam.asInstanceOf[City])
+//    City.saveOrUpdate(m.bTeam.asInstanceOf[City])
 
     if (m.id.nonEmpty && Match.fromId(m.id.get).nonEmpty) update(m, fixtureNum, unitId)
     else save(m, fixtureNum, unitId)

@@ -11,17 +11,17 @@ class RoundDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (3, 'Jasło', 642761, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (4, 'Ustrzyki Dolne', 6421, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (3, 'Jasło', 642761, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (4, 'Ustrzyki Dolne', 6421, 0, 1, 0, 0);")
       session.createStatement().executeUpdate("INSERT INTO tournaments VALUES (1, 'Test tournament');")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (1, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (2, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (3, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (4, 1);")
-      session.createStatement().executeUpdate("INSERT INTO rounds VALUES (1, 'models.core.round.group.GroupRound', 1, false, 1);")
+      session.createStatement().executeUpdate("INSERT INTO rounds VALUES (1, 'round', 'models.core.round.group.GroupRound', 1, false, 1);")
       session.createStatement().executeUpdate("INSERT INTO rounds_cities VALUES (1, 1, 1);")
       session.createStatement().executeUpdate("INSERT INTO rounds_cities VALUES (1, 2, 0);")
       session.createStatement().executeUpdate("INSERT INTO rounds_cities VALUES (1, 3, 0);")
@@ -56,9 +56,9 @@ class RoundDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1, 0, 0);")
       session.createStatement().executeUpdate("INSERT INTO tournaments VALUES (1, 'Test tournament');")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (1, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (2, 1);")
@@ -66,7 +66,7 @@ class RoundDaoTest extends Specification {
       val tr = Tournament.fromId(1).get
       val c1 = City.fromId(1).get
       val c2 = City.fromId(2).get
-      val r = new PlayoffRound(List(c1, c2))
+      val r = new PlayoffRound("", List(c1, c2))
 
       //when
       val rId = Round.saveOrUpdate(r, tr.id.get)
@@ -101,18 +101,18 @@ class RoundDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1, 0, 0);")
       session.createStatement().executeUpdate("INSERT INTO tournaments VALUES (1, 'Test tournament');")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (1, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (2, 1);")
-      session.createStatement().executeUpdate("INSERT INTO rounds VALUES (1, 'models.core.round.pair.GroupRound', 1, false, 1);")
+      session.createStatement().executeUpdate("INSERT INTO rounds VALUES (1, 'round', 'models.core.round.pair.GroupRound', 1, false, 1);")
 
       val tr = Tournament.fromId(1).get
       val c1 = City.fromId(1).get
       val c2 = City.fromId(2).get
-      val r = new PlayoffRound(List(c1, c2), Nil, Nil, 5)
+      val r = new PlayoffRound("", List(c1, c2), Nil, Nil, 5)
 
       //when
       val rId = Round.saveOrUpdate(r, tr.id.get)
@@ -135,17 +135,17 @@ class RoundDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (3, 'Jasło', 642761, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (4, 'Ustrzyki Dolne', 6421, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (3, 'Jasło', 642761, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (4, 'Ustrzyki Dolne', 6421, 0, 1, 0, 0);")
       session.createStatement().executeUpdate("INSERT INTO tournaments VALUES (1, 'Test tournament');")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (1, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (2, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (3, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (4, 1);")
-      session.createStatement().executeUpdate("INSERT INTO rounds VALUES (1, 'models.core.round.pair.PlayoffRound', 1, false, 1);")
+      session.createStatement().executeUpdate("INSERT INTO rounds VALUES (1, 'round', 'models.core.round.pair.PlayoffRound', 1, false, 1);")
       session.createStatement().executeUpdate("INSERT INTO rounds_cities VALUES (1, 1, 7);")
       session.createStatement().executeUpdate("INSERT INTO rounds_cities VALUES (1, 2, 8);")
       session.createStatement().executeUpdate("INSERT INTO rounds_cities VALUES (1, 3, 7);")
@@ -153,10 +153,10 @@ class RoundDaoTest extends Specification {
 
       val tr = Tournament.fromId(1).get
       val c1 = City.fromId(1).get
-      val c2 = new City(2, "Sanok", 23232, 0, Territory.fromId(1).get)
+      val c2 = new City(2, "Sanok", 23232, 0, Territory.fromId(1).get, 0, 0)
       val c3 = City.fromId(3).get
       val c4 = City.fromId(4).get
-      val r = new PlayoffRound(List(c1, c2, c3, c4), List(List(c2, c3), List(c1, c4)), Nil, 0, false, Some(1))
+      val r = new PlayoffRound("", List(c1, c2, c3, c4), List(List(c2, c3), List(c1, c4)), Nil, 0, false, Some(1))
 
       //when
       Round.saveOrUpdate(r, tr.id.get)
@@ -195,13 +195,13 @@ class RoundDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1, 0, 0);")
 
       val c1 = City.fromId(1).get
       val c2 = City.fromId(2).get
-      val r = new PlayoffRound(List(c1, c2))
+      val r = new PlayoffRound("", List(c1, c2))
 
       //when then
       Round.saveOrUpdate(r, 1) must throwA(new IllegalStateException("Round cannot refer to non-existent tournament"))
@@ -212,17 +212,17 @@ class RoundDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables(session)
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES (2, 'Przemyśl', 64276, 0, 1, 0, 0);")
       session.createStatement().executeUpdate("INSERT INTO tournaments VALUES (1, 'Test tournament');")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (1, 1);")
       session.createStatement().executeUpdate("INSERT INTO cities_tournaments VALUES (2, 1);")
 
       val tr = Tournament.fromId(1).get
       val c1 = City.fromId(1).get
-      val c2 = new City(3, "Sanok", 23232, 0, Territory.fromId(1).get)
-      val r = new PlayoffRound(List(c1, c2))
+      val c2 = new City(3, "Sanok", 23232, 0, Territory.fromId(1).get, 0, 0)
+      val r = new PlayoffRound("", List(c1, c2))
 
       //when then
       Round.saveOrUpdate(r, tr.id.get) must throwA(new IllegalStateException("Round cannot contain cities that are not from parent tournament"))

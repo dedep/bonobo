@@ -1,6 +1,8 @@
 package models.db_model
 
+import com.typesafe.scalalogging.slf4j.Logger
 import models.table.TerritoriesTable
+import org.slf4j.LoggerFactory
 import play.api.db.slick._
 import play.api.libs.json._
 import play.api.mvc._
@@ -21,6 +23,8 @@ class Territory(val id: Long, val name: String, val population: Long, parent: =>
 }
 
 object Territory {
+  private val log = Logger(LoggerFactory.getLogger(this.getClass))
+
   val ds = TableQuery[TerritoriesTable]
 
   //todo: powtórzony kod
@@ -61,6 +65,8 @@ object Territory {
   }
 
   def update(t: Territory)(implicit rs: JdbcBackend#Session): Long = {
+    log.info("Updating territory: " + t.name)
+
     t.container.foreach(update)
     ds.filter(_.id === t.id).update(t.id, t.name, t.population, t.container.map(_.id), t.code)
   }

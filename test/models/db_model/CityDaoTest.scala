@@ -9,8 +9,8 @@ class CityDaoTest extends Specification {
         //given
         session.createStatement().executeUpdate("TRUNCATE cities CASCADE;")
         session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
-        session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-        session.createStatement().executeUpdate("INSERT INTO cities VALUES(2, 'Przemyśl', 64276, 0, 1);")
+        session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+        session.createStatement().executeUpdate("INSERT INTO cities VALUES(2, 'Przemyśl', 64276, 0, 1, 0, 0);")
 
         //when
         val city = City.fromId(2)
@@ -45,10 +45,10 @@ class CityDaoTest extends Specification {
       //given
       session.createStatement().executeUpdate("TRUNCATE cities CASCADE;")
       session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
 
       val terr = Territory.fromId(1)
-      val c1 = new City(1, "Warszawa", 1000, 2, terr.get)
+      val c1 = new City(1, "Warszawa", 1000, 2, terr.get, 0, 0)
 
       //when
       val cityId = City.saveOrUpdate(c1)
@@ -72,10 +72,10 @@ class CityDaoTest extends Specification {
       //given
       session.createStatement().executeUpdate("TRUNCATE cities CASCADE;")
       session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
 
-      val terr = new Territory(1, "PodkarpackieEDIT", 5000500, None)
-      val c1 = new City(1, "Warszawa", 1000, 2, terr)
+      val terr = new Territory(1, "PodkarpackieEDIT", 5000500, None, "")
+      val c1 = new City(1, "Warszawa", 1000, 2, terr, 0, 0)
 
       //when
       val cityId = City.saveOrUpdate(c1)
@@ -99,8 +99,8 @@ class CityDaoTest extends Specification {
       session.createStatement().executeUpdate("TRUNCATE cities CASCADE;")
       session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
 
-      val terr = new Territory(1, "PodkarpackieEDIT", 5000500, None)
-      val c1 = new City(1, "Warszawa", 1000, 2, terr)
+      val terr = new Territory(1, "PodkarpackieEDIT", 5000500, None, "")
+      val c1 = new City(1, "Warszawa", 1000, 2, terr, 0, 0)
 
       City.saveOrUpdate(c1) must throwA(new IllegalStateException("City cannot refer to non-existent territory"))
     }
@@ -111,11 +111,11 @@ class CityDaoTest extends Specification {
       //given
       session.createStatement().executeUpdate("TRUNCATE cities CASCADE;")
       session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities VALUES(2, 'Przemyśl', 64276, 0, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities VALUES(2, 'Przemyśl', 64276, 0, 1, 0, 0);")
 
       val terr = Territory.fromId(1)
-      val c1 = new City(2, "Warszawa", 1000, 2, terr.get)
+      val c1 = new City(2, "Warszawa", 1000, 2, terr.get, 0, 0)
 
       //when
       City.saveOrUpdate(c1)

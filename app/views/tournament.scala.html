@@ -1,7 +1,65 @@
 @(tournament: models.core.tournament.Tournament)(msg: utils.AlertsHelper.Alert = None)
+@import models.core.round.pair.PlayoffRound
 
-@main(List((routes.TournamentController.processNextStep(tournament.id.get).url, "Process tournament")), msg) {
+@main(List((routes.TournamentController.processNextStep(tournament.id.get), "Process tournament"),
+(routes.CityController.find(tournament.id.get), "Get example")), msg) {
     <article>
-        <h1>Tournament @tournament.id</h1>
+        <h1>@tournament.name</h1>
+
+        <h3>Tournament status:</h3>
+        <dl class="dl-horizontal">
+            <dt>Round:</dt>
+            <dd>@tournament.rounds.headOption.fold("")(_.name)</dd>
+
+            <dt>Cities still in game:</dt>
+            <dd>
+                @tournament.rounds.headOption.fold(Html(tournament.teams.size.toString)){ r =>
+                    @if(r.isInstanceOf[PlayoffRound] && r.asInstanceOf[PlayoffRound].preliminary){
+                        @Html(tournament.teams.size.toString)
+                    } else {
+                        @Html(r.teams.size.toString)
+                    }
+                }
+                 / @tournament.teams.size
+            </dd>
+
+            <dt>Current status:</dt>
+            <dd>@tournament.rounds.headOption.fold("NOT STARTED YET")(_.status.toString) @tournament.rounds.headOption.map(_.stepIndex)</dd>
+        </dl>
+
+        <h3>Rounds history:</h3>
+        <dl class="dl-horizontal">
+            @for(round <- tournament.rounds) {
+                <a href="@routes.RoundController.find(round.id.get)">
+                    <dt>@round.name:</dt>
+                </a>
+                    <dd>@round.status</dd>
+            }
+        </dl>
+
+        <h3>Cities history:</h3>
+        <dl class="dl-horizontal">
+        @for(team <- tournament.teams.sortBy(_.name)) {
+            <a href="@routes.CityController.find(team.id)">
+                <dt>@team.name</dt>
+            </a>
+            <dd>
+                @if(tournament.rounds.nonEmpty){
+                    @tournament.teamsWithTheirLastRound.get(team) match {
+                        case None => {
+                            Not playing yet
+                        }
+                        case Some(s: String) => {
+                            @if(s == tournament.rounds.head.name) {
+                                <b>Still in game</b>
+                            } else {
+                                Eliminated in @s
+                            }
+                        }
+                    }
+                }
+            </dd>
+        }
+        </dl>
     </article>
 }

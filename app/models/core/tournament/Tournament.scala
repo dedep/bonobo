@@ -9,6 +9,8 @@ trait Tournament {
   val name: String
   val id: Option[Long]
 
+  val teamsWithTheirLastRound: Map[Team, String]
+
   def doStep(): Tournament
 
   def isFinished(): Boolean

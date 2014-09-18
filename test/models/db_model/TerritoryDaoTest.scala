@@ -8,8 +8,8 @@ class TerritoryDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (3, 'Poland', 1, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, 3);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (3, 'Poland', 1, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, 3, '');")
 
       //when
       val territory = Territory.fromId(1)
@@ -33,12 +33,12 @@ class TerritoryDaoTest extends Specification {
       //given
       session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
       session.createStatement().executeUpdate("TRUNCATE cities CASCADE;")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Rzeszów', 182028, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Przemyśl', 64276, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Stalowa Wola', 64189, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Mielec', 61238, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Tarnobrzeg', 48558, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Rzeszów', 182028, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Przemyśl', 64276, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Stalowa Wola', 64189, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Mielec', 61238, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Tarnobrzeg', 48558, 1, 0, 0);")
 
       //when
       val directCities = Territory.getDirectCities(Territory.fromId(1).get)
@@ -58,17 +58,17 @@ class TerritoryDaoTest extends Specification {
       //given
       session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
       session.createStatement().executeUpdate("TRUNCATE cities CASCADE;")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (4, 'World', 1000000, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (3, 'Europe', 1000000, 4);")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (2, 'Poland', 1, 3);")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, 2);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (4, 'World', 1000000, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (3, 'Europe', 1000000, 4, '');")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (2, 'Poland', 1, 3, '');")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, 2, '');")
 
-      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('New York', 48558, 4);")
-      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Budapest', 48558, 3);")
-      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Warsaw', 61238, 2);")
-      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Rzeszów', 182028, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Przemyśl', 64276, 1);")
-      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container) VALUES ('Stalowa Wola', 64189, 1);")
+      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('New York', 48558, 4, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Budapest', 48558, 3, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Warsaw', 61238, 2, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Rzeszów', 182028, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Przemyśl', 64276, 1, 0, 0);")
+      session.createStatement().executeUpdate("INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Stalowa Wola', 64189, 1, 0, 0);")
 
       //when
       val directCities = Territory.getAllChildrenCities(Territory.fromId(3).get)
@@ -87,9 +87,9 @@ class TerritoryDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
 
-      val t1 = new Territory(1, "Mazowieckie", 1000, None)
+      val t1 = new Territory(1, "Mazowieckie", 1000, None, "")
 
       //when
       Territory.update(t1)
@@ -111,11 +111,11 @@ class TerritoryDaoTest extends Specification {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (2, 'Polska', 2129951, NULL);")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, 1);")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (2, 'Polska', 2129951, NULL, '');")
+      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, 1, '');")
 
-      val t2 = new Territory(2, "Wielkopolskie", 10000, None)
-      val t1 = new Territory(1, "Mazowieckie", 1000, Some(t2))
+      val t2 = new Territory(2, "Wielkopolskie", 10000, None, "")
+      val t1 = new Territory(1, "Mazowieckie", 1000, Some(t2), "")
 
       //when
       Territory.update(t1)

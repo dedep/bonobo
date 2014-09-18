@@ -13,7 +13,7 @@ class PlayoffRoundTest extends FunSuite {
     val t2 = new Team(2, 2, 2)
 
     //when
-    val r = new PlayoffRound(List(t1, t2))
+    val r = new PlayoffRound("", List(t1, t2))
 
     //then
     assert(r.isFinalRound())
@@ -27,7 +27,7 @@ class PlayoffRoundTest extends FunSuite {
     val t4 = new Team(4, 4, 4)
 
     //when
-    val r = new PlayoffRound(List(t1, t2, t3, t4))
+    val r = new PlayoffRound("", List(t1, t2, t3, t4))
 
     //then
     assert(r.teams.size == 4)
@@ -45,7 +45,7 @@ class PlayoffRoundTest extends FunSuite {
     val t3 = new Team(3, 3, 2)
     val t4 = new Team(4, 4, 4)
 
-    val r = new PlayoffRound(List(t1, t2, t3, t4))
+    val r = new PlayoffRound("", List(t1, t2, t3, t4))
 
     //when
     val drawnPotsRound = r.drawPots()
@@ -70,7 +70,7 @@ class PlayoffRoundTest extends FunSuite {
       val t3 = new Team(3, 3, 2)
       val t4 = new Team(4, 4, 4)
 
-      val r = new PlayoffRound(List(t1, t2, t3, t4))
+      val r = new PlayoffRound("", List(t1, t2, t3, t4))
 
       //when
       val drawnUnitsRound = r.drawPots().drawUnits()
@@ -95,7 +95,7 @@ class PlayoffRoundTest extends FunSuite {
     val t3 = new Team(3, 3, 2)
     val t4 = new Team(4, 4, 4)
 
-    val r = new PlayoffRound(List(t1, t2, t3, t4))
+    val r = new PlayoffRound("", List(t1, t2, t3, t4))
 
     //when
     val round = r.drawPots().drawUnits().playFixture()
@@ -120,7 +120,7 @@ class PlayoffRoundTest extends FunSuite {
     val t3 = new Team(3, 3, 2)
     val t4 = new Team(4, 4, 4)
 
-    val r = new PlayoffRound(List(t1, t2, t3, t4))
+    val r = new PlayoffRound("", List(t1, t2, t3, t4))
 
     assert(r.teams.size == 4)
     assert(r.pots == Nil)
@@ -172,7 +172,7 @@ class PlayoffRoundTest extends FunSuite {
       val t3 = new Team(3, 3, 2)
       val t4 = new Team(4, 4, 4)
 
-      val r = new PlayoffRound(List(t1, t2, t3, t4))
+      val r = new PlayoffRound("", List(t1, t2, t3, t4))
 
       //when
       val round = r.drawPots().drawUnits().playFixture().playFixture()

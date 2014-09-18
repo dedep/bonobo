@@ -36,10 +36,13 @@ CREATE TABLE cities_tournaments
 CREATE TABLE rounds
 (
   id bigserial PRIMARY KEY,
+  name varchar(255) NOT NULL,
   class varchar(255) NOT NULL,
   step integer NOT NULL,
   is_preliminary boolean NOT NULL,
-  tournament_id bigint references tournaments NOT NULL
+  tournament_id bigint references tournaments NOT NULL,
+  round_order bigint NOT NULL DEFAULT 0,
+  unique (tournament_id, round_order)
 );
 
 CREATE TABLE rounds_cities
@@ -54,7 +57,8 @@ CREATE TABLE units
 (
   id bigserial PRIMARY KEY,
   round_id bigint references rounds,
-  class varchar(255) NOT NULL
+  class varchar(255) NOT NULL,
+  unit_name varchar(255) NOT NULL
 );
 
 CREATE TABLE matches
@@ -77,6 +81,46 @@ CREATE TABLE units_cities
   goals_conceded integer NOT NULL CHECK(goals_conceded >= 0),
   PRIMARY KEY(city_id, unit_id)
 );
+
+CREATE OR REPLACE FUNCTION rounds_id_auto()
+    RETURNS trigger AS $$
+DECLARE
+    _rel_id constant int := 'rounds'::regclass::int;
+BEGIN
+
+    -- Obtain an advisory lock on this table/group.
+    PERFORM pg_advisory_lock(_rel_id);
+
+    SELECT  COALESCE(MAX(round_order) + 1, 1)
+    INTO    NEW.round_order
+    FROM    rounds
+    WHERE   tournament_id = NEW.tournament_id;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql STRICT;
+
+CREATE TRIGGER rounds_id_auto
+    BEFORE INSERT ON rounds
+    FOR EACH ROW WHEN (NEW.round_order = 0)
+    EXECUTE PROCEDURE rounds_id_auto();
+
+CREATE OR REPLACE FUNCTION rounds_id_auto_unlock()
+    RETURNS trigger AS $$
+DECLARE
+    _rel_id constant int := 'rounds'::regclass::int;
+BEGIN
+    -- Release the lock.
+    PERFORM pg_advisory_unlock(_rel_id);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql STRICT;
+
+CREATE TRIGGER rounds_id_auto_unlock
+    AFTER INSERT ON rounds
+    FOR EACH ROW
+    EXECUTE PROCEDURE rounds_id_auto_unlock();
 
 INSERT INTO territories VALUES (4, 'World', 7243000000, NULL, 'W');
 INSERT INTO territories VALUES (3, 'Poland', 1, 4, 'PL');
@@ -135,7 +179,7 @@ INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Ul
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Kołaczyce', 1447, 1, 52.02, 22);
 
 INSERT INTO territories VALUES (2, 'Lubelskie', 2129951, 3, 'PLLU');
-INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Dublin', 14472, 2, 52.02, 22);
+INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Dublin', 12473, 2, 52.02, 22);
 
 # --- !Downs
 

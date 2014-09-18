@@ -7,7 +7,7 @@ import models.core.round.RoundUnit
 import models.core.round.result.TeamResult
 import models.core.team.Team
 
-class Group(teamsCbn: => List[Team], fixturesCbn: => List[Fixture] = Nil,
+class Group(override val name: String, teamsCbn: => List[Team], fixturesCbn: => List[Fixture] = Nil,
             resultsCbn: => List[TeamResult] = Nil, override val id: Option[Long] = None) extends RoundUnit {
   override lazy val results = if (resultsCbn.nonEmpty) resultsCbn else evalResults
   

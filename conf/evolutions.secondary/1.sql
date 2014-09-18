@@ -15,7 +15,9 @@ CREATE TABLE cities
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
   points int NOT NULL DEFAULT 0,
-  container bigint references territories NOT NULL
+  container bigint references territories NOT NULL,
+  latitude double precision NULL,
+  longitude double precision NULL
 );
 
 CREATE TABLE tournaments
@@ -34,6 +36,7 @@ CREATE TABLE cities_tournaments
 CREATE TABLE rounds
 (
   id bigserial PRIMARY KEY,
+  name varchar(255) NOT NULL,
   class varchar(255) NOT NULL,
   step integer NOT NULL,
   is_preliminary boolean NOT NULL,

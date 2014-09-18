@@ -10,12 +10,12 @@ GET        /city/$c<[0-9]+>              controllers.CityController.find(c: Long
 GET        /cityJson/:c                  controllers.CityController.findJson(c: Long)
 
 # Territories
-GET        /territory/:t/start           controllers.TerritoryController.startTournament(t: Long)
+POST       /territory/:t/start           controllers.TerritoryController.startTournament(t: Long)
 GET        /territory/$t<[0-9]+>         controllers.TerritoryController.find(t: Long)
 GET        /territory/:t                 controllers.TerritoryController.findByCode(t: String)
 
 # Tournaments
-GET        /tournament/:t/process        controllers.TournamentController.processNextStep(t: Long)
+POST       /tournament/:t/process        controllers.TournamentController.processNextStep(t: Long)
 GET        /tournament/:t                controllers.TournamentController.find(t: Long)
 
 # Rounds
