@@ -189,8 +189,8 @@ class TournamentDaoTest extends Specification {
       val c3 = City.fromId(3).get
       val c4 = City.fromId(4).get
 
-      val u1 = new Pair(List(c1, c4))
-      val u2 = new Pair(List(c2, c3))
+      val u1 = new Pair("P1", List(c1, c4))
+      val u2 = new Pair("P1", List(c2, c3))
       val r = new PlayoffRound("", List(c1, c2, c3, c4), List(List(c1, c3), List(c2, c4)), List(u1, u2))
       val t = new TournamentImpl(List(c1, c2, c3, c4), "New tournament", List(r))
 

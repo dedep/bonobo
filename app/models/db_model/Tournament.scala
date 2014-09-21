@@ -12,6 +12,8 @@ import play.api.mvc.AnyContent
 
 import scala.slick.jdbc.JdbcBackend
 
+
+//TODO: DB-INDEKSY!!!
 object Tournament {
   private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
@@ -45,7 +47,6 @@ object Tournament {
 
       val index = if (t.id.nonEmpty && Tournament.fromId(t.id.get).nonEmpty) update(t) else save(t)
 
-      log.info("LALALALAL Round saveOrUpdateCalling " + t.name + "   sads!!! " + t.rounds.map(_.name))
 //      if (t.rounds.nonEmpty) t.rounds.foreach(Round.saveOrUpdate(_, index))
       if (t.rounds.nonEmpty) Round.saveOrUpdate(t.rounds.head, index)
 

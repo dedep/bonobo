@@ -15,7 +15,7 @@ class NormalDistributionBasedMatchEvaluatorTest extends FunSuite {
     val bp = NormalDistributionBasedMatchEvaluator.calcBalancePoint(m)
 
     //then
-    assert(bp == 0.5)
+    assert(bp == 0.65)
   }
 
   test("test balance point calculation - B 2x bigger than A") {
@@ -26,7 +26,7 @@ class NormalDistributionBasedMatchEvaluatorTest extends FunSuite {
     val bp = NormalDistributionBasedMatchEvaluator.calcBalancePoint(m)
 
     //then
-    assert(bp == -0.5)
+    assert(bp == -0.35)
   }
 
   test("test balance point calculation - A equals B ") {
@@ -37,7 +37,7 @@ class NormalDistributionBasedMatchEvaluatorTest extends FunSuite {
     val bp = NormalDistributionBasedMatchEvaluator.calcBalancePoint(m)
 
     //then
-    assert(bp == 0)
+    assert(bp == 0.15)
   }
 
   test("test balance point calculation - A 4x bigger B ") {
@@ -48,7 +48,7 @@ class NormalDistributionBasedMatchEvaluatorTest extends FunSuite {
     val bp = NormalDistributionBasedMatchEvaluator.calcBalancePoint(m)
 
     //then
-    assert(bp == 1)
+    assert(bp == 1.15)
   }
 
   test("test balance point calculation - B 4x bigger A ") {
@@ -59,7 +59,7 @@ class NormalDistributionBasedMatchEvaluatorTest extends FunSuite {
     val bp = NormalDistributionBasedMatchEvaluator.calcBalancePoint(m)
 
     //then
-    assert(bp == -1)
+    assert(bp == -0.85)
   }
 
   test("test goals difference calculation - balanced situation") {
@@ -171,5 +171,71 @@ class NormalDistributionBasedMatchEvaluatorTest extends FunSuite {
     val result = NormalDistributionBasedMatchEvaluator.createResultForMatchPoint(mp)
 
     assert(result.isInstanceOf[WinB])
+  }
+
+  test("match lose probability - balanced situation") {
+    //given
+    val m = Match(new Team(1, 200, 0), new Team(2, 200, 0))
+
+    //when
+    val result = NormalDistributionBasedMatchEvaluator.calculateLoseProbability(m)
+
+    assert(result > 0.314)
+    assert(result < 0.315)
+  }
+
+  test("match win probability - balanced situation") {
+    //given
+    val m = Match(new Team(1, 200, 0), new Team(2, 200, 0))
+
+    //when
+    val result = NormalDistributionBasedMatchEvaluator.calculateWinProbability(m)
+
+    assert(result > 0.427)
+    assert(result < 0.428)
+  }
+
+  test("match draw probability - balanced situation") {
+    //given
+    val m = Match(new Team(1, 200, 0), new Team(2, 200, 0))
+
+    //when
+    val result = NormalDistributionBasedMatchEvaluator.calculateDrawProbability(m)
+
+    assert(result > 0.258)
+    assert(result < 0.259)
+  }
+
+  test("match lose probability - doubled situation") {
+    //given
+    val m = Match(new Team(1, 200, 0), new Team(2, 100, 0))
+
+    //when
+    val result = NormalDistributionBasedMatchEvaluator.calculateLoseProbability(m)
+
+    assert(result > 0.162)
+    assert(result < 0.163)
+  }
+
+  test("match draw probability - doubled situation") {
+    //given
+    val m = Match(new Team(1, 200, 0), new Team(2, 100, 0))
+
+    //when
+    val result = NormalDistributionBasedMatchEvaluator.calculateDrawProbability(m)
+
+    assert(result > 0.212)
+    assert(result < 0.214)
+  }
+
+  test("match win probability - doubled situation") {
+    //given
+    val m = Match(new Team(1, 200, 0), new Team(2, 100, 0))
+
+    //when
+    val result = NormalDistributionBasedMatchEvaluator.calculateWinProbability(m)
+
+    assert(result > 0.624)
+    assert(result < 0.625)
   }
 }

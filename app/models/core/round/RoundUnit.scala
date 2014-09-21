@@ -7,6 +7,7 @@ import models.core._match.PlayedMatch
 import models.core.round.promotion.PromotionsStrategy
 import models.core.round.result.{PointsGrantingStrategy, TeamResult}
 import models.core.team.Team
+import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 
 import scala.util.Sorting
@@ -21,12 +22,12 @@ trait RoundUnit {
   lazy val fixturesCount: Int = fixtures.size
   private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
-  def evalResults: List[TeamResult] = teams.map(TeamResult(_))
+  def defaultResults: List[TeamResult] = teams.map(TeamResult(_))
 
   def playFixture(fixtureNum: Int)(implicit strategy: PromotionsStrategy): RoundUnit = {
     require(fixtureNum < fixturesCount)
 
-    val updatedFixture = fixtures(fixtureNum).map(m => PlayedMatch(m.aTeam, m.bTeam, m.eval, m.id))
+    val updatedFixture = fixtures(fixtureNum).map(m => PlayedMatch(m.aTeam, m.bTeam, m.eval, Some(DateTime.now()), m.id))
     val updatedFixtures = fixtures.updated(fixtureNum, updatedFixture)
 
     val updatedResults: List[TeamResult] = updatedFixtureResults(updatedFixture)

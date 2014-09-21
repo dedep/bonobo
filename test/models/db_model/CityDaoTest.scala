@@ -67,31 +67,31 @@ class CityDaoTest extends Specification {
     }
   }
 
-  "City saving updates cascade parent territory test" in new WithApplication {
-    play.api.db.slick.DB("test").withSession { implicit session =>
-      //given
-      session.createStatement().executeUpdate("TRUNCATE cities CASCADE;")
-      session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
-      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
-
-      val terr = new Territory(1, "PodkarpackieEDIT", 5000500, None, "")
-      val c1 = new City(1, "Warszawa", 1000, 2, terr, 0, 0)
-
-      //when
-      val cityId = City.saveOrUpdate(c1)
-
-      //then
-      val query = session.prepareStatement("SELECT id, name, population, container FROM territories WHERE territories.id = ?")
-      query.setLong(1, 1)
-      val result = query.executeQuery()
-      result.next()
-
-      assert(result.getLong(1) === 1)
-      assert(result.getString(2) === "PodkarpackieEDIT")
-      assert(result.getLong(3) === 5000500)
-      assert(result.getObject(4) === null)
-    }
-  }
+//  "City saving updates cascade parent territory test" in new WithApplication {
+//    play.api.db.slick.DB("test").withSession { implicit session =>
+//      //given
+//      session.createStatement().executeUpdate("TRUNCATE cities CASCADE;")
+//      session.createStatement().executeUpdate("TRUNCATE territories CASCADE;")
+//      session.createStatement().executeUpdate("INSERT INTO territories VALUES (1, 'Podkarpackie', 2129951, NULL, '');")
+//
+//      val terr = new Territory(1, "PodkarpackieEDIT", 5000500, None, "")
+//      val c1 = new City(1, "Warszawa", 1000, 2, terr, 0, 0)
+//
+//      //when
+//      val cityId = City.saveOrUpdate(c1)
+//
+//      //then
+//      val query = session.prepareStatement("SELECT id, name, population, container FROM territories WHERE territories.id = ?")
+//      query.setLong(1, 1)
+//      val result = query.executeQuery()
+//      result.next()
+//
+//      assert(result.getLong(1) === 1)
+//      assert(result.getString(2) === "PodkarpackieEDIT")
+//      assert(result.getLong(3) === 5000500)
+//      assert(result.getObject(4) === null)
+//    }
+//  }
 
   "Cannot save city referring to non-existent territory test" in new WithApplication {
     play.api.db.slick.DB("test").withSession { implicit session =>

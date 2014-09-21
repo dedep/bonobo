@@ -69,7 +69,8 @@ CREATE TABLE matches
   a_team_id bigint references cities NOT NULL,
   a_team_goals integer NULL,
   b_team_id bigint references cities NOT NULL,
-  b_team_goals integer NULL
+  b_team_goals integer NULL,
+  play_date timestamp NULL
 );
 
 CREATE TABLE units_cities
@@ -79,6 +80,9 @@ CREATE TABLE units_cities
   points integer NOT NULL CHECK(points >= 0),
   goals_scored integer NOT NULL CHECK(goals_scored >= 0),
   goals_conceded integer NOT NULL CHECK(goals_conceded >= 0),
+  wins integer NOT NULL CHECK(wins >= 0),
+  draws integer NOT NULL CHECK(draws >= 0),
+  loses integer NOT NULL CHECK(loses >= 0),
   PRIMARY KEY(city_id, unit_id)
 );
 

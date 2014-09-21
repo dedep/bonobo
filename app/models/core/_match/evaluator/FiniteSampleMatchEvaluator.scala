@@ -52,4 +52,10 @@ object FiniteSampleMatchEvaluator extends MatchEvaluator {
   }
 
   def calcGoalsConstantComponent: Int = Math.round(Math.abs(scala.util.Random.nextGaussian() * goalConstantFactor)).toInt
+
+  override def calculateLoseProbability(m: Match): Double = ???
+
+  override def calculateWinProbability(m: Match): Double = ???
+
+  override def calculateDrawProbability(m: Match): Double = ???
 }

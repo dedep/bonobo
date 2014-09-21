@@ -7,7 +7,11 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick" % "0.8.0",
   "com.typesafe.scala-logging" % "scala-logging-slf4j_2.10" % "2.1.2",
   "org.scalatest" % "scalatest_2.10" % "2.2.0",
-  "org.postgresql" % "postgresql" % "9.3-1102-jdbc41")
+  "org.postgresql" % "postgresql" % "9.3-1102-jdbc41",
+  "joda-time" % "joda-time" % "2.4",
+  "org.joda" % "joda-convert" % "1.6",
+  "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
+  "org.apache.commons" % "commons-math3" % "3.2")
 
 fork in Test := false
 

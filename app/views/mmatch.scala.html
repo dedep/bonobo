@@ -1,7 +1,56 @@
 @(m: models.core._match.Match)
 
 @main(Nil, None) {
-    <article>
-        <h1>Match: @m.aTeam.name x @m.bTeam.name</h1>
-    </article>
+    <h1 class="page-header">@m.aTeam.name vs. @m.bTeam.name</h1>
+
+    <div class="score-board">
+        @m match {
+            case pm: models.core._match.PlayedMatch => {@pm.result}
+            case _ => {?}
+        }
+    </div>
+
+    <section id="match-info">
+        <h2 class="section-header">Match Info</h2>
+        <dl>
+            <dt>@m.aTeam.name win probability</dt>
+            <dd>
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-info" role="progressbar" style="width: @m.winProbability%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </dd>
+
+            <dt>Draw probability</dt>
+            <dd>
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-info" role="progressbar" style="width: @m.drawProbability%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </dd>
+
+            <dt>@m.bTeam.name win probability</dt>
+            <dd>
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-info" role="progressbar" style="width: @m.loseProbability%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </dd>
+
+            <dt>Date of the match</dt>
+            <dd>@m.playDate.fold("?")(org.joda.time.format.DateTimeFormat.forPattern("MM-dd-yyyy HH:mm:ss").print(_))</dd>
+        </dl>
+    </section>
 }

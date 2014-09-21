@@ -51,7 +51,7 @@ object Unit {
   private def getResults(id: Long)(implicit rs: JdbcBackend#Session): List[TeamResult] = {
     val citiesAndResults = citiesDs.filter(_.unitId === id).list.map(a => {
       val city = City.fromId(a._1).get
-      val result = TeamResult(city, a._3, a._4, a._5)
+      val result = TeamResult(city, a._3, a._4, a._5, a._6, a._7, a._8)
 
       (city, result)
     })
@@ -81,7 +81,14 @@ object Unit {
 
     citiesDs ++= u.teams.map(team => {
       val teamResult = u.results.find(_.team == team).getOrElse(throw new IllegalStateException("Cannot find CityResult"))
-      (team.id, newIndex, teamResult.points, teamResult.goalsScored, teamResult.goalsConceded)
+      (team.id,
+        newIndex,
+        teamResult.points,
+        teamResult.goalsScored,
+        teamResult.goalsConceded,
+        teamResult.wins,
+        teamResult.draws,
+        teamResult.loses)
     })
 
     u.fixtures.zipWithIndex.foreach(p => p._1.foreach(Match.saveOrUpdate(_, p._2, newIndex)))
@@ -99,7 +106,10 @@ object Unit {
       citiesDs.filter(c => c.cityId === team.id && c.unitId === u.id.get).update(team.id, u.id.get,
         teamResult.points,
         teamResult.goalsScored,
-        teamResult.goalsConceded)
+        teamResult.goalsConceded,
+        teamResult.wins,
+        teamResult.draws,
+        teamResult.loses)
     })
 
     if (u.fixtures.nonEmpty) u.fixtures.foreach(fix => fix.foreach(m => Match.saveOrUpdate(m, u.fixtures.indexOf(fix), u.id.get)))

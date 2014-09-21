@@ -5,4 +5,8 @@ import models.core._match.result.MatchResult
 
 trait MatchEvaluator {
   def eval(m: Match): MatchResult
+
+  def calculateLoseProbability(m: Match): Double
+  def calculateDrawProbability(m: Match): Double
+  def calculateWinProbability(m: Match): Double
 }

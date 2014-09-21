@@ -14,7 +14,7 @@ class Pair(override val name: String, teamsCbn: => List[Team], fixturesCbn: => L
 
   override lazy val teams = teamsCbn
 
-  override lazy val results = if (resultsCbn.nonEmpty) resultsCbn else evalResults
+  override lazy val results = if (resultsCbn.nonEmpty) resultsCbn else defaultResults
 
   override lazy val fixtures = if (fixturesCbn.nonEmpty) fixturesCbn else
     List(List(new Match(teams(0), teams(1))), List(new Match(teams(1), teams(0))))

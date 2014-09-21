@@ -1,11 +1,12 @@
 @(unit: models.core.round.RoundUnit)
+@import models.core._match.PlayedMatch
 
-@main(Nil, None) {
-    <article>
-        <h1>@unit.name</h1>
-
+@main(List((new Call("GET", "#results"), "Results"), (new Call("GET", "#matches"), "Matches")), None) {
+    <section id="results">
+        <h1 class="page-header">@unit.name</h1>
+        <h3>Results</h3>
         <table class="table">
-            <thead>
+            <thead style="">
                 <tr>
                     <th>#</th>
                     <th>City</th>
@@ -18,19 +19,53 @@
                 </tr>
             </thead>
             <tbody>
-                @for(result <- unit.results) {
-                    <tr>
-                        <td>@{unit.results.indexOf(result) + 1}</td>
-                        <td>@result.team.name</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>@result.goalsScored - @result.goalsConceded</td>
-                        <td>@result.points</td>
-                    </tr>
-                }
+            @for(result <- unit.results) {
+                <tr>
+                    <td>@{unit.results.indexOf(result) + 1}</td>
+                    <td><a href="@routes.CityController.find(result.team.id)">@result.team.name</a></td>
+                    <td>@result.matchesAmount</td>
+                    <td>@result.wins</td>
+                    <td>@result.draws</td>
+                    <td>@result.loses</td>
+                    <td>@result.goalsScored - @result.goalsConceded</td>
+                    <td>@result.points</td>
+                </tr>
+            }
             </tbody>
         </table>
-    </article>
+    </section>
+
+    <section id="matches" style="">
+        <h3 class="section-header">Matches</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Fixture no.</th>
+                    <th>Host City</th>
+                    <th>Away City</th>
+                    <th>Date</th>
+                    <th>Details</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for(fixture <- unit.fixtures ; m <- fixture) {
+                <tr>
+                    <td>@{unit.fixtures.indexOf(fixture) + 1}</td>
+                    <td><a href="@routes.CityController.find(m.aTeam.id)">@m.aTeam.name</a></td>
+                    <td><a href="@routes.CityController.find(m.bTeam.id)">@m.bTeam.name</a></td>
+                    <td>@m.playDate.map(org.joda.time.format.DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss").print(_))</td>
+                    <td><a href=@routes.MatchController.find(m.id.get)>Details</a></td>
+                    <td>
+                    @m match {
+                        case pm: PlayedMatch => {@pm.result}
+                        case _ => {}
+                    }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </section>
+
 }

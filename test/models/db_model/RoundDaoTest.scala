@@ -179,15 +179,15 @@ class RoundDaoTest extends Specification {
       assert(citsResult.getObject(2) === 1)
       assert(!citsResult.next())
 
-      val citsQuery = session.prepareStatement("SELECT id, name, population, points, container FROM cities WHERE cities.id = ?")
-      citsQuery.setLong(1, 2)
-      val result = citsQuery.executeQuery()
-      result.next()
-      assert(result.getLong(1) === 2)
-      assert(result.getString(2) === "Sanok")
-      assert(result.getLong(3) === 23232)
-      assert(result.getLong(4) === 0)
-      assert(result.getLong(5) === 1)
+//      val citsQuery = session.prepareStatement("SELECT id, name, population, points, container FROM cities WHERE cities.id = ?")
+//      citsQuery.setLong(1, 2)
+//      val result = citsQuery.executeQuery()
+//      result.next()
+//      assert(result.getLong(1) === 2)
+//      assert(result.getString(2) === "Sanok")
+//      assert(result.getLong(3) === 23232)
+//      assert(result.getLong(4) === 0)
+//      assert(result.getLong(5) === 1)
     }
   }
 

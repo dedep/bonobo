@@ -1,10 +1,11 @@
 @(city: models.db_model.City)
 
 @main(Nil, None) {
-    <article>
-        <h1>@city.name</h1>
-    </article>
+    <h1 class="page-header">@city.name</h1>
 
-    @*ten substring to do osobnej metody*@
-    @map(city.territory.code.take(2), List((city.name, city.latitude, city.longitude)))
+    <section id="map">
+        <h3>Map</h3>
+        @*ten substring to do osobnej metody*@
+        @map(city.territory.code.take(2), List((city.name, city.latitude, city.longitude)))
+    </section>
 }
