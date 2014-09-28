@@ -1,5 +1,5 @@
-@(tournament: models.core.tournament.Tournament)(msg: utils.AlertsHelper.Alert = None)
-@import models.core.round.pair.PlayoffRound
+@(tournament: models.tournament.Tournament)(msg: utils.AlertsHelper.Alert = None)
+@import models.round.pair.PlayoffRound
 
 @main(List((routes.TournamentController.processNextStep(tournament.id.get), "Process tournament"),
 (routes.CityController.find(tournament.id.get), "Get example")), msg) {

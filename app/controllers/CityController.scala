@@ -1,17 +1,19 @@
 package controllers
 
+import db_access.dao.city.CityDao
+import models.territory.City
 import play.api.libs.json._
-import models.db_model.City
 import play.api.db.slick._
 import play.api.mvc._
-import play.api.Play.current
+import scaldi.{Injector, Injectable}
 
-object CityController extends Controller {
+class CityController(implicit inj: Injector) extends Controller with Injectable {
+  private val cityDao = inject[CityDao]
 
   //todo:trykacze
   def find(id: Long) = DBAction {
     implicit rs =>
-      City.fromId(id) match {
+      cityDao.fromId(id) match {
         case None => NotFound(views.html.error("City not found"))
         case Some(c: City) => Ok(views.html.city(c))
       }
@@ -19,7 +21,7 @@ object CityController extends Controller {
 
   def findJson(id: Long) = DBAction {
     implicit rs =>
-      City.fromId(id) match {
+      cityDao.fromId(id) match {
         case None => NotFound(views.html.error("City not found"))
         case Some(c: City) => {
           Ok(Json.toJson(c))

@@ -1,11 +1,9 @@
-@(territory: models.db_model.Territory)(alerts: utils.AlertsHelper.Alert = None)
-@import java.util.Locale
-
+@(territory: models.territory.Territory)(alerts: utils.AlertsHelper.Alert = None)
 
 @main(List((routes.TerritoryController.startTournament(territory.id), "Start tournament")), alerts) {
 
     <h1>@territory.name</h1>
-    <h4 style="margin-left: 50px">Total population: @java.text.NumberFormat.getNumberInstance(Locale.US).format(territory.population)</h4>
+    <h4 style="margin-left: 50px">Total population: @java.text.NumberFormat.getNumberInstance(java.util.Locale.US).format(territory.population)</h4>
     <h4 style="margin-left: 50px">Container:
         @if(territory.container.nonEmpty) {
             <a href="@routes.TerritoryController.find(territory.container.get.id)">@territory.container.map(_.name)</a>

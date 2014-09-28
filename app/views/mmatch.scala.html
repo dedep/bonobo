@@ -1,11 +1,11 @@
-@(m: models.core._match.Match)
+@(m: models._match.Match)
 
 @main(Nil, None) {
     <h1 class="page-header">@m.aTeam.name vs. @m.bTeam.name</h1>
 
     <div class="score-board">
         @m match {
-            case pm: models.core._match.PlayedMatch => {@pm.result}
+            case pm: models._match.PlayedMatch => {@pm.result}
             case _ => {?}
         }
     </div>

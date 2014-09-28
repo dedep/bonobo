@@ -1,15 +1,18 @@
 package controllers
 
-import models.db_model.Match
+import db_access.dao._match.MatchDao
 import play.api.db.slick.DBAction
 import play.api.mvc.Controller
+import scaldi.{Injectable, Injector}
 
-object MatchController extends Controller {
+class MatchController(implicit inj: Injector) extends Controller with Injectable {
+  private val matchDao = inject[MatchDao]
+
   def find(id: Long) = DBAction {
     implicit rs =>
-      Match.fromId(id)(rs.dbSession) match {
+      matchDao.fromId(id)(rs.dbSession) match {
         case None => NotFound(views.html.error("Match not found"))
-        case Some(m: models.core._match.Match) => Ok(views.html.mmatch(m))
+        case Some(m: models._match.Match) => Ok(views.html.mmatch(m))
       }
   }
 }

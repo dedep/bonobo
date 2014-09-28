@@ -3,30 +3,29 @@
 # ~~~~
 
 # Home page
-GET        /                             controllers.AppController.world
+GET        /                             @controllers.AppController.world
 
 # Cities
-GET        /city/$c<[0-9]+>              controllers.CityController.find(c: Long)
-GET        /cityJson/:c                  controllers.CityController.findJson(c: Long)
+GET        /city/$c<[0-9]+>              @controllers.CityController.find(c: Long)
+GET        /cityJson/:c                  @controllers.CityController.findJson(c: Long)
 
 # Territories
-POST       /territory/:t/start           controllers.TerritoryController.startTournament(t: Long)
-GET        /territory/$t<[0-9]+>         controllers.TerritoryController.find(t: Long)
-GET        /territory/:t                 controllers.TerritoryController.findByCode(t: String)
+POST       /territory/:t/start           @controllers.TerritoryController.startTournament(t: Long)
+GET        /territory/$t<[0-9]+>         @controllers.TerritoryController.find(t: Long)
+GET        /territory/:t                 @controllers.TerritoryController.findByCode(t: String)
 
 # Tournaments
-POST       /tournament/:t/process        controllers.TournamentController.processNextStep(t: Long)
-GET        /tournament/:t                controllers.TournamentController.find(t: Long)
+POST       /tournament/:t/process        @controllers.TournamentController.processNextStep(t: Long)
+GET        /tournament/:t                @controllers.TournamentController.find(t: Long)
 
 # Rounds
-GET        /round/:t                     controllers.RoundController.find(t: Long)
+GET        /round/:t                     @controllers.RoundController.find(t: Long)
 
 # Matches
-GET        /match/:t                     controllers.MatchController.find(t: Long)
+GET        /match/:t                     @controllers.MatchController.find(t: Long)
 
 # Units
-GET        /unit/:t                      controllers.UnitController.find(t: Long)
+GET        /unit/:t                      @controllers.UnitController.find(t: Long)
 
 # Static resources
 GET        /assets/*file                 controllers.Assets.at(path="/public", file)
-GET        /assets/js/routes             controllers.AppController.jsRoutes()

@@ -1,5 +1,5 @@
-@(unit: models.core.round.RoundUnit)
-@import models.core._match.PlayedMatch
+@(unit: models.round.RoundUnit)
+@import models._match.PlayedMatch
 
 @main(List((new Call("GET", "#results"), "Results"), (new Call("GET", "#matches"), "Matches")), None) {
     <section id="results">

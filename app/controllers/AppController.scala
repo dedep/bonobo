@@ -1,17 +1,10 @@
 package controllers
 
-import play.Routes
-import play.api.db.slick._
-import play.api.db.slick.Config.driver.simple._
 import play.api.mvc._
-import play.api.Play.current
+import scaldi.{Injector, Injectable}
 
-object AppController extends Controller {
+class AppController(implicit inj: Injector) extends Controller with Injectable {
+  private val territoryController = inject[TerritoryController]
 
-  def world = TerritoryController.findByCode("W")
-
-  def jsRoutes = Action { implicit request =>
-    val js = Routes.javascriptRouter("appRoutes", controllers.routes.javascript.AppController.world)
-    Ok(js).as("text/javascript")
-  }
+  def world = territoryController.findByCode("W")
 }

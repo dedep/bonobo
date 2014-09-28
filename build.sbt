@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % "2.4",
   "org.joda" % "joda-convert" % "1.6",
   "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
-  "org.apache.commons" % "commons-math3" % "3.2")
+  "org.apache.commons" % "commons-math3" % "3.2",
+  "org.scaldi" % "scaldi-play_2.10" % "0.3.3")
 
 fork in Test := false
 
