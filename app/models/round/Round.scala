@@ -45,6 +45,8 @@ trait Round {
     else RoundStatus.PLAY_FIXTURE
   }
 
+  val isPlayed = status == RoundStatus.PLAY_FIXTURE
+
   object RoundStatus extends Enumeration {
     val DRAW_POTS, DRAW_UNITS, PLAY_FIXTURE, FINISHED = Value
 

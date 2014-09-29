@@ -1,0 +1,4 @@
+round.status.PLAY_FIXTURE=Before playing fixture no.
+round.status.DRAW_POTS=Before pots drawing
+round.status.DRAW_UNITS=Before units drawing
+round.status.FINISHED=Round finished

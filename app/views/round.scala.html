@@ -2,52 +2,59 @@
 @import Common._
 
 @main(Nil, None) {
-    <article>
-        <h1>@round.name</h1>
+    <h1 class="page-header">@round.name</h1>
 
-        <h3>Round status:</h3>
-        <dl class="dl-horizontal">
-            <dt>Current status:</dt>
-            <dd>@round.status</dd>
+    <h2>Round status</h2>
+    <h4>
+        <span style="color: #666666">
+            @Messages("round.status." + round.status.toString)
+            @if(round.isPlayed) {@{round.stepIndex + 1}}
+        </span>
+    </h4>
 
-            <dt>Current step:</dt>
-            <dd>@round.stepIndex</dd>
-        </dl>
+    <h2>Pots</h2>
+    <div class="row">
+        @for(pot <- round.pots) {
+            <span class="col-lg-6">
+                <div class="list-group">
+                    <h4>Pot @{round.pots.indexOf(pot) + 1}</h4>
+                    @for(team <- pot) {
+                        <a href="@routes.CityController.find(team.id)" class="list-group-item">@team.name</a>
+                    }
+                </div>
+             </span>
+        }
+    </div>
 
-        <h3>Pots:</h3>
-        <ul class="list-unstyled">
-            @for(pot <- round.pots) {
-                <li>Pot @{round.pots.indexOf(pot) + 1}:
-                    <ul>
-                        @for(team <- pot) {
-                            <a href="@routes.CityController.find(team.id)">
-                                <li>@team.name</li>
-                            </a>
+    <h2>Units</h2>
+        @round.units match {
+            case Nil => { <h4 class="col-lg-offset-1" style="color: #666666">Not drawn yet.</h4> }
+            case _   => {
+                <div class="row">
+                <span class="col-lg-6">
+                    <div class="list-group">
+                        @for(unit <- round.units) {
+                            <a href="@routes.UnitController.find(unit.id.get)" class="list-group-item">@unit.name</a>
                         }
-                    </ul>
-                </li>
+                    </div>
+                </span>
+                </div>
             }
-        </ul>
+        }
 
-        <h3>Units:</h3>
-        <ul>
-            @for(unit <- round.units) {
-                <a href="@routes.UnitController.find(unit.id.get)">
-                    <li>@unit.name</li>
-                </a>
-            }
-        </ul>
-
-        <h3>Promoted teams:</h3>
-        <ul>
-            @if(round.isFinished()){
+    <h2>Promoted teams</h2>
+    @round.isFinished() match {
+        case false => { <h4 style="color: #666666">Not finished yet.</h4> }
+        case true  => {
+            <div class="row">
+            <span class="col-lg-6">
+                <div class="list-group">
                 @for(team <- round.getPromotedTeams) {
-                    <a href="@routes.CityController.find(team.id)">
-                        <li>@team.name</li>
-                    </a>
+                    <a href="@routes.CityController.find(team.id)" class="list-group-item list-group-item-success">@team.name</a>
                 }
-            }
-        </ul>
-
-    </article>
+                </div>
+            </span>
+            </div>
+        }
+    }
 }
