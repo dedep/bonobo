@@ -12,27 +12,27 @@ import play.api.mvc._
 import scaldi.{Injectable, Injector}
 import utils.AlertsHelper._
 
-class TerritoryController(implicit inj: Injector) extends Controller with Injectable {
+class TerritoryController(implicit inj: Injector) extends BaseController with Injectable {
   private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   private val cityDao = inject[CityDao]
   private val territoryDao = inject[TerritoryDao]
   private val tournamentDao = inject[TournamentDao]
 
-  def find(id: Long) = DBAction { implicit rs =>
-    findFrom(territoryDao.fromId(id))
+  def find(id: Long) = wrapDBRequest { implicit rs =>
+    handleOptionalTerritory(territoryDao.fromId(id))
   }
 
-  def findByCode(code: String) = DBAction { implicit rs =>
-    findFrom(territoryDao.fromCode(code))
+  def findByCode(code: String) = wrapDBRequest { implicit rs =>
+    handleOptionalTerritory(territoryDao.fromCode(code))
   }
 
-  private def findFrom(t: Option[Territory]) = t match {
+  private def handleOptionalTerritory(t: Option[Territory]) = t match {
     case None => NotFound(views.html.error("Territory not found"))
     case Some(t: Territory) => Ok(views.html.territory(t)(None))
   }
 
-  def startTournament(id: Long) = DBAction { implicit rs =>
+  def startTournament(id: Long) = wrapDBRequest { implicit rs =>
     territoryDao.fromId(id) match {
       case None => NotFound(views.html.error("Territory not found"))
       case Some(t: Territory) =>

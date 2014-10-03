@@ -14,7 +14,6 @@ import scaldi.{Injectable, Injector}
 
 import scala.slick.jdbc.JdbcBackend
 
-//TODO: DB-INDEKSY!!!
 class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injectable {
   private val log = Logger(LoggerFactory.getLogger(this.getClass))
 

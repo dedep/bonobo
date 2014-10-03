@@ -6,10 +6,10 @@ import play.api.db.slick.DBAction
 import play.api.mvc.Controller
 import scaldi.{Injectable, Injector}
 
-class RoundController(implicit inj: Injector) extends Controller with Injectable {
+class RoundController(implicit inj: Injector) extends BaseController with Injectable {
   private val roundDao = inject[RoundDao]
 
-  def find(id: Long) = DBAction {
+  def find(id: Long) = wrapDBRequest {
     implicit rs =>
       roundDao.fromId(id)(rs.dbSession) match {
         case None => NotFound(views.html.error("Round not found"))

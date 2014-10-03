@@ -9,19 +9,19 @@ import play.api.mvc._
 import scaldi.{Injectable, Injector}
 import utils.AlertsHelper._
 
-class TournamentController(implicit inj: Injector) extends Controller with Injectable {
+class TournamentController(implicit inj: Injector) extends BaseController with Injectable {
   private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   private val tournamentDao = inject[TournamentDao]
 
-  def find(id: Long) = DBAction { implicit rs =>
+  def find(id: Long) = wrapDBRequest { implicit rs =>
     tournamentDao.fromId(id) match {
       case None => NotFound(views.html.error("Tournament not found"))
       case Some(t: (Tournament)) => Ok(views.html.tournament(t)(None))
     }
   }
 
-  def processNextStep(id: Long) = DBAction { implicit rs =>
+  def processNextStep(id: Long) = wrapDBRequest { implicit rs =>
     tournamentDao.fromId(id) match {
         case None => NotFound(views.html.error("Tournament not found"))
         case Some(t: (Tournament)) => {
