@@ -3,63 +3,55 @@
 
 @main(List((routes.TournamentController.processNextStep(tournament.id.get), "Process tournament"),
 (routes.CityController.find(tournament.id.get), "Get example")), msg) {
-    <article>
-        <h1>@tournament.name</h1>
+    <h1 class="page-header">@tournament.name</h1>
 
-        <h3>Tournament status:</h3>
-        <dl class="dl-horizontal">
-            <dt>Round:</dt>
-            <dd>@tournament.rounds.headOption.fold("")(_.name)</dd>
+    <h2>Tournament status:</h2>
+    <h4>
+        <span style="color: #666666">
+            @if(tournament.rounds.nonEmpty){
+                Current round: @tournament.rounds.head.name
 
-            <dt>Cities still in game:</dt>
-            <dd>
-                @tournament.rounds.headOption.fold(Html(tournament.teams.size.toString)){ r =>
-                    @if(r.isInstanceOf[PlayoffRound] && r.asInstanceOf[PlayoffRound].preliminary){
-                        @Html(tournament.teams.size.toString)
-                    } else {
-                        @Html(r.teams.size.toString)
-                    }
+                (@tournament.rounds.headOption.fold(Html(tournament.teams.size.toString)){ r =>
+                @if(r.isInstanceOf[PlayoffRound] && r.asInstanceOf[PlayoffRound].preliminary){
+                    @Html(tournament.teams.size.toString)
+                } else {
+                    @Html(r.teams.size.toString)
                 }
-                 / @tournament.teams.size
-            </dd>
-
-            <dt>Current status:</dt>
-            <dd>@tournament.rounds.headOption.fold("NOT STARTED YET")(_.status.toString) @tournament.rounds.headOption.map(_.stepIndex)</dd>
-        </dl>
-
-        <h3>Rounds history:</h3>
-        <dl class="dl-horizontal">
-            @for(round <- tournament.rounds) {
-                <a href="@routes.RoundController.find(round.id.get)">
-                    <dt>@round.name:</dt>
-                </a>
-                    <dd>@round.status</dd>
             }
-        </dl>
+                / @tournament.teams.size teams)
+            } else {
+                Not started yet
+            }
+        </span>
+    </h4>
 
-        <h3>Cities history:</h3>
-        <dl class="dl-horizontal">
-        @for(team <- tournament.teams.sortBy(_.name)) {
-            <a href="@routes.CityController.find(team.id)">
-                <dt>@team.name</dt>
-            </a>
-            <dd>
-                @if(tournament.rounds.nonEmpty){
-                    @tournament.teamsWithTheirLastRound.get(team) match {
-                        case None => {
-                            Not playing yet
-                        }
-                        case Some(s: String) => {
-                            @if(s == tournament.rounds.head.name) {
-                                <b>Still in game</b>
-                            } else {
-                                Eliminated in @s
-                            }
-                        }
-                    }
-                }
-            </dd>
+    <h2>Rounds history:</h2>
+        @for(round <- tournament.rounds) {
+            <div class="list-group">
+                <a href="@routes.RoundController.find(round.id.get)" class="list-group-item">
+                    <h4 class="list-group-item-heading">@round.name</h4>
+                    <p class="list-group-item-text">
+                        @Messages("round.status." + round.status.toString)
+                        @if(round.isPlayed) {@{round.stepIndex + 1}}
+                    </p>
+                </a>
+            </div>
         }
-        </dl>
-    </article>
+
+
+    <h2>Cities history:</h2>
+
+    <div class="row">
+        <span class="col-lg-6">
+            <div class="list-group">
+            @for(team <- tournament.teams.sortBy(_.name)) {
+                @if(tournament.teams.isEmpty || tournament.rounds.head.teams.exists(_.id == team.id)) {
+                    <a href="@routes.CityController.find(team.id)" class="list-group-item">@team.name</a>
+                } else {
+                    <a href="@routes.CityController.find(team.id)" class="list-group-item list-group-item-warning">@team.name</a>
+                }
+            }
+            </div>
+        </span>
+    </div>
 }
