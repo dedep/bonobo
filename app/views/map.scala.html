@@ -10,23 +10,20 @@
 
 <script>
 
-//  TODO:  REFAKTOR
-    var citsa = @Html(markers.map(m => Json.obj("name" -> m._1, "latLng" -> Json.arr(m._2, m._3)))
-        .foldLeft(play.api.libs.json.JsArray())((acc, x) => acc ++ Json.arr(x)).toString())
-
-var cities = [
-{latLng: [52.50, 13.39], name: 'Berlin'},
-{latLng: [53.56, 10.00], name: 'Hamburg'}
-];
+    var markersJsonArray = @Html(
+        markers.map(m => Json.obj("name" -> m._1, "latLng" -> Json.arr(m._2, m._3)))
+            .foldLeft(play.api.libs.json.JsArray()) {
+                (acc, x) => acc ++ Json.arr(x)
+            }.toString()
+    )
 
     $(function() {
-
         $('#bonobo-world-map').vectorMap({
             map: 'world_mill_en',
             regionsSelectable: true,
             backgroundColor: '#555',
             zoomMax: 100,
-            markers: citsa,
+            markers: markersJsonArray,
             focusOn: '@territoryCode',
             regionStyle: {
                 initial: {

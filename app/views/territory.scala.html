@@ -1,14 +1,88 @@
-@(territory: models.territory.Territory)(alerts: utils.AlertsHelper.Alert = None)
+@(territory: models.territory.Territory)
 
-@main(List((routes.TerritoryController.startTournament(territory.id), "Start tournament")), alerts) {
+@main {
 
-    <h1>@territory.name</h1>
+    <h1 class="page-header">@territory.name</h1>
+    <h2>General info</h2>
     <h4 style="margin-left: 50px">Total population: @java.text.NumberFormat.getNumberInstance(java.util.Locale.US).format(territory.population)</h4>
-    <h4 style="margin-left: 50px">Container:
-        @if(territory.container.nonEmpty) {
+    @if(territory.container.nonEmpty) {
+        <h4 style="margin-left: 50px">Container:
             <a href="@routes.TerritoryController.find(territory.container.get.id)">@territory.container.map(_.name)</a>
-        }
-    </h4>
+        </h4>
+    }
 
+    <h2>Map</h2>
     @map(territory.code.take(2))
+
+    <div id="start-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Start new tournament</h4>
+                </div>
+                <div class="modal-body">
+                    <label for="t_name">Tournament name</label>
+                    <input id="t_name" type="text" >
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="modal-start" class="btn btn-primary">Start</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
+
+<script>
+$(document).ready(function () {
+    $("#menu-item-1")
+        .css("display", "block")
+        .text("Start tournament")
+        .attr("data-toggle", "modal")
+        .attr("data-target", ".bs-example-modal-lg");
+
+    $("#modal-start").click(function() {
+        $('#start-modal').modal('hide');
+        $("#ajaxloader").css("display", "block");
+        $.ajax({
+            type : 'POST',
+            url : '@routes.TerritoryController.startTournament()',
+            data: {
+                id: @territory.id,
+                name: $("#t_name").val()
+            },
+            dataType : "text",
+            success : function(msg) {
+                $("#ajaxloader").css("display", "none");
+                addSuccessAlert(msg)
+            },
+            error : function(msg) {
+                $("#ajaxloader").css("display", "none");
+                addErrorAlert(msg)
+            }
+        });
+    });
+
+    if ('@territory.code' == 'W') {
+        $("#menu-item-2").css("display", "block").text("Update cities").click(function() {
+            $("#ajaxloader").css("display", "block");
+
+            $.ajax({
+                type : 'POST',
+                url : "@routes.AppController.updateCitiesDefinitions()",
+                dataType : "text",
+                success : function(notFetched) {
+                    $("#ajaxloader").css("display", "none");
+                    addSuccessAlert("Cities geographical locations and populations has been successfully fetched. " +
+                        notFetched + " updates was skipped.")
+                },
+                error : function(msg) {
+                    $("#ajaxloader").css("display", "none");
+                    addErrorAlert("Error occurred during cities update.")
+                }
+            });
+        });
+    }
+});
+</script>

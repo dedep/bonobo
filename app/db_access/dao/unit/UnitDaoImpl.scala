@@ -61,15 +61,6 @@ class UnitDaoImpl(implicit inj: Injector) extends UnitDao with Injectable {
   }
 
   override def saveOrUpdate(u: RoundUnit, parentRoundId: Long)(implicit rs: JdbcBackend#Session): Long = {
-//    if (roundDao.fromId(parentRoundId).isEmpty)
-//      throw new IllegalStateException("Unit cannot refer to non-existent round")
-//
-//    val parentRoundTeams = roundDao.fromId(parentRoundId).get.teams
-//    if (!u.teams.forall(team => parentRoundTeams.exists(t => t.id == team.id)))
-//      throw new IllegalStateException("Unit cannot contain cities that are not from parent round")
-
-//    u.teams.foreach(team => City.saveOrUpdate(team.asInstanceOf[City]))
-
     if (u.id.nonEmpty && fromId(u.id.get).nonEmpty) update(u, parentRoundId)
     else save(u, parentRoundId)
   }

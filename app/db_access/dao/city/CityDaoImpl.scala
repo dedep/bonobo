@@ -34,12 +34,12 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
   }
 
   private def save(c: City)(implicit rs: JdbcBackend#Session): Long = {
-    log.info("Saving new city " + c)
+    log.info("Saving new city in DB " + c)
     (ds returning ds.map(_.id)) += (c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude)
   }
 
   private def update(c: City)(implicit rs: JdbcBackend#Session): Long = {
-    log.info("Updating city " + c)
+    log.info("Updating city in DB " + c)
     ds.filter(_.id === c.id).update(c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude)
   }
 

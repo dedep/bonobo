@@ -8,6 +8,7 @@ import db_access.dao.tournament.{TournamentDaoImpl, TournamentDao}
 import db_access.dao.unit.{UnitDao, UnitDaoImpl}
 
 import scaldi.Module
+import service.city_updater.{CityUpdaterImpl, CityUpdater}
 
 class DaoModule extends Module {
   bind [TerritoryDao] to new TerritoryDaoImpl
@@ -16,4 +17,6 @@ class DaoModule extends Module {
   bind [RoundDao] to new RoundDaoImpl
   bind [UnitDao] to new UnitDaoImpl
   bind [TournamentDao] to new TournamentDaoImpl
+
+  bind [CityUpdater] to new CityUpdaterImpl
 }

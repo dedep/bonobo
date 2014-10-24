@@ -1,8 +1,7 @@
-@(tournament: models.tournament.Tournament)(msg: utils.AlertsHelper.Alert = None)
+@(tournament: models.tournament.Tournament)
 @import models.round.pair.PlayoffRound
 
-@main(List((routes.TournamentController.processNextStep(tournament.id.get), "Process tournament"),
-(routes.CityController.find(tournament.id.get), "Get example")), msg) {
+@main {
     <h1 class="page-header">@tournament.name</h1>
 
     <h2>Tournament status:</h2>
@@ -26,6 +25,13 @@
     </h4>
 
     <h2>Rounds history:</h2>
+        @if(tournament.rounds.isEmpty) {
+            <h4>
+                <span style="color: #666666">
+                    There is no tournament history yet.
+                </span>
+            </h4>
+        }
         @for(round <- tournament.rounds) {
             <div class="list-group">
                 <a href="@routes.RoundController.find(round.id.get)" class="list-group-item">
@@ -38,14 +44,15 @@
             </div>
         }
 
-
     <h2>Cities history:</h2>
 
     <div class="row">
         <span class="col-lg-6">
             <div class="list-group">
+                @*zbyt skomplikowane*@
             @for(team <- tournament.teams.sortBy(_.name)) {
-                @if(tournament.teams.isEmpty || tournament.rounds.head.teams.exists(_.id == team.id)) {
+                @if(tournament.teams.isEmpty || tournament.rounds.isEmpty || tournament.rounds.head.teams.exists(_.id == team.id) ||
+                        (tournament.rounds.head.isInstanceOf[PlayoffRound] && tournament.rounds.head.asInstanceOf[PlayoffRound].preliminary)) {
                     <a href="@routes.CityController.find(team.id)" class="list-group-item">@team.name</a>
                 } else {
                     <a href="@routes.CityController.find(team.id)" class="list-group-item list-group-item-warning">@team.name</a>
@@ -55,3 +62,29 @@
         </span>
     </div>
 }
+
+<script>
+$(document).ready(function () {
+    $("#menu-item-1").css("display", "block").text("Process tournament").click(function() {
+        $("#ajaxloader").css("display", "block");
+        $.ajax({
+            type : 'POST',
+            url : "@routes.TournamentController.processNextStep()",
+            data : {
+                id: @tournament.id.get
+            },
+            dataType : "text",
+            success : function(data) {
+                $("body").html(data);
+                $("#ajaxloader").css("display", "none");
+                addSuccessAlert('Tournament processing finished with success')
+            },
+            error : function(data) {
+                $("body").html(data);
+                $("#ajaxloader").css("display", "none");
+                addErrorAlert('Error occured during tournament processing')
+            }
+        });
+    });
+});
+</script>

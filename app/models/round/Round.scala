@@ -6,6 +6,7 @@ import models.Common
 import models.round.promotion.PromotionsStrategy
 import models.team.Team
 
+//TODO: przydałoby się rozróżnienie na Final Round - tam np. nie ma losowania
 trait Round {
   val teams: List[Team]
   val pots: List[Pot]
@@ -20,7 +21,7 @@ trait Round {
 
   def getPromotedTeamsCount: Int
 
-  //todo: przydałoby się to persystować
+  //todo: TRZEBA to persystować - bo są rozbieżności w kolejności gdy o awansie decyduje los
   def getPromotedTeams(implicit strategy: PromotionsStrategy): List[Team] =
     if (!isFinished()) throw new IllegalStateException("Round has not been finished yet")
     else strategy.arbitratePromotions(this)

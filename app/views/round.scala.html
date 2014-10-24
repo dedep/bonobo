@@ -1,7 +1,7 @@
 @(round: models.round.Round)
 @import Common._
 
-@main(Nil, None) {
+@main {
     <h1 class="page-header">@round.name</h1>
 
     <h2>Round status</h2>
@@ -13,22 +13,25 @@
     </h4>
 
     <h2>Pots</h2>
-    <div class="row">
-        @for(pot <- round.pots) {
-            <span class="col-lg-6">
-                <div class="list-group">
-                    <h4>Pot @{round.pots.indexOf(pot) + 1}</h4>
-                    @for(team <- pot) {
-                        <a href="@routes.CityController.find(team.id)" class="list-group-item">@team.name</a>
-                    }
-                </div>
-             </span>
+        @if(round.pots.isEmpty){
+            <h4 style="color: #666666">Not established yet.</h4>
         }
-    </div>
+        <div class="row">
+        @for(pot <- round.pots) {
+                <span class="col-lg-6">
+                    <div class="list-group">
+                        <h4>Pot @{round.pots.indexOf(pot) + 1}</h4>
+                        @for(team <- pot) {
+                            <a href="@routes.CityController.find(team.id)" class="list-group-item">@team.name</a>
+                        }
+                    </div>
+                </span>
+        }
+        </div>
 
     <h2>Units</h2>
         @round.units match {
-            case Nil => { <h4 class="col-lg-offset-1" style="color: #666666">Not drawn yet.</h4> }
+            case Nil => { <h4 style="color: #666666">Not drawn yet.</h4> }
             case _   => {
                 <div class="row">
                 <span class="col-lg-6">

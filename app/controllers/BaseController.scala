@@ -1,5 +1,8 @@
 package controllers
 
+import com.typesafe.scalalogging.slf4j.Logger
+import org.apache.commons.lang3.exception.ExceptionUtils
+import org.slf4j.LoggerFactory
 import play.api.db.slick._
 import play.api.mvc._
 
@@ -9,7 +12,12 @@ trait BaseController extends Controller {
       try {
         requestHandler(rs)
       } catch {
-        case e: Exception => InternalServerError(views.html.error(e.getMessage))
+        case e: Exception => {
+          val log = Logger(LoggerFactory.getLogger(this.getClass))
+          log.error("Error occurred during processing DB Request " + e.getMessage + "\n" + ExceptionUtils.getStackTrace(e))
+
+          InternalServerError(views.html.error(e.getMessage))
+        }
       }
     }
   }

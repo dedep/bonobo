@@ -16,8 +16,28 @@ footer .licence .typesafe,footer .licence .zenexity{float:right;}
 footer .licence .typesafe{position:relative;top:-3px;margin-left:10px;}
 footer .licence a{color:#999;}
 
-#top{margin-top:40px;background-image: url('/assets/images/bg.png');background-color:rgb(184, 225, 134);box-shadow:0 -4px 0 rgba(0, 0, 0, 0.1) inset;padding:0;position:relative;}#top .wrapper{padding:30px 0;}
-#top h1{color:#fff;font-size:35px;line-height:48px;text-shadow:2px 2px 0 rgba(0, 0, 0, 0.1);}#top h1 a{text-decoration:none;color:#fff;}
+#top{
+    margin-top:60px;
+    background-image: url('/assets/images/bg.png');
+    background-color:rgb(184, 225, 134);
+    box-shadow:0 -4px 0 rgba(0, 0, 0, 0.1) inset;padding:0;position:relative;
+}
+
+#top .wrapper{
+    padding:30px 0;
+}
+
+#top h1{
+    color:#fff;
+    font-size:35px;
+    line-height:48px;
+    text-shadow:2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+#top h1 a{
+    text-decoration:none;
+    color:#fff;
+}
 
 .section-header {
     padding-top: 80px;
@@ -43,4 +63,58 @@ footer .licence a{color:#999;}
     font-family: TickingTimebombBB;
     font-size: 200px;
     text-align: center;
+}
+
+@-webkit-keyframes spin
+{
+    from { -webkit-transform: rotate(0deg); opacity: 0.4; }
+    50%  { -webkit-transform: rotate(180deg); opacity: 1; }
+    to   { -webkit-transform: rotate(360deg); opacity: 0.4; }
+}
+
+@-moz-keyframes spin
+{
+    from { -moz-transform: rotate(0deg); opacity: 0.4; }
+    50%  { -moz-transform: rotate(180deg); opacity: 1; }
+    to   { -moz-transform: rotate(360deg); opacity: 0.4; }
+}
+
+@-ms-keyframes spin
+{
+    from { -ms-transform: rotate(0deg); opacity: 0.4; }
+    50%  { -ms-transform: rotate(180deg); opacity: 1; }
+    to   { -ms-transform: rotate(360deg); opacity: 0.4; }
+}
+
+@-o-keyframes spin
+{
+    from { -o-transform: rotate(0deg); opacity: 0.4; }
+    50%  { -o-transform: rotate(180deg); opacity: 1; }
+    to   { -o-transform: rotate(360deg); opacity: 0.4; }
+}
+
+@keyframes spin
+{
+    from { transform: rotate(0deg); opacity: 0.2; }
+    50%  { transform: rotate(180deg); opacity: 1; }
+    to   { transform: rotate(360deg); opacity: 0.2; }
+}
+
+#ajaxloader {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    left: 50%;
+    top: 40%;
+    margin: 0 0 0 -35px;
+    border: 8px solid #ac2925;
+    border-right-color: transparent;
+    border-radius: 50%;
+    box-shadow: 0 0 25px 2px #269abc;
+    -webkit-animation: spin 1s linear infinite;
+    -moz-animation: spin 1s linear infinite;
+    -ms-animation: spin 1s linear infinite;
+    -o-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+
 }

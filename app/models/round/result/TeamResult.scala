@@ -3,7 +3,6 @@ package models.round.result
 import models._match.result.{Draw, MatchResult, WinA, WinB}
 import models.team.Team
 
-//todo: test wygranych, przegranych, zremisowanych ...
 case class TeamResult(team: Team, points: Double = 0, goalsScored: Int = 0, goalsConceded: Int = 0,
                        wins: Int = 0, draws: Int = 0, loses: Int = 0) {
   def aPlus(mResult: MatchResult)(implicit pointsGrantingStrategy: PointsGrantingStrategy): TeamResult = mResult match {

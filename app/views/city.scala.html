@@ -1,11 +1,16 @@
 @(city: models.territory.City)
 
-@main(Nil, None) {
+@main {
     <h1 class="page-header">@city.name</h1>
 
-    <section id="map">
-        <h3>Map</h3>
-        @*ten substring to do osobnej metody*@
-        @map(city.territory.code.take(2), List((city.name, city.latitude, city.longitude)))
-    </section>
+    <h2>General info</h2>
+    <h4 style="margin-left: 50px">Total population: @java.text.NumberFormat.getNumberInstance(java.util.Locale.US).format(city.population)</h4>
+    <h4 style="margin-left: 50px">Points: @city.points</h4>
+    <h4 style="margin-left: 50px">Territory:
+        <a href="@routes.TerritoryController.find(city.territory.id)">@city.territory.name</a>
+    </h4>
+
+    <h2>Map</h2>
+    @*ten substring to do osobnej metody*@
+    @map(city.territory.code.take(2), List((city.name, city.latitude, city.longitude)))
 }

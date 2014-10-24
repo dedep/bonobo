@@ -4,7 +4,8 @@ import scala.util.Random
 
 import models.round.result.TeamResult
 
-//todo: co gdy losujemy zespół przechodzący - wtedy każde GUI pokazuje co innego
+//todo: co gdy losujemy zespół przechodzący - wtedy każde GUI pokazuje co innego !! - persystencja wskażnika losowego
+//todo: w przypadku takiego samego stosunku bramek powinny decydować bramki na wyjeździe
 object TeamResultsOrdering extends scala.math.Ordering[TeamResult] {
   override def compare(x: TeamResult, y: TeamResult): Int =
     comparePoints(x, y)

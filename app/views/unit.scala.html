@@ -1,7 +1,7 @@
 @(unit: models.round.RoundUnit)
 @import models._match.PlayedMatch
 
-@main(List((new Call("GET", "#results"), "Results"), (new Call("GET", "#matches"), "Matches")), None) {
+@main {
     <section id="results">
         <h1 class="page-header">@unit.name</h1>
         <h2>Results</h2>
@@ -36,7 +36,7 @@
     </section>
 
     <section id="matches" style="">
-        <h2 class="section-header">Matches</h2>
+        <h2>Matches</h2>
         <table class="table">
             <thead>
                 <tr>
@@ -68,4 +68,6 @@
         </table>
     </section>
 
+    <h2>Map</h2>
+    @map("", unit.teams.map(_.asInstanceOf[models.territory.City]).map(city => (city.name, city.latitude, city.longitude)))
 }

@@ -17,14 +17,4 @@ class CityController(implicit inj: Injector) extends BaseController with Injecta
       }
     }
   }
-
-  def findJson(id: Long) = wrapDBRequest {
-      implicit rs =>
-        cityDao.fromId(id) match {
-          case None => NotFound(views.html.error("City not found"))
-          case Some(c: City) => {
-            Ok(Json.toJson(c))
-          }
-        }
-    }
 }
