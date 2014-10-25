@@ -19,6 +19,7 @@ POST        /tournament/process           @controllers.TournamentController.proc
 GET         /tournament/:t                @controllers.TournamentController.find(t: Long)
 
 # Rounds
+GET         /round/filter                 @controllers.RoundController.findWithFilter
 GET         /round/:t                     @controllers.RoundController.find(t: Long)
 
 # Matches

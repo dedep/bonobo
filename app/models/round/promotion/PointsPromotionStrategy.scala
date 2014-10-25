@@ -8,10 +8,9 @@ import Common._
 import scala.util.Sorting
 
 object PointsPromotionStrategy extends PromotionsStrategy {
-  override def arbitratePromotions(round: Round): List[Team] = {
+  override def arbitratePromotions(round: Round): List[Team] =
     round.units.map(_.results)
       .map(Sorting.stableSort(_).reverse)
-      .flatMap(_.take(round.getPromotedTeamsCount))
+      .flatMap(_.take(round.promotedTeamsCount))
       .map(_.team)
-  }
 }

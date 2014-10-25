@@ -80,7 +80,7 @@ class RoundDaoImpl(implicit inj: Injector) extends RoundDao with Injectable {
     log.info("Before saving new round " + r.name)
 
     val newIndex = (ds returning ds.map(_.id)) += (r.name, r.getClass.getName, r.stepIndex,
-      r.isInstanceOf[PlayoffRound] && r.asInstanceOf[PlayoffRound].preliminary, parentTournamentId)
+      r.isPreliminary, parentTournamentId)
 
     if (r.units.nonEmpty) r.units.foreach(unitDao.saveOrUpdate(_, newIndex))
 
@@ -92,7 +92,7 @@ class RoundDaoImpl(implicit inj: Injector) extends RoundDao with Injectable {
     log.info("Before updating round " + r.name)
 
     ds.filter(_.id === r.id.get).update((r.name, r.getClass.getName, r.stepIndex,
-      r.isInstanceOf[PlayoffRound] && r.asInstanceOf[PlayoffRound].preliminary, parentTournamentId))
+      r.isPreliminary, parentTournamentId))
 
     log.info("Before unit saveOrUpdateCall round " + r.name)
     if (r.units.nonEmpty) r.units.foreach(unitDao.saveOrUpdate(_, r.id.get))

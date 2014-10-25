@@ -23,7 +23,7 @@
                 </div>
                 <div class="modal-body">
                     <label for="t_name">Tournament name</label>
-                    <input id="t_name" type="text" >
+                    <input id="t_name" type="text">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -40,7 +40,11 @@ $(document).ready(function () {
         .css("display", "block")
         .text("Start tournament")
         .attr("data-toggle", "modal")
-        .attr("data-target", ".bs-example-modal-lg");
+        .attr("data-target", "#start-modal");
+
+    $('body').on('shown.bs.modal', '.modal', function () {
+        $('#t_name').focus();
+    });
 
     $("#modal-start").click(function() {
         $('#start-modal').modal('hide');
@@ -62,6 +66,12 @@ $(document).ready(function () {
                 addErrorAlert(msg)
             }
         });
+    });
+
+    $("#t_name").keypress( function(e) {
+        if ( e.which == 13 ) {
+            $ ( '#modal-start' ).click() ;
+        }
     });
 
     if ('@territory.code' == 'W') {

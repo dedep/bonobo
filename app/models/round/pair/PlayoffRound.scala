@@ -3,7 +3,6 @@ package models.round.pair
 import com.typesafe.scalalogging.slf4j.Logger
 import models.Common
 import Common._
-import models.Common
 import models.round.{Round, RoundUnit}
 import models.team.Team
 import org.slf4j.LoggerFactory
@@ -15,7 +14,7 @@ class PlayoffRound(override val name: String,
                    potsCbn: => List[Pot],
                    unitsCbn: => List[RoundUnit],
                    override val stepIndex: Int,
-                   val preliminary: Boolean,
+                   override val isPreliminary: Boolean,
                    override val id: Option[Long] = None) extends Round {
 
   def this(nam: String,
@@ -44,24 +43,24 @@ class PlayoffRound(override val name: String,
     val potA = Random.shuffle(pots(0))
     val potB = Random.shuffle(pots(1))
 
-    new PlayoffRound(name, teams, pots, potA.zip(potB).map(a => new Pair("Pair " + a._1.name + " - " + a._2.name, a)), stepIndex, preliminary, id)
+    new PlayoffRound(name, teams, pots, potA.zip(potB).map(a => new Pair("Pair " + a._1.name + " - " + a._2.name, a)), stepIndex, isPreliminary, id)
   }
 
-  override def isFinalRound(): Boolean = !preliminary && teams.size == 2
+  override val isFinalRound: Boolean = !isPreliminary && teams.size == 2
 
   override def drawPots(): Round = {
     val potsTuple = teams.sortBy(_.rankPoints).reverse.splitAt(teams.size / 2)
-    new PlayoffRound(name, teams, List(potsTuple._1, potsTuple._2), units, stepIndex, preliminary, id)
+    new PlayoffRound(name, teams, List(potsTuple._1, potsTuple._2), units, stepIndex, isPreliminary, id)
   }
 
-  override def isFinished(): Boolean = stepIndex == 2
+  override def finished: Boolean = stepIndex == 2
 
   override def playFixture(): Round = {
     require(units.nonEmpty)
 
     val newUnits = units.map(_.playFixture(stepIndex))
-    new PlayoffRound(name, teams, pots, newUnits, stepIndex + 1, preliminary, id)
+    new PlayoffRound(name, teams, pots, newUnits, stepIndex + 1, isPreliminary, id)
   }
 
-  override def getPromotedTeamsCount: Int = 1
+  override val promotedTeamsCount: Int = 1
 }

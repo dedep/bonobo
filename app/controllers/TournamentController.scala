@@ -56,6 +56,7 @@ class TournamentController(implicit inj: Injector) extends BaseController with I
 
             Ok(views.html.tournament(tournamentDao.fromId(nTournamentId).get))
           } else {
+            log.warn("Cannot process finished tournament (tournament ID = " + id + ")")
             PreconditionFailed(views.html.error("Tournament is already finished."))
           }
         } catch {

@@ -1,14 +1,27 @@
-@(round: models.round.Round)
+@(round: models.round.Round, filter: String = "Warszawa")
 @import Common._
+@import org.apache.commons.lang3.StringUtils._
 
 @main {
-    <h1 class="page-header">@round.name</h1>
+    <div class="row">
+        <div class="col-lg-9">
+            <h1 class="page-header">@round.name</h1>
+        </div>
+        <div class="col-lg-3">
+            <div class="input-group" style="margin-top: 40px">
+                <input id="filter-input" type="text" class="form-control">
+                <span class="input-group-btn">
+                    <button id="filter-button" class="btn btn-default" type="button"><span class="glyphicon glyphicon-star"></span></button>
+                </span>
+            </div><!-- /input-group -->
+        </div><!-- /.col-lg-6 -->
+    </div><!-- /.row -->
 
     <h2>Round status</h2>
     <h4>
         <span style="color: #666666">
             @Messages("round.status." + round.status.toString)
-            @if(round.isPlayed) {@{round.stepIndex + 1}}
+            @if(round.canBePlayed) {@{round.stepIndex + 1}}
         </span>
     </h4>
 
@@ -20,8 +33,8 @@
         @for(pot <- round.pots) {
                 <span class="col-lg-6">
                     <div class="list-group">
-                        <h4>Pot @{round.pots.indexOf(pot) + 1}</h4>
-                        @for(team <- pot) {
+                        <h4 style="color: #666666">Pot @{round.pots.indexOf(pot) + 1}</h4>
+                        @for(team <- pot ; if containsIgnoreCase(team.name, filter)) {
                             <a href="@routes.CityController.find(team.id)" class="list-group-item">@team.name</a>
                         }
                     </div>
@@ -36,7 +49,7 @@
                 <div class="row">
                 <span class="col-lg-6">
                     <div class="list-group">
-                        @for(unit <- round.units) {
+                        @for(unit <- round.units ; if unit.teams.exists(t => containsIgnoreCase(t.name, filter))) {
                             <a href="@routes.UnitController.find(unit.id.get)" class="list-group-item">@unit.name</a>
                         }
                     </div>
@@ -45,19 +58,65 @@
             }
         }
 
-    <h2>Promoted teams</h2>
-    @round.isFinished() match {
-        case false => { <h4 style="color: #666666">Not finished yet.</h4> }
-        case true  => {
-            <div class="row">
-            <span class="col-lg-6">
-                <div class="list-group">
-                @for(team <- round.getPromotedTeams) {
-                    <a href="@routes.CityController.find(team.id)" class="list-group-item list-group-item-success">@team.name</a>
+    <div class="row">
+        <span class="col-lg-6">
+            <h2>Promoted teams</h2>
+            @round.finished match {
+                case false => { <h4 style="color: #666666">Not finished yet.</h4> }
+                case true  => {
+
+                    <div class="list-group">
+                    @for(team <- round.getPromotedTeams ; if containsIgnoreCase(team.name, filter)) {
+                        <a href="@routes.CityController.find(team.id)" class="list-group-item list-group-item-success">@team.name</a>
+                    }
+                    </div>
                 }
-                </div>
-            </span>
-            </div>
-        }
-    }
+            }
+        </span>
+
+        <span class="col-lg-6">
+            <h2>Eliminated teams</h2>
+            @round.finished match {
+                case false => { <h4 style="color: #666666">Not finished yet.</h4> }
+                case true  => {
+                    <div class="list-group">
+                    @for(team <- round.getEliminatedTeams ; if containsIgnoreCase(team.name, filter)) {
+                        <a href="@routes.CityController.find(team.id)" class="list-group-item list-group-item-warning">@team.name</a>
+                    }
+                    </div>
+                }
+            }
+        </span>
+    </div>
 }
+
+<script>
+$('document').ready(function() {
+$ ( "#filter-button" ).click ( function ( ) {
+$ ( "#ajaxloader" ).css ( "display", "block" ) ;
+$.ajax ( {
+type : 'GET',
+url : "@routes.RoundController.findWithFilter",
+data : {
+id : @round.id.get,
+filter : $ ( "#filter-input" ).val ( )
+},
+dataType : "text",
+success : function ( data ) {
+$ ( "#ajaxloader" ).css ( "display", "none" ) ;
+$ ( "body" ).html ( data ) ;
+},
+error : function ( data ) {
+$ ( "#ajaxloader" ).css ( "display", "none" ) ;
+alert ( 'NOT OK' ) ;
+}
+} ) ;
+} ) ;
+$ ( '#filter-input' ).keypress ( function ( e ) {
+if ( e.which == 13 ) {
+$ ( '#filter-button' ).click ( ) ;
+}
+}) ;
+});
+
+</script>

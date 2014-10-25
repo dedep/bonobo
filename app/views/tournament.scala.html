@@ -1,5 +1,4 @@
 @(tournament: models.tournament.Tournament)
-@import models.round.pair.PlayoffRound
 
 @main {
     <h1 class="page-header">@tournament.name</h1>
@@ -7,20 +6,21 @@
     <h2>Tournament status:</h2>
     <h4>
         <span style="color: #666666">
-            @if(tournament.rounds.nonEmpty){
+            <div>@Messages("tournament.status." + tournament.status.toString)</div>
+            <div style="margin-top: 5px">
+            @if(tournament.isPlayed){
                 Current round: @tournament.rounds.head.name
 
                 (@tournament.rounds.headOption.fold(Html(tournament.teams.size.toString)){ r =>
-                @if(r.isInstanceOf[PlayoffRound] && r.asInstanceOf[PlayoffRound].preliminary){
+                @if(r.isPreliminary){
                     @Html(tournament.teams.size.toString)
                 } else {
                     @Html(r.teams.size.toString)
                 }
             }
                 / @tournament.teams.size teams)
-            } else {
-                Not started yet
             }
+            </div>
         </span>
     </h4>
 
@@ -38,7 +38,7 @@
                     <h4 class="list-group-item-heading">@round.name</h4>
                     <p class="list-group-item-text">
                         @Messages("round.status." + round.status.toString)
-                        @if(round.isPlayed) {@{round.stepIndex + 1}}
+                        @if(round.canBePlayed) {@{round.stepIndex + 1}}
                     </p>
                 </a>
             </div>
@@ -49,10 +49,8 @@
     <div class="row">
         <span class="col-lg-6">
             <div class="list-group">
-                @*zbyt skomplikowane*@
             @for(team <- tournament.teams.sortBy(_.name)) {
-                @if(tournament.teams.isEmpty || tournament.rounds.isEmpty || tournament.rounds.head.teams.exists(_.id == team.id) ||
-                        (tournament.rounds.head.isInstanceOf[PlayoffRound] && tournament.rounds.head.asInstanceOf[PlayoffRound].preliminary)) {
+                @if(tournament.isTeamStillPlaying(team.id)) {
                     <a href="@routes.CityController.find(team.id)" class="list-group-item">@team.name</a>
                 } else {
                     <a href="@routes.CityController.find(team.id)" class="list-group-item list-group-item-warning">@team.name</a>
@@ -61,30 +59,51 @@
             </div>
         </span>
     </div>
+
+    <div id="warning-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Process tournament</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Cannot process finished tournament</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 <script>
 $(document).ready(function () {
     $("#menu-item-1").css("display", "block").text("Process tournament").click(function() {
-        $("#ajaxloader").css("display", "block");
-        $.ajax({
-            type : 'POST',
-            url : "@routes.TournamentController.processNextStep()",
-            data : {
-                id: @tournament.id.get
-            },
-            dataType : "text",
-            success : function(data) {
-                $("body").html(data);
-                $("#ajaxloader").css("display", "none");
-                addSuccessAlert('Tournament processing finished with success')
-            },
-            error : function(data) {
-                $("body").html(data);
-                $("#ajaxloader").css("display", "none");
-                addErrorAlert('Error occured during tournament processing')
-            }
-        });
+        if(@tournament.isFinished()) {
+            $("#warning-modal").modal('show');
+        } else {
+            $ ( "#ajaxloader" ).css ( "display", "block" );
+            $.ajax({
+                type : 'POST',
+                url : " @routes.TournamentController.processNextStep() ",
+                data : {
+                    id : @tournament.id.get
+                },
+                dataType : "text",
+                success : function ( data ) {
+                    $ ( "body" ).html ( data );
+                    $ ( "#ajaxloader" ).css ( "display", "none" );
+                    addSuccessAlert ( 'Tournament processing finished with success' )
+                },
+                error : function ( data ) {
+                    $ ( "body" ).html ( data ) ;
+                    $ ( "#ajaxloader" ).css ( "display", "none" );
+                    addErrorAlert ( 'Error occured during tournament processing' )
+                }
+            });
+        }
     });
 });
 </script>

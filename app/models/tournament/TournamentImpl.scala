@@ -20,10 +20,10 @@ class TournamentImpl(override val teams: List[Team], override val name: String,
     val lastRound: Option[Round] = rounds.headOption
 
     if (lastRound.isEmpty) createFirstRound()
-    else if (lastRound.get.isFinished()) {
+    else if (lastRound.get.finished) {
       lastRound.get match {
         case round: PlayoffRound =>
-          if (round.preliminary) {
+          if (round.isPreliminary) {
             createNextRound(teams.diff(lastRound.get.teams) ++ lastRound.get.getPromotedTeams)
           }
           else {
@@ -65,7 +65,7 @@ class TournamentImpl(override val teams: List[Team], override val name: String,
 
   override def isFinished(): Boolean = rounds.headOption match {
     case None => false
-    case Some(r: Round) => r.isFinished() && r.isFinalRound()
+    case Some(r: Round) => r.finished && r.isFinalRound
   }
 
   //todo: TEST !!!!! TODO: NIEDZIELA

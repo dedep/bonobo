@@ -2,3 +2,7 @@ round.status.PLAY_FIXTURE=Before playing fixture no.
 round.status.DRAW_POTS=Before pots drawing
 round.status.DRAW_UNITS=Before units drawing
 round.status.FINISHED=Round finished
+
+tournament.status.NOT_STARTED=Not started yet
+tournament.status.PLAYING=Playing Tournament
+tournament.status.FINISHED=Tournament finished

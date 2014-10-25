@@ -30,7 +30,7 @@ class AppController(implicit inj: Injector) extends BaseController with Injectab
     import routes.javascript._
     Ok(
       Routes.javascriptRouter("jsRoutes")(
-        TerritoryController.startTournament, TournamentController.processNextStep
+        TerritoryController.startTournament, TournamentController.processNextStep, RoundController.findWithFilter
       )
     ).as("text/javascript")
   }

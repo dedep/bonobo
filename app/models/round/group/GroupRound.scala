@@ -34,7 +34,7 @@ class GroupRound(override val name: String,
     new GroupRound(name, teams, pots, newUnits.toList, stepIndex, id)
   }
 
-  override def isFinalRound(): Boolean = false
+  override val isFinalRound: Boolean = false
 
   override def drawPots(): Round = {
     require(teams.size % GROUP_SIZE == 0)
@@ -45,7 +45,7 @@ class GroupRound(override val name: String,
     new GroupRound(name, teams, newPots, units, stepIndex, id)
   }
 
-  override def isFinished(): Boolean = stepIndex == (GROUP_SIZE - 1) * 2
+  override def finished: Boolean = stepIndex == (GROUP_SIZE - 1) * 2
 
   override def playFixture(): Round = {
     require(units.nonEmpty)
@@ -54,7 +54,9 @@ class GroupRound(override val name: String,
     new GroupRound(name, teams, pots, newUnits, stepIndex + 1, id)
   }
 
-  override def getPromotedTeamsCount: Int = GROUP_SIZE / 2
+  override val promotedTeamsCount: Int = PROMOTE_SIZE
+
+  override val isPreliminary: Boolean = false
 }
 
 object GroupRound {
