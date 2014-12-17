@@ -45,15 +45,12 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
       )(StartTournamentFormData.apply)(StartTournamentFormData.unapply)
     )
 
-    log.info("before " + startTournamentForm.bindFromRequest.fold(_ => 1, _ => 2))
-
     startTournamentForm.bindFromRequest.fold(
       hasErrors => {
         log.error("Cannot bind Start Tournament Request " + hasErrors)
         BadRequest("Cannot bind Start Tournament Request")
       },
       success => {
-        log.info("Starting new tournament in territory with ID = " + success.id + " and name = " + success.name)
         startTournament(success.id, success.name)
       }
     )
@@ -68,7 +65,7 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
           PreconditionFailed(views.html.error("Tournament requires at least 2 cities in territory."))
         }
         else {
-          val newIndex = tournamentDao.saveOrUpdate(new TournamentImpl(cities, name))
+          val newIndex = tournamentDao.saveNew(new TournamentImpl(cities, name))
           val successMsg = "Tournament with ID=" + newIndex + " has been created successfully."
 
           Ok(successMsg)

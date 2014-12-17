@@ -35,7 +35,7 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
       val t = new TournamentImpl(List(c1, c2), "New tournament")
 
       //when
-      tournamentDao.saveOrUpdate(t)
+      tournamentDao.updateLastRound(t)
 
       //then
       there was one(cityDao).saveOrUpdate(c1)
@@ -50,7 +50,7 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
       val t = new TournamentImpl(List(city1, city2), "New tournament", id = Some(1))
 
       //when
-      val tournamentId = tournamentDao.saveOrUpdate(t)
+      val tournamentId = tournamentDao.updateLastRound(t)
 
       //then
       val tournamentQuery = session.prepareStatement("SELECT id, name FROM tournaments WHERE tournaments.id = ?")
@@ -70,7 +70,7 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
       val t = new TournamentImpl(List(city1, city2), "New tournament", id = Some(1))
 
       //when
-      tournamentDao.saveOrUpdate(t)
+      tournamentDao.updateLastRound(t)
 
       //then
       there was one(cityDao).saveOrUpdate(city1)
@@ -108,7 +108,7 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
       val t = new TournamentImpl(List(city1, c2), "New tournament")
 
       //when - then
-      tournamentDao.saveOrUpdate(t) must throwA(new IllegalStateException("Tournament cannot refer to non-existent city"))
+      tournamentDao.updateLastRound(t) must throwA(new IllegalStateException("Tournament cannot refer to non-existent city"))
     }
   }
 
@@ -120,7 +120,7 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
       val t = new TournamentImpl(List(city1, city2), "New tournament")
 
       //when
-      val tournamentId = tournamentDao.saveOrUpdate(t)
+      val tournamentId = tournamentDao.updateLastRound(t)
 
       //then
       val tournamentQuery = session.prepareStatement("SELECT id, name FROM tournaments WHERE tournaments.id = ?")

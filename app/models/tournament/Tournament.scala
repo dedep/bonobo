@@ -2,35 +2,24 @@ package models.tournament
 
 import models.round.Round
 import models.team.Team
+import models.tournament.TournamentStatus.TournamentStatus
 
 trait Tournament {
   val teams: List[Team]
   val rounds: List[Round]
   val name: String
   val id: Option[Long]
-
-  //todo: na razie nieużywane
-  val teamsWithTheirLastRound: Map[Team, String]
+  val status: TournamentStatus
+  val teamsInGame: List[Boolean]
 
   def doStep(): Tournament
 
-  def isFinished(): Boolean
+  def isTeamStillInGame(teamId: Long): Boolean =
+    teams.zip(teamsInGame).find(_._1.id == teamId).exists(_._2)
 
-  def isTeamStillPlaying(teamId: Long): Boolean = {
-    rounds.isEmpty || rounds.head.teams.exists(_.id == teamId) || rounds.head.isPreliminary
-  }
-
-  val status: TournamentStatus.TournamentStatus = {
-    if (rounds.isEmpty) TournamentStatus.NOT_STARTED
-    else if (isFinished()) TournamentStatus.FINISHED
-    else TournamentStatus.PLAYING
-  }
+  lazy val teamsInGameSum = teamsInGame.count(_ == true)
 
   val isPlayed = status == TournamentStatus.PLAYING
 
-  object TournamentStatus extends Enumeration {
-    val NOT_STARTED, PLAYING, FINISHED = Value
-
-    type TournamentStatus = Value
-  }
+  val isFinished = status == TournamentStatus.FINISHED
 }

@@ -2,7 +2,9 @@ package db_access.table
 
 import play.api.db.slick.Config.driver.simple._
 
-class CitiesTable(tag: Tag) extends Table[(String, Int, Int, Long, Double, Double)](tag, "cities") {
+case class CityDBRow(name: String, population: Int, points: Int, territoryId: Long, latitude: Double, longitude: Double)
+
+class CitiesTable(tag: Tag) extends Table[CityDBRow](tag, "cities") {
    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
    def name = column[String]("name", O.NotNull)
    def population = column[Int]("population", O.NotNull)
@@ -11,5 +13,5 @@ class CitiesTable(tag: Tag) extends Table[(String, Int, Int, Long, Double, Doubl
    def latitude = column[Double]("latitude", O.NotNull)
    def longitude = column[Double]("longitude", O.NotNull)
 
-   def * = (name, population, points, territoryId, latitude, longitude)
+   def * = (name, population, points, territoryId, latitude, longitude) <> (CityDBRow.tupled, CityDBRow.unapply)
 }

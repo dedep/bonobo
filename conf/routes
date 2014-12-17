@@ -14,8 +14,8 @@ GET         /territory/$t<[0-9]+>         @controllers.TerritoryController.find(
 GET         /territory/:t                 @controllers.TerritoryController.findByCode(t: String)
 
 # Tournaments
-POST        /tournament/new               @controllers.TerritoryController.startTournament
-POST        /tournament/process           @controllers.TournamentController.processNextStep
+POST        /tournament/new               @controllers.TerritoryController.startTournament()
+POST        /tournament/process           @controllers.TournamentController.processNextStep()
 GET         /tournament/:t                @controllers.TournamentController.find(t: Long)
 
 # Rounds

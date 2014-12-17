@@ -4,7 +4,9 @@ import org.joda.time.DateTime
 import play.api.db.slick.Config.driver.simple._
 import com.github.tototoshi.slick.PostgresJodaSupport._
 
-class MatchesTable(tag: Tag) extends Table[(Long, Int, Long, Option[Int], Long, Option[Int], Option[DateTime])](tag, "matches") {
+case class MatchDBRow(unitId: Long, fixtureNum: Int, aTeamId: Long, aTeamGoals: Option[Int], bTeamId: Long, bTeamGoals: Option[Int], playDate: Option[DateTime])
+
+class MatchesTable(tag: Tag) extends Table[MatchDBRow](tag, "matches") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def unitId = column[Long]("unit_id", O.NotNull)
   def fixtureNum = column[Int]("fixture", O.NotNull)
@@ -14,5 +16,5 @@ class MatchesTable(tag: Tag) extends Table[(Long, Int, Long, Option[Int], Long, 
   def bTeamGoals = column[Option[Int]]("b_team_goals", O.Nullable)
   def playDate = column[Option[DateTime]]("play_date", O.NotNull)
 
-  def * = (unitId, fixtureNum, aTeamId, aTeamGoals, bTeamId, bTeamGoals, playDate)
+  def * = (unitId, fixtureNum, aTeamId, aTeamGoals, bTeamId, bTeamGoals, playDate) <> (MatchDBRow.tupled, MatchDBRow.unapply)
 }

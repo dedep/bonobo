@@ -10,15 +10,7 @@
             <div style="margin-top: 5px">
             @if(tournament.isPlayed){
                 Current round: @tournament.rounds.head.name
-
-                (@tournament.rounds.headOption.fold(Html(tournament.teams.size.toString)){ r =>
-                @if(r.isPreliminary){
-                    @Html(tournament.teams.size.toString)
-                } else {
-                    @Html(r.teams.size.toString)
-                }
-            }
-                / @tournament.teams.size teams)
+                (@tournament.teamsInGameSum.toString() / @tournament.teams.size teams)
             }
             </div>
         </span>
@@ -50,7 +42,7 @@
         <span class="col-lg-6">
             <div class="list-group">
             @for(team <- tournament.teams.sortBy(_.name)) {
-                @if(tournament.isTeamStillPlaying(team.id)) {
+                @if(tournament.isTeamStillInGame(team.id)) {
                     <a href="@routes.CityController.find(team.id)" class="list-group-item">@team.name</a>
                 } else {
                     <a href="@routes.CityController.find(team.id)" class="list-group-item list-group-item-warning">@team.name</a>
@@ -81,7 +73,7 @@
 <script>
 $(document).ready(function () {
     $("#menu-item-1").css("display", "block").text("Process tournament").click(function() {
-        if(@tournament.isFinished()) {
+        if(@tournament.isFinished) {
             $("#warning-modal").modal('show');
         } else {
             $ ( "#ajaxloader" ).css ( "display", "block" );

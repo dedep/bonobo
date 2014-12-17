@@ -123,52 +123,52 @@ class TournamentImplTest extends FunSuite {
     assert(!tournament.isFinished())
     assert(tournament.rounds(0).isInstanceOf[PlayoffRound])
     assert(tournament.rounds(0).teams.size == 2)
-    assert(!tournament.rounds(0).finished())
+    assert(!tournament.rounds(0).isFinished())
 
     val tournament1 = tournament.doStep().doStep().doStep().doStep()
 
     assert(tournament1.rounds.size == 1)
     assert(!tournament1.isFinished())
-    assert(tournament1.rounds(0).finished())
+    assert(tournament1.rounds(0).isFinished())
 
     val tournament2 = tournament1.doStep()
 
     assert(tournament2.teams.size == 8)
     assert(!tournament2.isFinished())
     assert(tournament2.rounds.size == 2)
-    assert(!tournament2.rounds(0).finished())
+    assert(!tournament2.rounds(0).isFinished())
 
     val tournament3 = tournament2.doStep().doStep().doStep().doStep()
 
     assert(!tournament3.isFinished())
     assert(tournament3.rounds.size == 2)
-    assert(tournament3.rounds(0).finished())
+    assert(tournament3.rounds(0).isFinished())
 
     val tournament4 = tournament3.doStep()
 
     assert(tournament4.teams.size == 4)
     assert(!tournament4.isFinished())
     assert(tournament4.rounds.size == 3)
-    assert(!tournament4.rounds(0).finished())
+    assert(!tournament4.rounds(0).isFinished())
 
     val tournament5 = tournament4.doStep().doStep().doStep().doStep()
 
     assert(!tournament5.isFinished())
     assert(tournament5.rounds.size == 3)
-    assert(tournament5.rounds(0).finished())
+    assert(tournament5.rounds(0).isFinished())
 
     val tournament6 = tournament5.doStep()
 
     assert(tournament6.teams.size == 2)
     assert(!tournament6.isFinished())
     assert(tournament6.rounds.size == 4)
-    assert(!tournament6.rounds(0).finished())
+    assert(!tournament6.rounds(0).isFinished())
     assert(tournament6.rounds(0).isFinalRound())
 
     val tournament7 = tournament6.doStep().doStep().doStep().doStep()
 
     assert(tournament7.isFinished())
     assert(tournament7.rounds.size == 4)
-    assert(tournament7.rounds.forall(_.finished()))
+    assert(tournament7.rounds.forall(_.isFinished()))
   }
 }

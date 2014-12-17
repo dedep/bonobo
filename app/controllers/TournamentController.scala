@@ -10,10 +10,12 @@ import play.api.db.slick._
 import play.api.mvc.{AnyContent, Action, Result}
 import scaldi.{Injectable, Injector}
 
+import utils.FunLogger._
+
 import scala.slick.jdbc.JdbcBackend
 
 class TournamentController(implicit inj: Injector) extends BaseController with Injectable {
-  private val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   private val tournamentDao = inject[TournamentDao]
 
@@ -28,20 +30,17 @@ class TournamentController(implicit inj: Injector) extends BaseController with I
     case class ProcessTournamentFormData(id: Int)
 
     val processTournamentForm = Form(
-      mapping(
-        "id" -> number
-      )(ProcessTournamentFormData.apply)(ProcessTournamentFormData.unapply)
+      mapping("id" -> number)(ProcessTournamentFormData.apply)(ProcessTournamentFormData.unapply)
     )
 
     processTournamentForm.bindFromRequest.fold(
-      hasErrors => {
-        log.error("Cannot bind Process Tournament Request " + hasErrors)
+      hasErrors =>
         BadRequest("Cannot bind Process Tournament Request")
-      },
-      success => {
-        log.info("Processing tournament with ID = " + success.id)
+          .log(x => "Cannot bind Process Tournament Request " + hasErrors).error()
+      ,
+      success =>
         processNextStep(success.id)
-      }
+          .log(x => "Processing tournament with ID = " + success.id).info()
     )
   }
 
@@ -50,18 +49,20 @@ class TournamentController(implicit inj: Injector) extends BaseController with I
       case None => NotFound(views.html.error("Tournament not found"))
       case Some(t: (Tournament)) => {
         try {
-          if (!t.isFinished()) {
+          if (!t.isFinished) {
+            log.info("Calculating match results in tournament " + id)
             val nTournament = t.doStep()
-            val nTournamentId = tournamentDao.saveOrUpdate(nTournament)
+            val nTournamentId = tournamentDao.updateLastRound(nTournament)
 
             Ok(views.html.tournament(tournamentDao.fromId(nTournamentId).get))
+              .log(x => "Succeed view rendering in tournament " + id).info()
           } else {
             log.warn("Cannot process finished tournament (tournament ID = " + id + ")")
             PreconditionFailed(views.html.error("Tournament is already finished."))
           }
         } catch {
           case e: Exception =>
-            log.error("Error occurred while processing tournament: " + e + " ST: " + e.getStackTrace.mkString("\n"))
+            log.error("Error occurred while processing tournament: " + e)
             InternalServerError(views.html.error("Error occurred while processing tournament: " + e))
         }
       }

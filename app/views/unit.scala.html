@@ -19,9 +19,9 @@
                 </tr>
             </thead>
             <tbody>
-            @for(result <- unit.results) {
+            @for(result <- unit.sortedResults) {
                 <tr>
-                    <td>@{unit.results.indexOf(result) + 1}</td>
+                    <td>@{unit.sortedResults.indexOf(result) + 1}</td>
                     <td><a href="@routes.CityController.find(result.team.id)">@result.team.name</a></td>
                     <td>@result.matchesAmount</td>
                     <td>@result.wins</td>

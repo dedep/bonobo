@@ -12,5 +12,5 @@ case class PlayedMatch(override val aTeam: Team, override val bTeam: Team, resul
   override def toString: String = super.toString + " " + result.toString
 
   override def eval(implicit matchEvaluator: MatchEvaluator): MatchResult =
-    throw new IllegalStateException("Cannot eval played match")
+    throw new IllegalStateException("Cannot eval played match " + this)
 }
