@@ -58,11 +58,11 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
 
   private def startTournament(territoryId: Int, name: String)(implicit rs: JdbcBackend#Session): Result = {
     territoryDao.fromId(territoryId) match {
-      case None => NotFound(views.html.error("Territory not found"))
+      case None => NotFound("Territory with ID = " + territoryId + " does not exists.")
       case Some(t: Territory) =>
         val cities = cityDao.getAllWithinTerritoryCascade(t)
         if (cities.length < 2) {
-          PreconditionFailed(views.html.error("Tournament requires at least 2 cities in territory."))
+          PreconditionFailed("Tournament requires at least 2 cities in territory.")
         }
         else {
           val newIndex = tournamentDao.saveNew(new TournamentImpl(cities, name))
