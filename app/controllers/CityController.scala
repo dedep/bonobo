@@ -1,10 +1,9 @@
 package controllers
 
-import db_access.dao.city.CityDao
+import db.dao.city.CityDao
 import models.territory.City
-import play.api.libs.json._
 import play.api.db.slick._
-import scaldi.{Injector, Injectable}
+import scaldi.{Injectable, Injector}
 
 class CityController(implicit inj: Injector) extends BaseController with Injectable {
   private val cityDao = inject[CityDao]

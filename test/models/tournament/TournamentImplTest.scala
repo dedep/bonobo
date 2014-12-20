@@ -1,11 +1,14 @@
 package models.tournament
 
-import models.round.group.GroupRound
-import models.round.pair.PlayoffRound
+import models.round.{PlayoffRound, GroupRound}
 import models.team.Team
+import modules.ServiceModule
 import org.scalatest.FunSuite
+import scaldi.Injector
 
 class TournamentImplTest extends FunSuite {
+
+  implicit val inj = new ServiceModule
 
   test("should create preliminary playoff round") {
     //given
@@ -27,7 +30,7 @@ class TournamentImplTest extends FunSuite {
 
     //then
     assert(tournament.rounds.size == 1)
-    assert(!tournament.isFinished())
+    assert(!tournament.isFinished)
     assert(tournament.rounds(0).isInstanceOf[PlayoffRound])
     assert(tournament.rounds(0).teams.size == 4)
     assert(tournament.rounds(0).teams.count(t => t == t10 || t == t1 || t == t2 || t == t3) == 4)
@@ -98,13 +101,12 @@ class TournamentImplTest extends FunSuite {
 
     //then
     assert(tournament.rounds.size == 1)
-    assert(!tournament.isFinished())
+    assert(!tournament.isFinished)
     assert(tournament.rounds(0).isInstanceOf[PlayoffRound])
     assert(tournament.rounds(0).teams.size == 8)
   }
 
-  test("should process tournament") {
-    //given
+  test("should process tournament - integration test") {
     val t1 = new Team(1, 1, 1)
     val t2 = new Team(2, 2, 2)
     val t3 = new Team(3, 3, 3)
@@ -120,55 +122,56 @@ class TournamentImplTest extends FunSuite {
     val tournament = t.doStep()
 
     assert(tournament.rounds.size == 1)
-    assert(!tournament.isFinished())
+    assert(!tournament.isFinished)
     assert(tournament.rounds(0).isInstanceOf[PlayoffRound])
     assert(tournament.rounds(0).teams.size == 2)
-    assert(!tournament.rounds(0).isFinished())
+    assert(!tournament.rounds(0).isFinished)
 
     val tournament1 = tournament.doStep().doStep().doStep().doStep()
 
     assert(tournament1.rounds.size == 1)
-    assert(!tournament1.isFinished())
-    assert(tournament1.rounds(0).isFinished())
+    assert(!tournament1.isFinished)
+    assert(tournament1.rounds(0).isFinished)
 
     val tournament2 = tournament1.doStep()
 
-    assert(tournament2.teams.size == 8)
-    assert(!tournament2.isFinished())
+    assert(tournament2.teams.size == 9)
+    assert(!tournament2.isFinished)
     assert(tournament2.rounds.size == 2)
-    assert(!tournament2.rounds(0).isFinished())
+    assert(!tournament2.rounds(0).isFinished)
 
     val tournament3 = tournament2.doStep().doStep().doStep().doStep()
 
-    assert(!tournament3.isFinished())
+    assert(!tournament3.isFinished)
     assert(tournament3.rounds.size == 2)
-    assert(tournament3.rounds(0).isFinished())
+    assert(tournament3.rounds(0).isFinished)
 
     val tournament4 = tournament3.doStep()
 
-    assert(tournament4.teams.size == 4)
-    assert(!tournament4.isFinished())
+    assert(tournament4.teams.size == 9)
+    assert(!tournament4.isFinished)
     assert(tournament4.rounds.size == 3)
-    assert(!tournament4.rounds(0).isFinished())
+    assert(!tournament4.rounds(0).isFinished)
 
     val tournament5 = tournament4.doStep().doStep().doStep().doStep()
 
-    assert(!tournament5.isFinished())
+    assert(!tournament5.isFinished)
     assert(tournament5.rounds.size == 3)
-    assert(tournament5.rounds(0).isFinished())
+    assert(tournament5.rounds(0).isFinished)
 
     val tournament6 = tournament5.doStep()
 
-    assert(tournament6.teams.size == 2)
-    assert(!tournament6.isFinished())
+    assert(tournament6.teams.size == 9)
+    assert(!tournament6.isFinished)
     assert(tournament6.rounds.size == 4)
-    assert(!tournament6.rounds(0).isFinished())
-    assert(tournament6.rounds(0).isFinalRound())
+    assert(!tournament6.rounds(0).isFinished)
+    assert(tournament6.rounds(0).isFinalRound)
 
     val tournament7 = tournament6.doStep().doStep().doStep().doStep()
 
-    assert(tournament7.isFinished())
+    assert(tournament7.teams.size == 9)
+    assert(tournament7.isFinished)
     assert(tournament7.rounds.size == 4)
-    assert(tournament7.rounds.forall(_.isFinished()))
+    assert(tournament7.rounds.forall(_.isFinished))
   }
 }

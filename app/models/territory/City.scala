@@ -1,7 +1,6 @@
 package models.territory
 
 import models.team.Team
-import play.api.libs.json._
 
 class City(override val id: Long, override val name: String, val population: Int, val points: Int, container: => Territory,
             val latitude: Double, val longitude: Double) extends Team(id, population, points, name) with Containable {

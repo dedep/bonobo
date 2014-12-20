@@ -1,7 +1,5 @@
 package models.territory
 
-import play.api.libs.json._
-
 //todo: jakiś mechanizm trzeba zdefiniować żeby nie zapętlić hierarchii terytoriów
 class Territory(val id: Long, val name: String, val population: Long, parent: => Option[Territory], val code: String) extends Containable {
 

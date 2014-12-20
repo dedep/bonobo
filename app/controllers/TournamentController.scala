@@ -1,15 +1,14 @@
 package controllers
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db_access.dao.tournament.TournamentDao
+import db.dao.tournament.TournamentDao
 import models.tournament.Tournament
 import org.slf4j.LoggerFactory
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.db.slick._
-import play.api.mvc.{AnyContent, Action, Result}
+import play.api.mvc.{Action, AnyContent, Result}
 import scaldi.{Injectable, Injector}
-
 import utils.FunLogger._
 
 import scala.slick.jdbc.JdbcBackend

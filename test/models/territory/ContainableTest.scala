@@ -1,6 +1,5 @@
 package models.territory
 
-import org.specs2.execute._
 import org.specs2.mutable.Specification
 
 class ContainableTest extends Specification {

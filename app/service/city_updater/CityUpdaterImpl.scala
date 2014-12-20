@@ -2,7 +2,7 @@ package service.city_updater
 
 import akka.util.Timeout
 import com.typesafe.scalalogging.slf4j.Logger
-import db_access.dao.city.CityDao
+import db.dao.city.CityDao
 import models.territory.City
 import org.slf4j.LoggerFactory
 import play.api.Play.current

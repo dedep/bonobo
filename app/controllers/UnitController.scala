@@ -1,9 +1,7 @@
 package controllers
 
-import db_access.dao.unit.UnitDao
-import models.round.RoundUnit
-import play.api.db.slick.DBAction
-import play.api.mvc.Controller
+import db.dao.unit.UnitDao
+import models.unit.RoundUnit
 import scaldi.{Injectable, Injector}
 
 class UnitController(implicit inj: Injector) extends BaseController with Injectable {

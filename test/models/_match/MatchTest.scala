@@ -4,22 +4,25 @@ import models.Common
 import Common._
 import models._match.result.MatchResult
 import models.team.Team
-import org.scalatest.FunSuite
+import modules.ServiceModule
+import org.specs2.mutable.Specification
+import scaldi.Injector
 
-class MatchTest extends FunSuite {
-  test("eval generates result") {
-    for (i <- 0 to 10) {
-      //given
-      val m = Match(new Team(1, 100, 12), new Team(2, 100, 19))
+class MatchTest extends Specification {
 
-      //when
-      val result = m.eval
+  implicit val inj = new ServiceModule
 
-      //then
-      assert(result != null)
-      assert(result.isInstanceOf[MatchResult])
-      assert(result.aGoals >= 0)
-      assert(result.bGoals >= 0)
-    }
+  "eval generates result" in {
+    //given
+    val m = new Match(new Team(1, 100, 12), new Team(2, 100, 19))
+
+    //when
+    val result = m.eval()
+
+    //then
+    result mustNotEqual null
+    result should beAnInstanceOf[MatchResult]
+    result.aGoals must be >= 0
+    result.bGoals must be >= 0
   }
 }

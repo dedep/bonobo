@@ -1,8 +1,8 @@
 package models.round
 
 import models.Common._
-import models.round.promotion.PromotionsStrategy
 import models.team.Team
+import models.unit.RoundUnit
 
 //TODO: przydałoby się rozróżnienie na Final Round - tam np. nie ma losowania
 trait Round {
@@ -18,11 +18,11 @@ trait Round {
   val promotedTeamsCount: Int
   val isPreliminary: Boolean
 
-  def getPromotedTeams(implicit strategy: PromotionsStrategy): List[Team] =
+  def getPromotedTeams: List[Team] =
     if (!isFinished) throw new IllegalStateException("Round has not been finished yet")
     else units.flatMap(_.promotedTeams)
 
-  def getEliminatedTeams(implicit strategy: PromotionsStrategy): List[Team] =
+  def getEliminatedTeams: List[Team] =
     teams.diff(getPromotedTeams)
 
   def doStep(): Round = status match {

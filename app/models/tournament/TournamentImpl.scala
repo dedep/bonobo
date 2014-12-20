@@ -1,17 +1,14 @@
 package models.tournament
 
-import models.Common
-import Common._
-import models.round.{RoundStatus, Round}
-import models.round.group.GroupRound
-import models.round.pair.PlayoffRound
+import models.round.{GroupRound, PlayoffRound, Round}
 import models.team.Team
 import models.tournament.TournamentStatus.TournamentStatus
+import scaldi.Injector
 import utils.MathUtils
 
 class TournamentImpl(override val teams: List[Team], override val name: String, roundsCbn: => List[Round] = Nil,
                      override val id: Option[Long] = None, override val status: TournamentStatus = TournamentStatus.NOT_STARTED,
-                     val playingTeams: List[Boolean] = Nil) extends Tournament {
+                     val playingTeams: List[Boolean] = Nil)(implicit inj: Injector) extends Tournament {
 
   require(teams.size >= 2)
 

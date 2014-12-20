@@ -1,14 +1,14 @@
 package controllers
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db_access.dao.city.CityDao
-import db_access.dao.territory.TerritoryDao
-import db_access.dao.tournament.TournamentDao
+import db.dao.city.CityDao
+import db.dao.territory.TerritoryDao
+import db.dao.tournament.TournamentDao
 import models.territory.Territory
 import models.tournament.TournamentImpl
 import org.slf4j.LoggerFactory
-import play.api.data._
 import play.api.data.Forms._
+import play.api.data._
 import play.api.db.slick._
 import play.api.mvc.{Action, AnyContent, Result}
 import scaldi.{Injectable, Injector}

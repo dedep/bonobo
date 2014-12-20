@@ -1,12 +1,12 @@
 package controllers
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db_access.dao.city.CityDao
-import db_access.dao.territory.TerritoryDao
+import db.dao.city.CityDao
+import db.dao.territory.TerritoryDao
 import org.slf4j.LoggerFactory
-import play.api.{Play, Routes}
+import play.api.Routes
 import play.api.mvc.Action
-import scaldi.{Injector, Injectable}
+import scaldi.{Injectable, Injector}
 import service.city_updater.CityUpdater
 import utils.FunLogger._
 
@@ -33,10 +33,8 @@ class AppController(implicit inj: Injector) extends BaseController with Injectab
   }
 
   def javascriptRoutes = Action { implicit request =>
-    import routes.javascript._
     Ok(
       Routes.javascriptRouter("jsRoutes")(
-        TerritoryController.startTournament, TournamentController.processNextStep, RoundController.findWithFilter
       )
     ).as("text/javascript")
   }

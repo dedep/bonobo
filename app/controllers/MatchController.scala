@@ -1,8 +1,6 @@
 package controllers
 
-import db_access.dao._match.MatchDao
-import play.api.db.slick.DBAction
-import play.api.mvc.Controller
+import db.dao._match.MatchDao
 import scaldi.{Injectable, Injector}
 
 class MatchController(implicit inj: Injector) extends BaseController with Injectable {

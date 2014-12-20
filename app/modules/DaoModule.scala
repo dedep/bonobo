@@ -1,14 +1,12 @@
 package modules
 
-import db_access.dao._match.{MatchDaoImpl, MatchDao}
-import db_access.dao.city.{CityDaoImpl, CityDao}
-import db_access.dao.round.{RoundDaoImpl, RoundDao}
-import db_access.dao.territory.{TerritoryDaoImpl, TerritoryDao}
-import db_access.dao.tournament.{TournamentDaoImpl, TournamentDao}
-import db_access.dao.unit.{UnitDao, UnitDaoImpl}
-
+import db.dao._match.{MatchDao, MatchDaoImpl}
+import db.dao.city.{CityDao, CityDaoImpl}
+import db.dao.round.{RoundDao, RoundDaoImpl}
+import db.dao.territory.{TerritoryDao, TerritoryDaoImpl}
+import db.dao.tournament.{TournamentDao, TournamentDaoImpl}
+import db.dao.unit.{UnitDao, UnitDaoImpl}
 import scaldi.Module
-import service.city_updater.{CityUpdaterImpl, CityUpdater}
 
 class DaoModule extends Module {
   bind [TerritoryDao] to new TerritoryDaoImpl
@@ -17,6 +15,4 @@ class DaoModule extends Module {
   bind [RoundDao] to new RoundDaoImpl
   bind [UnitDao] to new UnitDaoImpl
   bind [TournamentDao] to new TournamentDaoImpl
-
-  bind [CityUpdater] to new CityUpdaterImpl
 }

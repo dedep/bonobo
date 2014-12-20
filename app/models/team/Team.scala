@@ -1,5 +1,6 @@
 package models.team
 
+//todo: do wywalenia - zastąpić przez City
 class Team(val id: Long, val value: Int, val rankPoints: Int, val name: String = "") {
   override def toString: String = name
 
