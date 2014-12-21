@@ -2,10 +2,12 @@ package db.dao._match
 
 import com.typesafe.scalalogging.slf4j.Logger
 import db.dao.city.CityDao
-import db.table.{MatchDBRow, MatchesTable}
+import db.dao.tournament.TournamentRulesDao
+import db.table._
 import models.Common.Fixture
 import models._match.PlayedMatch
 import models._match.result.{Draw, WinA, WinB}
+import models.reverse.{RoundUnitInfo, TournamentInfo, RoundInfo}
 import models.territory.City
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
@@ -19,6 +21,7 @@ class MatchDaoImpl(implicit inj: Injector) extends MatchDao with Injectable {
   private val ds = TableQuery[MatchesTable]
 
   private val cityDao = inject[CityDao]
+  private val rulesDao = inject[TournamentRulesDao]
 
   private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
 
@@ -54,8 +57,10 @@ class MatchDaoImpl(implicit inj: Injector) extends MatchDao with Injectable {
   private def instantiateMatchFromTableRow(id: Long, unitId: Long, fixtureNum: Int, aCity: City, aTeamGoals: Option[Int],
     bCity: City, bTeamGoals: Option[Int], date: Option[DateTime])(implicit rs: JdbcBackend#Session): models._match.Match = {
 
+    val unitInfo = getReverseUnitInfo(unitId)
+
     if (aTeamGoals.isEmpty || bTeamGoals.isEmpty) {
-      new models._match.Match(aCity, bCity, Some(id))
+      new models._match.Match(aCity, bCity, Some(id))(unitInfo)
     } else {
       val goalsDiff = aTeamGoals.get - bTeamGoals.get
       val result =
@@ -63,7 +68,7 @@ class MatchDaoImpl(implicit inj: Injector) extends MatchDao with Injectable {
         else if (goalsDiff == 0) Draw(aTeamGoals.get)
         else WinB(aTeamGoals.get, bTeamGoals.get)
 
-      models._match.PlayedMatch(aCity, bCity, result, date, Some(id))
+      models._match.PlayedMatch(aCity, bCity, result, date, Some(id))(unitInfo)
     }
   }
 
@@ -112,4 +117,23 @@ class MatchDaoImpl(implicit inj: Injector) extends MatchDao with Injectable {
 
   private def groupMatchesByFixture(matchFixtureList: List[(models._match.Match, Int)]): List[Fixture] =
     matchFixtureList.groupBy(_._2).toList.sortBy(_._1).map(_._2.map(_._1))
+
+  private def getReverseUnitInfo(unitId: Long)(implicit rs: JdbcBackend#Session): RoundUnitInfo =
+    (for {
+      tournament <- TableQuery[TournamentsTable]
+      round <- TableQuery[RoundsTable]
+      unit <- TableQuery[UnitsTable]
+      if unit.id === unitId
+      if round.id === unit.roundId
+      if tournament.id === round.tournamentId
+    } yield (tournament.name, tournament.id, round.name, round.id, unit.name, unit.id))
+      .firstOption
+      .map(r => {
+        val tournamentInfo = new TournamentInfo(r._1, Some(r._2), rulesDao.fromTournamentId(r._2)
+          .getOrElse(throw new IllegalStateException("Round calls to non-existent tournament " + r._2))
+        )
+        val roundInfo = new RoundInfo(tournamentInfo)(r._3, Some(r._4))
+        new RoundUnitInfo(roundInfo)(r._5, Some(r._6))
+    })
+      .getOrElse(throw new IllegalStateException("Inconsistent DB state while looking for reverse unit info " + unitId))
 }

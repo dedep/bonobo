@@ -3,7 +3,7 @@ package db.dao.tournament
 import com.typesafe.scalalogging.slf4j.Logger
 import db.dao.city.CityDao
 import db.dao.round.RoundDao
-import db.table.{CitiesTournamentsTable, TournamentsTable}
+import db.table.{TournamentRulesTable, CitiesTournamentsTable, TournamentsTable}
 import models.team.Team
 import models.tournament.{Tournament, TournamentImpl, TournamentStatus}
 import org.slf4j.LoggerFactory
@@ -18,18 +18,30 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
 
   private val roundDao = inject[RoundDao]
   private val cityDao = inject[CityDao]
+  private val rulesDao = inject[TournamentRulesDao]
 
   private val ds = TableQuery[TournamentsTable]
-  val citiesDs = TableQuery[CitiesTournamentsTable]
+  private val citiesDs = TableQuery[CitiesTournamentsTable]
+  private val rulesDs = TableQuery[TournamentRulesTable]
 
   override def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[models.tournament.Tournament] = {
     (for (tournament <- ds if tournament.id === id) yield tournament).firstOption match {
       case None => None
-      case Some((name: String, status: String)) =>
-        val tournamentCities = getTournamentCities(id)
-        Some(new TournamentImpl(tournamentCities._1, name, roundDao.getTournamentRounds(id), Some(id),
-          TournamentStatus.withName(status), tournamentCities._2))
+      case Some((name: String, status: String)) => Some(instantiateFromTableRow(id, name, status))
     }
+  }
+
+  private def instantiateFromTableRow(id: Long, name: String, statusStr: String)(implicit rs: JdbcBackend#Session): Tournament = {
+    val tournamentCities = getTournamentCities(id)
+    val cities = tournamentCities._1
+    val playingTeams = tournamentCities._2
+    val status = TournamentStatus.withName(statusStr)
+    val rules = rulesDao.fromTournamentId(id)
+      .getOrElse(throw new IllegalStateException("Inconsistent DB state while looking for tournament rules in " + id))
+
+    lazy val rounds = roundDao.getTournamentRounds(id)
+
+    new TournamentImpl(cities, name, rounds, Some(id), status, playingTeams)(rules)
   }
 
   private def getTournamentCities(id: Long)(implicit rs: JdbcBackend#Session): (List[Team], List[Boolean]) = {
@@ -80,6 +92,7 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
     val newIndex = (ds returning ds.map(_.id)) += (t.name, t.status.toString)
     citiesDs.filter(_.tournamentId === newIndex).delete
     citiesDs ++= t.teams.map(city => (city.id, newIndex, true))
+    rulesDs += (newIndex, t.gameRules.winPoints, t.gameRules.drawPoints, t.gameRules.losePoints)
 
     newIndex
       .log(x => "After saving new tournament " + t.name).info()

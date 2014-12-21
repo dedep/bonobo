@@ -2,6 +2,7 @@ package models.round
 
 import com.typesafe.scalalogging.slf4j.Logger
 import models.Common._
+import models.reverse.TournamentInfo
 import models.round.RoundStatus.RoundStatus
 import models.team.Team
 import models.unit
@@ -17,7 +18,9 @@ class GroupRound(override val name: String,
                  unitsCbn: => List[RoundUnit] = Nil,
                  override val stepIndex: Int = 0,
                  override val id: Option[Long] = None,
-                 override val status: RoundStatus = RoundStatus.DRAW_POTS)(implicit inj: Injector) extends Round {
+                 override val status: RoundStatus = RoundStatus.DRAW_POTS)
+                (override val tournamentInfo: TournamentInfo)
+                (implicit inj: Injector) extends Round {
 
   private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
@@ -31,9 +34,11 @@ class GroupRound(override val name: String,
     require(pots.tail.forall(_.size == pots.head.size), "All pots has to have the same size!")
 
     val shuffledPots: List[Pot] = for (pot <- pots) yield Random.shuffle(pot)
-    val newUnits = for (i <- 0 until shuffledPots(0).size) yield new unit.Group("Group " + (65 + i).toChar, shuffledPots.map(_(i)))
+    val newUnits =
+      for (i <- 0 until shuffledPots(0).size)
+      yield new unit.Group("Group " + (65 + i).toChar, shuffledPots.map(_(i)))(toRoundInfo)
 
-    new GroupRound(name, teams, pots, newUnits.toList, stepIndex, id, RoundStatus.PLAY_FIXTURE)
+    new GroupRound(name, teams, pots, newUnits.toList, stepIndex, id, RoundStatus.PLAY_FIXTURE)(tournamentInfo)
   }
 
   override val isFinalRound: Boolean = false
@@ -44,15 +49,15 @@ class GroupRound(override val name: String,
     val potSize = teams.size / GroupRound.GROUP_SIZE
     val newPots = (0 until GroupRound.GROUP_SIZE).map(i => teams.sortBy(_.rankPoints).reverse.drop(i * potSize).take(potSize)).toList
 
-    new GroupRound(name, teams, newPots, units, stepIndex, id, RoundStatus.DRAW_UNITS)
+    new GroupRound(name, teams, newPots, units, stepIndex, id, RoundStatus.DRAW_UNITS)(tournamentInfo)
   }
 
   override def playFixture(): Round = {
     require(units.nonEmpty)
     val newUnits = units.map(_.playFixture(stepIndex))
 
-    if (stepIndex == GroupRound.LAST_INDEX) new GroupRound(name, teams, pots, newUnits, stepIndex + 1, id, RoundStatus.FINISHED)
-    else new GroupRound(name, teams, pots, newUnits, stepIndex + 1, id, RoundStatus.PLAY_FIXTURE)
+    if (stepIndex == GroupRound.LAST_INDEX) new GroupRound(name, teams, pots, newUnits, stepIndex + 1, id, RoundStatus.FINISHED)(tournamentInfo)
+    else new GroupRound(name, teams, pots, newUnits, stepIndex + 1, id, RoundStatus.PLAY_FIXTURE)(tournamentInfo)
   }
 
   override val promotedTeamsCount: Int = GroupRound.PROMOTE_SIZE

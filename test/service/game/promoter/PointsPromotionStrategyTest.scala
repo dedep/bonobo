@@ -1,6 +1,7 @@
 package service.game.promoter
 
 import models.team.Team
+import models.tournament.GameRules
 import models.unit.{UnitTeamResult, RoundUnit}
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
@@ -9,6 +10,8 @@ import models.Common._
 class PointsPromotionStrategyTest extends Specification with Mockito {
 
   val strategy = new PointsPromotionStrategy
+
+  implicit val rules = new GameRules(0, 1, 3)
 
   val t1 = new Team(1, 1, 1)
   val t2 = new Team(2, 2, 2)

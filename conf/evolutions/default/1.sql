@@ -6,7 +6,7 @@ CREATE TABLE territories
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
   container bigint references territories NULL,
-  code varchar(8)
+  code varchar(9)
 );
 
 CREATE TABLE cities
@@ -25,6 +25,14 @@ CREATE TABLE tournaments
   id bigserial PRIMARY KEY,
   name text NOT NULL,
   status text NOT NULL
+);
+
+CREATE TABLE tournament_rules
+(
+  tournament_id bigserial PRIMARY KEY references tournaments,
+  win_points double precision NOT NULL,
+  draw_points double precision NOT NULL,
+  lose_points double precision NOT NULL
 );
 
 CREATE TABLE cities_tournaments
@@ -78,7 +86,7 @@ CREATE TABLE units_cities
 (
   city_id bigint references cities NOT NULL,
   unit_id bigint references units NOT NULL,
-  points integer NOT NULL CHECK(points >= 0),
+  points double precision NOT NULL CHECK(points >= 0),
   goals_scored integer NOT NULL CHECK(goals_scored >= 0),
   goals_conceded integer NOT NULL CHECK(goals_conceded >= 0),
   wins integer NOT NULL CHECK(wins >= 0),
@@ -115,4 +123,5 @@ DROP TABLE IF EXISTS cities;
 DROP TABLE IF EXISTS territories;
 DROP TABLE IF EXISTS units;
 DROP TABLE IF EXISTS rounds;
+DROP TABLE IF EXISTS tournament_rules;
 DROP TABLE IF EXISTS tournaments;

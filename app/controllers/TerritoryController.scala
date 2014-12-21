@@ -5,7 +5,7 @@ import db.dao.city.CityDao
 import db.dao.territory.TerritoryDao
 import db.dao.tournament.TournamentDao
 import models.territory.Territory
-import models.tournament.TournamentImpl
+import models.tournament.{GameRules, TournamentImpl}
 import org.slf4j.LoggerFactory
 import play.api.data.Forms._
 import play.api.data._
@@ -65,7 +65,8 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
           PreconditionFailed("Tournament requires at least 2 cities in territory.")
         }
         else {
-          val newIndex = tournamentDao.saveNew(new TournamentImpl(cities, name))
+          val rules = new GameRules(0, 1, 3)
+          val newIndex = tournamentDao.saveNew(new TournamentImpl(cities, name)(rules))
           val successMsg = "Tournament with ID=" + newIndex + " has been created successfully."
 
           Ok(successMsg)

@@ -1,6 +1,7 @@
 package service.game.evaluator
 
 import models._match.result.{Draw, WinA, WinB}
+import models.reverse.RoundUnitInfo
 import models.team.Team
 import org.scalatest.FunSuite
 import models._match.Match

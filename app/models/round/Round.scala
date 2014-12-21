@@ -1,6 +1,7 @@
 package models.round
 
 import models.Common._
+import models.reverse.{RoundInfo, TournamentInfo}
 import models.team.Team
 import models.unit.RoundUnit
 
@@ -17,6 +18,8 @@ trait Round {
   val isFinalRound: Boolean
   val promotedTeamsCount: Int
   val isPreliminary: Boolean
+
+  val tournamentInfo: TournamentInfo
 
   def getPromotedTeams: List[Team] =
     if (!isFinished) throw new IllegalStateException("Round has not been finished yet")
@@ -38,4 +41,6 @@ trait Round {
   
   val isFinished = status == RoundStatus.FINISHED
   val canBePlayed = status == RoundStatus.PLAY_FIXTURE
+
+  protected val toRoundInfo = new RoundInfo(tournamentInfo)(name, id)
 }

@@ -3,7 +3,9 @@ package db.dao.unit
 import com.typesafe.scalalogging.slf4j.Logger
 import db.dao._match.MatchDao
 import db.dao.city.CityDao
-import db.table.{UnitsCitiesTable, UnitsTable}
+import db.dao.tournament.TournamentRulesDao
+import db.table.{RoundsTable, TournamentsTable, UnitsCitiesTable, UnitsTable}
+import models.reverse.{TournamentInfo, RoundInfo}
 import models.team.Team
 import models.territory.City
 import models.unit.{Group, Pair, RoundUnit, UnitTeamResult}
@@ -20,6 +22,7 @@ class UnitDaoImpl(implicit inj: Injector) extends UnitDao with Injectable {
 
   private val matchDao = inject[MatchDao]
   private val cityDao = inject[CityDao]
+  private val rulesDao = inject[TournamentRulesDao]
 
   private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
 
@@ -27,10 +30,10 @@ class UnitDaoImpl(implicit inj: Injector) extends UnitDao with Injectable {
     (for (m <- ds if m.id === id) yield m).firstOption match {
       case None => None
       case Some((roundId: Long, clazz: String, name: String)) =>
-        instantiateUnitFromTableRow(name, id, clazz, roundId)
+        instantiateUnitFromTableRow(name, id, clazz, roundId, None)
     }
 
-  private def instantiateUnitFromTableRow(name: String, id: Long, clazz: String, roundId: Long)
+  private def instantiateUnitFromTableRow(name: String, id: Long, clazz: String, roundId: Long, info: Option[RoundInfo])
                                          (implicit rs: JdbcBackend#Session): Option[RoundUnit] = {
     lazy val citiesAndResults: (List[City], List[UnitTeamResult], List[Option[Boolean]]) = getCitiesAndResults(id)
     lazy val fixtures = matchDao.getFixturesWithinUnit(id)
@@ -38,11 +41,12 @@ class UnitDaoImpl(implicit inj: Injector) extends UnitDao with Injectable {
     lazy val results = citiesAndResults._2
     lazy val promotions = getPromotedTeams(citiesAndResults._3, citiesAndResults._1)
     lazy val eliminations = getEliminatedTeams(citiesAndResults._3, citiesAndResults._1)
+    val roundInfo = info.getOrElse(getReverseRoundInfo(roundId))
 
     if (classOf[Pair].getName.equals(clazz)) {
-      Some(new Pair(name, cities, fixtures, results, Some(id), false, promotions, eliminations))
+      Some(new Pair(name, cities, fixtures, results, Some(id), false, promotions, eliminations)(roundInfo))
     } else if (classOf[Group].getName.equals(clazz)) {
-      Some(new Group(name, cities, fixtures, results, Some(id), false, promotions, eliminations))
+      Some(new Group(name, cities, fixtures, results, Some(id), false, promotions, eliminations)(roundInfo))
     } else {
       throw new IllegalStateException("Unknown unit class: " + clazz)
     }
@@ -73,13 +77,16 @@ class UnitDaoImpl(implicit inj: Injector) extends UnitDao with Injectable {
     else save(u, parentRoundId)
   }
 
-  override def getAllWithinRound(roundId: Long)(implicit rs: JdbcBackend#Session): List[RoundUnit] =
+  override def getAllWithinRound(roundId: Long)(implicit rs: JdbcBackend#Session): List[RoundUnit] = {
+    val roundInfo = getReverseRoundInfo(roundId)
+
     ds.filter(_.roundId === roundId).sortBy(_.name).map(r => (r.id, r.roundId, r.clazz, r.name))
       .log(x => "Before Query-ing for units in round " + roundId).info()
       .list.map{ case (id: Long, roundId: Long, clazz: String, name: String) =>
-        instantiateUnitFromTableRow(name, id, clazz, roundId).get
-      }
+      instantiateUnitFromTableRow(name, id, clazz, roundId, Some(roundInfo)).get
+    }
       .log(x => "After Query-ing for units in round " + roundId).info()
+  }
 
   override def getPromotedTeamsWithinRound(roundId: Long)(implicit rs: JdbcBackend#Session): List[Team] = {
     val ids = (for {
@@ -143,4 +150,22 @@ class UnitDaoImpl(implicit inj: Injector) extends UnitDao with Injectable {
         case false => None
       }
     }
+
+  private def getReverseRoundInfo(roundId: Long)(implicit rs: JdbcBackend#Session): RoundInfo =
+    (for {
+      tournament <- TableQuery[TournamentsTable]
+      round <- TableQuery[RoundsTable]
+      if round.id === roundId
+      if tournament.id === round.tournamentId
+    } yield (tournament.name, tournament.id, round.name, round.id))
+      .log(x => "Before executing query for reverse round " + roundId + " info").info()
+      .firstOption
+      .map(r => {
+        val tournamentInfo = new TournamentInfo(r._1, Some(r._2), rulesDao.fromTournamentId(r._2)
+          .getOrElse(throw new IllegalStateException("Round calls to non-existent tournament " + r._2))
+        )
+        new RoundInfo(tournamentInfo)(r._3, Some(r._4))
+      })
+      .getOrElse(throw new IllegalStateException("Inconsistent DB state while looking for reverse round info " + roundId))
+      .log(x => "After executing query for reverse round " + roundId + " info").info()
 }

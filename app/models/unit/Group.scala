@@ -2,13 +2,17 @@ package models.unit
 
 import models.Common._
 import models._match.Match
+import models.reverse.RoundInfo
 import models.team.Team
+import models.tournament.GameRules
 import scaldi.{Injectable, Injector}
 import service.game.promoter.PromotionsStrategy
 
 class Group(override val name: String, teamsCbn: => List[Team], fixturesCbn: => List[Fixture] = Nil, resultsCbn: => List[UnitTeamResult] = Nil,
             override val id: Option[Long] = None, val generateFixtures: Boolean = true,
-            promotedTeamsCbn: => List[Team] = Nil, eliminatedTeamsCbn: => List[Team] = Nil)(override implicit val inj: Injector)
+            promotedTeamsCbn: => List[Team] = Nil, eliminatedTeamsCbn: => List[Team] = Nil)
+            (override val roundInfo: RoundInfo)
+            (override implicit val inj: Injector)
   extends RoundUnit with Injectable {
 
   val strategy = inject[PromotionsStrategy]
@@ -36,7 +40,7 @@ class Group(override val name: String, teamsCbn: => List[Team], fixturesCbn: => 
     (1 until teams.size)
       .map(
         i => (0 until teams.size)
-          .map(t => new Match(teams(t), teams((t + i) % teams.size)))
+          .map(t => new Match(teams(t), teams((t + i) % teams.size))(toRoundUnitInfo))
           .toList
       )
       .toList
@@ -50,11 +54,11 @@ class Group(override val name: String, teamsCbn: => List[Team], fixturesCbn: => 
     val newTeams = teams
 
     val promotionsAndEliminations =
-      strategy.findPromotedAndEliminatedTeams(new Group(name, newTeams, newFixtures, newResults, id, false))
+      strategy.findPromotedAndEliminatedTeams(new Group(name, newTeams, newFixtures, newResults, id, false)(roundInfo))
     val promotions = promotionsAndEliminations._1
     val eliminations = promotionsAndEliminations._2
 
-    new Group(name, newTeams, newFixtures, newResults, id, false, promotions, eliminations)
+    new Group(name, newTeams, newFixtures, newResults, id, false, promotions, eliminations)(roundInfo)
   }
 
   override val promotedTeamsSize: Int = 2

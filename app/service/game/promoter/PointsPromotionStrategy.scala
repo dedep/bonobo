@@ -2,8 +2,8 @@ package service.game.promoter
 
 import models.Common._
 import models.team.Team
+import models.tournament.GameRules
 import models.unit.{RoundUnit, UnitTeamResult}
-import service.game.manager.GameManager
 
 import scala.util.Sorting
 
@@ -11,7 +11,7 @@ import scala.util.Sorting
 //todo: np. group-3
 class PointsPromotionStrategy extends PromotionsStrategy {
 
-  override def findPromotedAndEliminatedTeams(unit: RoundUnit): (List[Team], List[Team]) = {
+  override def findPromotedAndEliminatedTeams(unit: RoundUnit)(implicit gm: GameRules): (List[Team], List[Team]) = {
     if (unit.matchesToPlay == 0) {
       val promotions = arbitrateFinalPromotions(unit)
       val eliminations = unit.teams.diff(promotions)
@@ -25,20 +25,21 @@ class PointsPromotionStrategy extends PromotionsStrategy {
     }
   }
 
-  private def arbitratePromotions(unit: RoundUnit): List[Team] =
+  private def arbitratePromotions(unit: RoundUnit)(implicit gm: GameRules): List[Team] =
     findTeamsWithResult(unit, _.points > getPointsRequiredToBePromoted(unit))
 
-  private def arbitrateEliminations(unit: RoundUnit): List[Team] =
+  private def arbitrateEliminations(unit: RoundUnit)(implicit gm: GameRules): List[Team] =
     findTeamsWithResult(unit, _.points < getPointsRequiredToBeEliminated(unit))
 
   private def findTeamsWithResult(unit: RoundUnit, f: (UnitTeamResult) => Boolean) =
     unit.results.filter(f).map(_.team)
 
-  def getPointsRequiredToBePromoted(unit: RoundUnit)(implicit gm: GameManager): Double =
-    getNthTeamPoints(unit, unit.promotedTeamsSize) + (gm.POINTS_FOR_WIN * unit.matchesToPlay)
+  def getPointsRequiredToBePromoted(unit: RoundUnit)(implicit gm: GameRules): Double =
+    getNthTeamPoints(unit, unit.promotedTeamsSize) + (gm.winPoints * unit.matchesToPlay)
 
-  def getPointsRequiredToBeEliminated(unit: RoundUnit)(implicit gm: GameManager): Double =
-    getNthTeamPoints(unit, unit.promotedTeamsSize - 1) - (gm.POINTS_FOR_WIN * unit.matchesToPlay)
+  //todo: nie uwzględnia różnych kombinacji GameRules, np. punkty za porażkę
+  def getPointsRequiredToBeEliminated(unit: RoundUnit)(implicit gm: GameRules): Double =
+    getNthTeamPoints(unit, unit.promotedTeamsSize - 1) - (gm.winPoints * unit.matchesToPlay)
 
   private def getNthTeamPoints(unit: RoundUnit, n: Int) =
     Sorting.stableSort(unit.results).reverse(n).points

@@ -2,9 +2,11 @@ package db.dao.round
 
 import com.typesafe.scalalogging.slf4j.Logger
 import db.dao.city.CityDao
+import db.dao.tournament.TournamentRulesDao
 import db.dao.unit.UnitDao
-import db.table.{RoundsCitiesTable, RoundsTable}
+import db.table.{TournamentsTable, RoundsCitiesTable, RoundsTable}
 import models.Common.Pot
+import models.reverse.TournamentInfo
 import models.round.{GroupRound, PlayoffRound, Round, RoundStatus}
 import models.territory.City
 import org.slf4j.LoggerFactory
@@ -21,6 +23,7 @@ class RoundDaoImpl(implicit inj: Injector) extends RoundDao with Injectable {
 
   private val unitDao = inject[UnitDao]
   private val cityDao = inject[CityDao]
+  private val rulesDao = inject[TournamentRulesDao]
 
   private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
 
@@ -43,18 +46,19 @@ class RoundDaoImpl(implicit inj: Injector) extends RoundDao with Injectable {
     lazy val cities = getCities(group)
     lazy val pots = groupCitiesByPots(group)
     lazy val units = unitDao.getAllWithinRound(id)
+    val tournamentInfo = getReverseTournamentInfo(tournamentId)
 
     if (isPreliminary) {
       if (classOf[PlayoffRound].getName.equals(clazz)) {
-        Some(new PlayoffRound(name, cities, pots, units, step, true, Some(id), RoundStatus.withName(status)))
+        Some(new PlayoffRound(name, cities, pots, units, step, true, Some(id), RoundStatus.withName(status))(tournamentInfo))
       } else {
         throw new IllegalStateException("Unknown preliminary round class: " + clazz)
       }
     } else {
       if (classOf[PlayoffRound].getName.equals(clazz)) {
-        Some(new PlayoffRound(name, cities, pots, units, step, false, Some(id), RoundStatus.withName(status)))
+        Some(new PlayoffRound(name, cities, pots, units, step, false, Some(id), RoundStatus.withName(status))(tournamentInfo))
       } else if (classOf[GroupRound].getName.equals(clazz)) {
-        Some(new GroupRound(name, cities, pots, units, step, Some(id), RoundStatus.withName(status)))
+        Some(new GroupRound(name, cities, pots, units, step, Some(id), RoundStatus.withName(status))(tournamentInfo))
       } else {
         throw new IllegalStateException("Unknown round class: " + clazz)
       }
@@ -107,11 +111,20 @@ class RoundDaoImpl(implicit inj: Injector) extends RoundDao with Injectable {
     }
   }
 
-
   private def groupCitiesByPots(citiesPots: => List[(City, Option[Int])]): List[Pot] =
     citiesPots.filter(_._2.nonEmpty).groupBy(_._2.get).toList.sortBy(_._1).map(_._2.map(_._1))
 
   private def getCities(citiesPots: => List[(City, Option[Int])]): List[City] = citiesPots.map(_._1)
+
+  private def getReverseTournamentInfo(tournamentId: Long)(implicit rs: JdbcBackend#Session): TournamentInfo =
+    TableQuery[TournamentsTable]
+      .filter(_.id === tournamentId)
+      .map(_.name)
+      .firstOption
+      .map(n => new TournamentInfo(n, Some(tournamentId), rulesDao.fromTournamentId(tournamentId)
+        .getOrElse(throw new IllegalStateException("Cannot find rules for tournament " + tournamentId)))
+      )
+      .getOrElse(throw new IllegalStateException("Round calls to non-existent tournament " + tournamentId))
 
   override def getTournamentRounds(id: Long)(implicit rs: JdbcBackend#Session): List[Round] =
     ds.filter(_.tournamentId === id).sortBy(_.id desc).map(_.id)

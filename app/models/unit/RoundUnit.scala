@@ -3,6 +3,7 @@ package models.unit
 import com.typesafe.scalalogging.slf4j.Logger
 import models.Common._
 import models._match.PlayedMatch
+import models.reverse.{RoundUnitInfo, RoundInfo}
 import models.team.Team
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
@@ -19,8 +20,10 @@ trait RoundUnit {
   val promotedTeams: List[Team]
   val eliminatedTeams: List[Team]
   val promotedTeamsSize: Int
+  val roundInfo: RoundInfo
 
   implicit val inj: Injector
+  implicit val rules = roundInfo.rules
 
   private val log = Logger(LoggerFactory.getLogger(this.getClass))
 
@@ -40,7 +43,8 @@ trait RoundUnit {
     require(fixtureNum < fixturesCount, fixtureNum + " must be smaller than " + fixturesCount + "in "
       + this.fixtures.map(f => "SIZE " + fixtures.size + " " + f.mkString(", ")))
 
-    val updatedFixture = fixtures(fixtureNum).map(m => PlayedMatch(m.aTeam, m.bTeam, m.eval, Some(DateTime.now()), m.id))
+    val updatedFixture = fixtures(fixtureNum).map(m =>
+      PlayedMatch(m.aTeam, m.bTeam, m.eval(), Some(DateTime.now()), m.id)(toRoundUnitInfo))
     val updatedFixtures = fixtures.updated(fixtureNum, updatedFixture)
     val updatedResults: List[UnitTeamResult] = updatedFixtureResults(updatedFixture)
 
@@ -52,4 +56,6 @@ trait RoundUnit {
       .map(r => fixture.filter(_.aTeam == r.team).foldLeft(r){_ aPlus _.asInstanceOf[PlayedMatch].result})
       .map(r => fixture.filter(_.bTeam == r.team).foldLeft(r){_ bPlus _.asInstanceOf[PlayedMatch].result})
   }
+
+  protected val toRoundUnitInfo: RoundUnitInfo = new RoundUnitInfo(roundInfo)(name, id)
 }

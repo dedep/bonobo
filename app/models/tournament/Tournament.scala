@@ -1,5 +1,6 @@
 package models.tournament
 
+import models.reverse.TournamentInfo
 import models.round.Round
 import models.team.Team
 import models.tournament.TournamentStatus.TournamentStatus
@@ -11,6 +12,7 @@ trait Tournament {
   val id: Option[Long]
   val status: TournamentStatus
   val teamsInGame: List[Boolean]
+  val gameRules: GameRules
 
   def doStep(): Tournament
 
@@ -22,4 +24,6 @@ trait Tournament {
   val isPlayed = status == TournamentStatus.PLAYING
 
   val isFinished = status == TournamentStatus.FINISHED
+
+  protected val toTournamentInfo = new TournamentInfo(name, id, gameRules)
 }
