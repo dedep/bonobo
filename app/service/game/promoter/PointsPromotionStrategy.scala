@@ -1,12 +1,14 @@
 package service.game.promoter
 
-import models.Common
 import models.Common._
 import models.team.Team
 import models.unit.{RoundUnit, UnitTeamResult}
+import service.game.manager.GameManager
 
 import scala.util.Sorting
 
+//todo: nie uwzględnia faktycznego terminarza. może być problem przy niestandardowej konfiguracji,
+//todo: np. group-3
 class PointsPromotionStrategy extends PromotionsStrategy {
 
   override def findPromotedAndEliminatedTeams(unit: RoundUnit): (List[Team], List[Team]) = {
@@ -32,12 +34,11 @@ class PointsPromotionStrategy extends PromotionsStrategy {
   private def findTeamsWithResult(unit: RoundUnit, f: (UnitTeamResult) => Boolean) =
     unit.results.filter(f).map(_.team)
 
-  //todo: testy
-  private def getPointsRequiredToBePromoted(unit: RoundUnit): Double =
-    getNthTeamPoints(unit, unit.promotedTeamsSize) + (3 * unit.matchesToPlay)  // todo: trójka
+  def getPointsRequiredToBePromoted(unit: RoundUnit)(implicit gm: GameManager): Double =
+    getNthTeamPoints(unit, unit.promotedTeamsSize) + (gm.POINTS_FOR_WIN * unit.matchesToPlay)
 
-  private def getPointsRequiredToBeEliminated(unit: RoundUnit): Double =
-    getNthTeamPoints(unit, unit.promotedTeamsSize - 1) - (3 * unit.matchesToPlay) // todo: trójka
+  def getPointsRequiredToBeEliminated(unit: RoundUnit)(implicit gm: GameManager): Double =
+    getNthTeamPoints(unit, unit.promotedTeamsSize - 1) - (gm.POINTS_FOR_WIN * unit.matchesToPlay)
 
   private def getNthTeamPoints(unit: RoundUnit, n: Int) =
     Sorting.stableSort(unit.results).reverse(n).points

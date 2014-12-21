@@ -1,12 +1,9 @@
 package models._match
 
-import models.Common
-import Common._
 import models._match.result.MatchResult
 import models.team.Team
 import modules.ServiceModule
 import org.specs2.mutable.Specification
-import scaldi.Injector
 
 class MatchTest extends Specification {
 

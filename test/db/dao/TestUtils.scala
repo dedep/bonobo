@@ -16,7 +16,6 @@ object TestUtils {
     session.createStatement().executeUpdate("TRUNCATE matches CASCADE;")
   }
 
-
   def insertTestTournamentIntoDatabase(implicit session: JdbcBackend#Session) = {
     TestUtils.truncateTestTables
     session.createStatement().executeUpdate("INSERT INTO territories VALUES (5, 'World', 1, NULL, '');")
