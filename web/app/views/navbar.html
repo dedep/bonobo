@@ -1,7 +1,7 @@
 <div class="navbar navbar-default navbar-fixed-top top-nav-collapse" role="navigation" ng-controller="NavBarCtrl">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/">HOME</a>
+            <a class="navbar-brand" ng-href="#/">HOME</a>
         </div>
 
         <div class="navbar-collapse collapse">
@@ -21,10 +21,10 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a id="menu-item-5" class="navbar-item">HELP</a>
+                    <a id="menu-item-5" ng-click="toggleHelp()" class="navbar-item">HELP</a>
                 </li>
                 <li>
-                    <a id="menu-item-6" class="navbar-item">ABOUT</a>
+                    <a id="menu-item-6" ng-href="#/about" class="navbar-item">ABOUT</a>
                 </li>
             </ul>
         </div>

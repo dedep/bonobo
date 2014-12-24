@@ -16,7 +16,8 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'cfp.hotkeys'
   ])
   .config(function ($routeProvider) {
     $routeProvider
