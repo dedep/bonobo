@@ -5,7 +5,9 @@ import db.dao.round.{RoundDaoImpl, RoundDao}
 import db.dao.unit.{UnitDao, UnitDaoImpl}
 import models._match.PlayedMatch
 import models._match.result.{Draw, WinB}
+import models.reverse.{RoundUnitInfo, RoundInfo, TournamentInfo}
 import models.territory.{Territory, City}
+import models.tournament.GameRules
 import models.unit.Pair
 import modules.MockModule
 import org.joda.time.DateTime
@@ -21,6 +23,10 @@ class MatchDaoTest extends Specification with Injectable with Mockito {
   implicit val module = new Module { bind [MatchDao] to new MatchDaoImpl() } :: new MockModule
 
   lazy val matchDao = inject[MatchDao]
+
+  val tournamentInfo = new TournamentInfo("t", None, GameRules(0, 1, 3))
+  val roundInfo = new RoundInfo(tournamentInfo)("rName", None)
+  val unitInfo = new RoundUnitInfo(roundInfo)("uName", None)
 
   "Match.fromId returns proper Match" in new WithApplication {
     play.api.db.slick.DB("test").withSession { implicit session =>
@@ -62,7 +68,7 @@ class MatchDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
-      val m = new models._match.Match(city1, city2)
+      val m = new models._match.Match(city1, city2)(unitInfo)
 
       //when
       val mId = matchDao.saveOrUpdate(m, 1, 1)
@@ -88,7 +94,7 @@ class MatchDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
-      val m = new PlayedMatch(city1, city2, WinB(2, 4), Some(DateTime.now()))
+      val m = new PlayedMatch(city1, city2, WinB(2, 4), Some(DateTime.now()))(unitInfo)
 
       //when
       val mId = matchDao.saveOrUpdate(m, 1, 1)
@@ -114,7 +120,7 @@ class MatchDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
-      val m = new PlayedMatch(city1, city2, Draw(2), Some(DateTime.now()))
+      val m = new PlayedMatch(city1, city2, Draw(2), Some(DateTime.now()))(unitInfo)
 
       //when
       val mId = matchDao.saveOrUpdate(m, 0, 1)

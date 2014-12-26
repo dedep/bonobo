@@ -1,7 +1,9 @@
 package models.round
 
 import models._match.PlayedMatch
+import models.reverse.TournamentInfo
 import models.team.Team
+import models.tournament.GameRules
 import modules.ServiceModule
 import org.scalatest.FunSuite
 import scaldi.Injector
@@ -10,13 +12,15 @@ class PlayoffRoundTest extends FunSuite {
 
   implicit val inj = new ServiceModule
 
+  val tournamentInfo = new TournamentInfo("t", None, GameRules(0, 1, 3))
+
   test("is final round") {
     //given
     val t1 = new Team(1, 1, 1)
     val t2 = new Team(2, 2, 2)
 
     //when
-    val r = new PlayoffRound("", List(t1, t2))
+    val r = new PlayoffRound("", List(t1, t2))(tournamentInfo)
 
     //then
     assert(r.isFinalRound)
@@ -30,7 +34,7 @@ class PlayoffRoundTest extends FunSuite {
     val t4 = new Team(4, 4, 4)
 
     //when
-    val r = new PlayoffRound("", List(t1, t2, t3, t4))
+    val r = new PlayoffRound("", List(t1, t2, t3, t4))(tournamentInfo)
 
     //then
     assert(r.teams.size == 4)
@@ -48,7 +52,7 @@ class PlayoffRoundTest extends FunSuite {
     val t3 = new Team(3, 3, 2)
     val t4 = new Team(4, 4, 4)
 
-    val r = new PlayoffRound("", List(t1, t2, t3, t4))
+    val r = new PlayoffRound("", List(t1, t2, t3, t4))(tournamentInfo)
 
     //when
     val drawnPotsRound = r.drawPots()
@@ -73,7 +77,7 @@ class PlayoffRoundTest extends FunSuite {
       val t3 = new Team(3, 3, 2)
       val t4 = new Team(4, 4, 4)
 
-      val r = new PlayoffRound("", List(t1, t2, t3, t4))
+      val r = new PlayoffRound("", List(t1, t2, t3, t4))(tournamentInfo)
 
       //when
       val drawnUnitsRound = r.drawPots().drawUnits()
@@ -98,7 +102,7 @@ class PlayoffRoundTest extends FunSuite {
     val t3 = new Team(3, 3, 2)
     val t4 = new Team(4, 4, 4)
 
-    val r = new PlayoffRound("", List(t1, t2, t3, t4))
+    val r = new PlayoffRound("", List(t1, t2, t3, t4))(tournamentInfo)
 
     //when
     val round = r.drawPots().drawUnits().playFixture()
@@ -123,7 +127,7 @@ class PlayoffRoundTest extends FunSuite {
     val t3 = new Team(3, 3, 2)
     val t4 = new Team(4, 4, 4)
 
-    val r = new PlayoffRound("", List(t1, t2, t3, t4))
+    val r = new PlayoffRound("", List(t1, t2, t3, t4))(tournamentInfo)
 
     assert(r.teams.size == 4)
     assert(r.pots == Nil)
@@ -175,7 +179,7 @@ class PlayoffRoundTest extends FunSuite {
       val t3 = new Team(3, 3, 2)
       val t4 = new Team(4, 4, 4)
 
-      val r = new PlayoffRound("", List(t1, t2, t3, t4))
+      val r = new PlayoffRound("", List(t1, t2, t3, t4))(tournamentInfo)
 
       //when
       val round = r.drawPots().drawUnits().playFixture().playFixture()

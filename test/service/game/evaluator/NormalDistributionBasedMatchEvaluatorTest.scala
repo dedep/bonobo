@@ -1,8 +1,9 @@
 package service.game.evaluator
 
 import models._match.result.{Draw, WinA, WinB}
-import models.reverse.RoundUnitInfo
+import models.reverse.{TournamentInfo, RoundInfo, RoundUnitInfo}
 import models.team.Team
+import models.tournament.GameRules
 import org.scalatest.FunSuite
 import models._match.Match
 import scaldi.Injector
@@ -11,9 +12,13 @@ class NormalDistributionBasedMatchEvaluatorTest(implicit inj: Injector) extends 
 
   val evaluator = new NormalDistributionBasedMatchEvaluator
 
+  val tournamentInfo = new TournamentInfo("t", None, GameRules(0, 1, 3))
+  val roundInfo = new RoundInfo(tournamentInfo)("rName", None)
+  val unitInfo = new RoundUnitInfo(roundInfo)("uName", None)
+
   test("test balance point calculation - A 2x bigger than B") {
     //given
-    val m = new Match(new Team(1, 200, 0), new Team(2, 100, 0))
+    val m = new Match(new Team(1, 200, 0), new Team(2, 100, 0))(unitInfo)
 
     //when
     val bp = evaluator.calcBalancePoint(m)
@@ -24,7 +29,7 @@ class NormalDistributionBasedMatchEvaluatorTest(implicit inj: Injector) extends 
 
   test("test balance point calculation - B 2x bigger than A") {
     //given
-    val m = new Match(new Team(1, 100, 0), new Team(2, 200, 0))
+    val m = new Match(new Team(1, 100, 0), new Team(2, 200, 0))(unitInfo)
 
     //when
     val bp = evaluator.calcBalancePoint(m)
@@ -35,7 +40,7 @@ class NormalDistributionBasedMatchEvaluatorTest(implicit inj: Injector) extends 
 
   test("test balance point calculation - A equals B ") {
     //given
-    val m = new Match(new Team(1, 100, 0), new Team(2, 100, 0))
+    val m = new Match(new Team(1, 100, 0), new Team(2, 100, 0))(unitInfo)
 
     //when
     val bp = evaluator.calcBalancePoint(m)
@@ -46,7 +51,7 @@ class NormalDistributionBasedMatchEvaluatorTest(implicit inj: Injector) extends 
 
   test("test balance point calculation - A 4x bigger B ") {
     //given
-    val m = new Match(new Team(1, 400, 0), new Team(2, 100, 0))
+    val m = new Match(new Team(1, 400, 0), new Team(2, 100, 0))(unitInfo)
 
     //when
     val bp = evaluator.calcBalancePoint(m)
@@ -57,7 +62,7 @@ class NormalDistributionBasedMatchEvaluatorTest(implicit inj: Injector) extends 
 
   test("test balance point calculation - B 4x bigger A ") {
     //given
-    val m = new Match(new Team(1, 100, 0), new Team(2, 400, 0))
+    val m = new Match(new Team(1, 100, 0), new Team(2, 400, 0))(unitInfo)
 
     //when
     val bp = evaluator.calcBalancePoint(m)
@@ -179,7 +184,7 @@ class NormalDistributionBasedMatchEvaluatorTest(implicit inj: Injector) extends 
 
   test("match lose probability - balanced situation") {
     //given
-    val m = new Match(new Team(1, 200, 0), new Team(2, 200, 0))
+    val m = new Match(new Team(1, 200, 0), new Team(2, 200, 0))(unitInfo)
 
     //when
     val result = evaluator.calculateLoseProbability(m)
@@ -190,7 +195,7 @@ class NormalDistributionBasedMatchEvaluatorTest(implicit inj: Injector) extends 
 
   test("match win probability - balanced situation") {
     //given
-    val m = new Match(new Team(1, 200, 0), new Team(2, 200, 0))
+    val m = new Match(new Team(1, 200, 0), new Team(2, 200, 0))(unitInfo)
 
     //when
     val result = evaluator.calculateWinProbability(m)
@@ -201,7 +206,7 @@ class NormalDistributionBasedMatchEvaluatorTest(implicit inj: Injector) extends 
 
   test("match draw probability - balanced situation") {
     //given
-    val m = new Match(new Team(1, 200, 0), new Team(2, 200, 0))
+    val m = new Match(new Team(1, 200, 0), new Team(2, 200, 0))(unitInfo)
 
     //when
     val result = evaluator.calculateDrawProbability(m)
@@ -212,7 +217,7 @@ class NormalDistributionBasedMatchEvaluatorTest(implicit inj: Injector) extends 
 
   test("match lose probability - doubled situation") {
     //given
-    val m = new Match(new Team(1, 200, 0), new Team(2, 100, 0))
+    val m = new Match(new Team(1, 200, 0), new Team(2, 100, 0))(unitInfo)
 
     //when
     val result = evaluator.calculateLoseProbability(m)
@@ -223,7 +228,7 @@ class NormalDistributionBasedMatchEvaluatorTest(implicit inj: Injector) extends 
 
   test("match draw probability - doubled situation") {
     //given
-    val m = new Match(new Team(1, 200, 0), new Team(2, 100, 0))
+    val m = new Match(new Team(1, 200, 0), new Team(2, 100, 0))(unitInfo)
 
     //when
     val result = evaluator.calculateDrawProbability(m)
@@ -234,7 +239,7 @@ class NormalDistributionBasedMatchEvaluatorTest(implicit inj: Injector) extends 
 
   test("match win probability - doubled situation") {
     //given
-    val m = new Match(new Team(1, 200, 0), new Team(2, 100, 0))
+    val m = new Match(new Team(1, 200, 0), new Team(2, 100, 0))(unitInfo)
 
     //when
     val result = evaluator.calculateWinProbability(m)

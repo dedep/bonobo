@@ -1,7 +1,9 @@
 package models.round
 
 import models._match.PlayedMatch
+import models.reverse.TournamentInfo
 import models.team.Team
+import models.tournament.GameRules
 import modules.ServiceModule
 import org.scalatest.FunSuite
 import scaldi.Injector
@@ -9,6 +11,8 @@ import scaldi.Injector
 class GroupRoundTest extends FunSuite {
 
   implicit val inj = new ServiceModule
+
+  val tournamentInfo = new TournamentInfo("t", None, GameRules(0, 1, 3))
 
   test("is final round") {
     //given
@@ -18,7 +22,7 @@ class GroupRoundTest extends FunSuite {
     val t4 = new Team(4, 4, 4)
 
     //when
-    val r = new GroupRound("", List(t1, t2, t3, t4))
+    val r = new GroupRound("", List(t1, t2, t3, t4))(tournamentInfo)
 
     //then
     assert(!r.isFinalRound)
@@ -36,7 +40,7 @@ class GroupRoundTest extends FunSuite {
     val t8 = new Team(8, 8, 8)
 
     //when
-    val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))
+    val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))(tournamentInfo)
 
     //then
     assert(r.teams.size == 8)
@@ -62,7 +66,7 @@ class GroupRoundTest extends FunSuite {
     val t7 = new Team(7, 7, 7)
     val t8 = new Team(8, 8, 3)
 
-    val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))
+    val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))(tournamentInfo)
 
     //when
     val drawnPotsRound = r.drawPots()
@@ -95,7 +99,7 @@ class GroupRoundTest extends FunSuite {
       val t7 = new Team(7, 7, 7)
       val t8 = new Team(8, 8, 3)
 
-      val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))
+      val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))(tournamentInfo)
 
       //when
       val drawnUnitsRound = r.drawPots().drawUnits()
@@ -129,7 +133,7 @@ class GroupRoundTest extends FunSuite {
     val t7 = new Team(7, 7, 7)
     val t8 = new Team(8 ,8, 3)
 
-    val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))
+    val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))(tournamentInfo)
 
     //when
     val round = r.drawPots().drawUnits().playFixture()
@@ -158,7 +162,7 @@ class GroupRoundTest extends FunSuite {
     val t7 = new Team(7, 7, 7)
     val t8 = new Team(8, 8, 3)
 
-    val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))
+    val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))(tournamentInfo)
 
     assert(r.teams.size == 8)
     assert(r.pots == Nil)
@@ -216,7 +220,7 @@ class GroupRoundTest extends FunSuite {
       val t7 = new Team(7, 7, 7)
       val t8 = new Team(8, 8, 3)
 
-      val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))
+      val r = new GroupRound("", List(t1, t2, t3, t4, t5, t6, t7, t8))(tournamentInfo)
 
       //when
       val round = r.doStep().doStep().doStep().doStep().doStep().doStep().doStep().doStep()

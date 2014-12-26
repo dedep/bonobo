@@ -6,7 +6,7 @@ import db.dao.territory.TerritoryDao
 import db.dao.tournament.{TournamentDao, TournamentDaoImpl}
 import models.round.PlayoffRound
 import models.territory.City
-import models.tournament.{Tournament, TournamentImpl}
+import models.tournament.{GameRules, Tournament, TournamentImpl}
 import models.unit.{Pair, RoundUnit}
 import modules.{MockModule, DBMock}
 import org.specs2.mock.Mockito
@@ -25,13 +25,15 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
   lazy val territoryDao = inject[TerritoryDao]
   lazy val roundDao = inject[RoundDao]
 
+  val rules = GameRules(0, 1, 3)
+
   "Call SaveOrUpdate cities while saving new tournament" in new WithApplication {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
       val c1 = cityDao.fromId(1).get
       val c2 = cityDao.fromId(2).get
-      val t = new TournamentImpl(List(c1, c2), "New tournament")
+      val t = new TournamentImpl(List(c1, c2), "New tournament")(rules)
 
       //when
       tournamentDao.updateLastRound(t)
@@ -46,7 +48,7 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
-      val t = new TournamentImpl(List(city1, city2), "New tournament", id = Some(1))
+      val t = new TournamentImpl(List(city1, city2), "New tournament", id = Some(1))(rules)
 
       //when
       val tournamentId = tournamentDao.updateLastRound(t)
@@ -66,7 +68,7 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
-      val t = new TournamentImpl(List(city1, city2), "New tournament", id = Some(1))
+      val t = new TournamentImpl(List(city1, city2), "New tournament", id = Some(1))(rules)
 
       //when
       tournamentDao.updateLastRound(t)
@@ -104,7 +106,7 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
       session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
 
       val c2 = new City(99, "Lublin", 1600000, 100, ter1, 0, 0)
-      val t = new TournamentImpl(List(city1, c2), "New tournament")
+      val t = new TournamentImpl(List(city1, c2), "New tournament")(rules)
 
       //when - then
       tournamentDao.updateLastRound(t) must throwA(new IllegalStateException("Tournament cannot refer to non-existent city"))
@@ -116,7 +118,7 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
       //given
       TestUtils.insertTestTournamentIntoDatabase
 
-      val t = new TournamentImpl(List(city1, city2), "New tournament")
+      val t = new TournamentImpl(List(city1, city2), "New tournament")(rules)
 
       //when
       val tournamentId = tournamentDao.updateLastRound(t)

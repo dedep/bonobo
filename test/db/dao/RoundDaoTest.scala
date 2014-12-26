@@ -2,7 +2,9 @@ package db.dao
 
 import db.dao.round.{RoundDaoImpl, RoundDao}
 import db.dao.unit.UnitDao
+import models.reverse.TournamentInfo
 import models.round.{PlayoffRound, Round}
+import models.tournament.GameRules
 import modules.MockModule
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
@@ -17,6 +19,8 @@ class RoundDaoTest extends Specification with Injectable with Mockito {
 
   lazy val roundDao = inject[RoundDao]
   lazy val unitDao = inject[UnitDao]
+
+  val tournamentInfo = new TournamentInfo("t", None, GameRules(0, 1, 3))
 
   "Round.fromId test" in new WithApplication {
     play.api.db.slick.DB("test").withSession { implicit session =>
@@ -49,7 +53,7 @@ class RoundDaoTest extends Specification with Injectable with Mockito {
       //given
       TestUtils.insertTestTournamentIntoDatabase
 
-      val r = new PlayoffRound("", List(city1, city2))
+      val r = new PlayoffRound("", List(city1, city2))(tournamentInfo)
 
       //when
       val rId = roundDao.saveOrUpdate(r, 1)
@@ -84,7 +88,7 @@ class RoundDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
-      val r = new PlayoffRound("", List(city1, city4), List(List(city1), List(city4)), Nil, 5, false, Some(1l))
+      val r = new PlayoffRound("", List(city1, city4), List(List(city1), List(city4)), Nil, 5, false, Some(1l))(tournamentInfo)
 
       //when
       val rId = roundDao.saveOrUpdate(r, 1)

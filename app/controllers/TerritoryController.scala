@@ -4,6 +4,7 @@ import com.typesafe.scalalogging.slf4j.Logger
 import db.dao.city.CityDao
 import db.dao.territory.TerritoryDao
 import db.dao.tournament.TournamentDao
+import models.dto.TerritoryDto
 import models.territory.Territory
 import models.tournament.{GameRules, TournamentImpl}
 import org.slf4j.LoggerFactory
@@ -28,6 +29,13 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
 
   def findByCode(code: String) = wrapDBRequest { implicit rs =>
     handleOptionalTerritory(territoryDao.fromCode(code))
+  }
+
+  def findByCodeAsJson(code: String) = wrapDBRequest { implicit rs =>
+    territoryDao.fromCode(code)
+      .map(t => TerritoryDto.parse(t))
+      .map(t => Ok(t.toJson))
+      .getOrElse(NotFound(code))
   }
 
   private def handleOptionalTerritory(t: Option[Territory]) = t match {

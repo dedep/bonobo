@@ -2,7 +2,9 @@ package db.dao
 
 import db.dao.territory.{TerritoryDaoImpl, TerritoryDao}
 import db.dao.unit.{UnitDao, UnitDaoImpl}
+import models.reverse.{RoundInfo, TournamentInfo}
 import models.round.PlayoffRound
+import models.tournament.GameRules
 import models.unit.{UnitTeamResult, Group, Pair, RoundUnit}
 import modules.MockModule
 import org.specs2.mock.Mockito
@@ -18,6 +20,9 @@ class UnitDaoTest extends Specification with Injectable with Mockito {
 
   lazy val territoryDao = inject[TerritoryDao]
   lazy val unitDao = inject[UnitDao]
+
+  val tournamentInfo = new TournamentInfo("t", None, GameRules(0, 1, 3))
+  val roundInfo = new RoundInfo(tournamentInfo)("rName", None)
 
   "Unit.fromId returns proper Unit" in new WithApplication {
     play.api.db.slick.DB("test").withSession { implicit session =>
@@ -54,7 +59,8 @@ class UnitDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
-      val u = new Pair("Pair A", List(city2, city3), resultsCbn = List(UnitTeamResult(city2, 1, 2, 3), UnitTeamResult(city3, 4, 5, 6)))
+      val u = new Pair("Pair A", List(city2, city3), resultsCbn = List(UnitTeamResult(city2, 1, 2, 3),
+        UnitTeamResult(city3, 4, 5, 6)))(roundInfo)
 
       //when
       val uId = unitDao.saveOrUpdate(u, 1, Set())
@@ -88,7 +94,8 @@ class UnitDaoTest extends Specification with Injectable with Mockito {
       //given
       TestUtils.insertTestTournamentIntoDatabase
       val u = new Group("Group A", List(city1, city2, city3, city4), Nil,
-        List(UnitTeamResult(city1, 6, 3, 5), UnitTeamResult(city2, 2, 3, 4), UnitTeamResult(city3, 4, 1, 2), UnitTeamResult(city4, 1, 1, 1)), Some(1))
+        List(UnitTeamResult(city1, 6, 3, 5), UnitTeamResult(city2, 2, 3, 4), UnitTeamResult(city3, 4, 1, 2),
+          UnitTeamResult(city4, 1, 1, 1)), Some(1))(roundInfo)
 
       //when
       unitDao.saveOrUpdate(u, 1, Set(0))

@@ -6,7 +6,7 @@ import db.dao.round.RoundDao
 import db.dao.territory.TerritoryDao
 import db.dao.unit.UnitDao
 import models.territory.{City, Territory}
-import models.tournament.TournamentImpl
+import models.tournament.{GameRules, TournamentImpl}
 import org.specs2.mock.Mockito
 import scaldi.Module
 
@@ -29,7 +29,9 @@ object DBMock extends Mockito {
   val city6 = new City(6, "Budapest", 164276, 0, ter4, 0, 0)
   val city7 = new City(7, "New York", 1164276, 0, ter5, 0, 0)
 
-  val tour1 = new TournamentImpl(city1 :: city2 :: Nil, "Test 1 tournament", Nil, Some(1))(new Module {})
+  val rules = GameRules(0, 1, 3)
+
+  val tour1 = new TournamentImpl(city1 :: city2 :: Nil, "Test 1 tournament", Nil, Some(1))(rules)(new Module {})
 
   def prepareCityDaoMockData(cityDao: CityDao): CityDao = {
     cityDao.fromId(org.mockito.Matchers.eq(Long.box(1)))(any[JdbcBackend#Session]) returns Some(city1)

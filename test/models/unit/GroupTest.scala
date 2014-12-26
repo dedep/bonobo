@@ -3,7 +3,9 @@ package models.unit
 import models.Common._
 import models._match.PlayedMatch
 import models._match.result.{Draw, WinA}
+import models.reverse.{RoundUnitInfo, RoundInfo, TournamentInfo}
 import models.team.Team
+import models.tournament.GameRules
 import modules.ServiceModule
 import org.joda.time.DateTime
 import org.scalatest.FunSuite
@@ -13,13 +15,17 @@ class GroupTest extends FunSuite {
 
   implicit val inj = new ServiceModule
 
+  val tournamentInfo = new TournamentInfo("t", None, GameRules(0, 1, 3))
+  val roundInfo = new RoundInfo(tournamentInfo)("rName", None)
+  val unitInfo = new RoundUnitInfo(roundInfo)("uName", None)
+
   test("test group contains teams") {
     //given
     val t1 = new Team(1, 1, 1)
     val t2 = new Team(2, 2, 2)
     val t3 = new Team(3, 3, 3)
     val t4 = new Team(4, 4, 4)
-    val group = new Group("Group A", List(t1, t2, t3, t4))
+    val group = new Group("Group A", List(t1, t2, t3, t4))(roundInfo)
 
     //then
     assert(group.teams == t1 :: t2 :: t3 :: t4 :: Nil)
@@ -31,7 +37,7 @@ class GroupTest extends FunSuite {
     val t2 = new Team(2, 2, 2)
     val t3 = new Team(3, 3, 3)
     val t4 = new Team(4, 4, 4)
-    val group = new Group("Group A", List(t1, t2, t3, t4))
+    val group = new Group("Group A", List(t1, t2, t3, t4))(roundInfo)
 
     //then
     assert(group.fixturesCount == 6)
@@ -43,7 +49,7 @@ class GroupTest extends FunSuite {
     val t2 = new Team(2, 2, 2)
     val t3 = new Team(3, 3, 3)
     val t4 = new Team(4, 4, 4)
-    val group = new Group("Group A", List(t1, t2, t3, t4))
+    val group = new Group("Group A", List(t1, t2, t3, t4))(roundInfo)
 
     //then
     assert(group.matchesToPlay == 6)
@@ -55,7 +61,7 @@ class GroupTest extends FunSuite {
     val t2 = new Team(2, 2, 2)
     val t3 = new Team(3, 3, 3)
     val t4 = new Team(4, 4, 4)
-    val group = new Group("Group A", List(t1, t2, t3, t4))
+    val group = new Group("Group A", List(t1, t2, t3, t4))(roundInfo)
 
     //when
     val newGroup = group.playFixture(0).playFixture(1)
@@ -70,7 +76,7 @@ class GroupTest extends FunSuite {
     val t2 = new Team(2, 2, 2)
     val t3 = new Team(3, 3, 3)
     val t4 = new Team(4, 4, 4)
-    val group = new Group("Group A", List(t1, t2, t3, t4))
+    val group = new Group("Group A", List(t1, t2, t3, t4))(roundInfo)
 
     //then
     assert(group.fixturesCount == 6)
@@ -95,7 +101,7 @@ class GroupTest extends FunSuite {
     val t1 = new Team(1, 1, 1)
     val t2 = new Team(2, 2, 2)
     val t3 = new Team(3, 3, 3)
-    val group = new Group("Group A", List(t1, t2, t3))
+    val group = new Group("Group A", List(t1, t2, t3))(roundInfo)
 
     //then
     assert(group.fixturesCount == 6)
@@ -112,7 +118,7 @@ class GroupTest extends FunSuite {
     val t2 = new Team(2, 2, 2)
     val t3 = new Team(3, 3, 3)
     val t4 = new Team(4, 4, 4)
-    val group = new Group("Group A", List(t1, t2, t3, t4))
+    val group = new Group("Group A", List(t1, t2, t3, t4))(roundInfo)
 
     assert(group.results.size == 4)
 
@@ -133,10 +139,10 @@ class GroupTest extends FunSuite {
     val t2 = new Team(2, 2, 2)
     val t3 = new Team(3, 3, 3)
     val t4 = new Team(4, 4, 4)
-    val group = new Group("Group A", List(t1, t2, t3, t4))
+    val group = new Group("Group A", List(t1, t2, t3, t4))(roundInfo)
 
-    val m1 = PlayedMatch(t1, t2, Draw(1), Some(DateTime.now()))
-    val m2 = PlayedMatch(t3, t4, WinA(2, 0), Some(DateTime.now()))
+    val m1 = PlayedMatch(t1, t2, Draw(1), Some(DateTime.now()))(unitInfo)
+    val m2 = PlayedMatch(t3, t4, WinA(2, 0), Some(DateTime.now()))(unitInfo)
     val f: Fixture = List(m1, m2)
 
     //when
@@ -172,7 +178,7 @@ class GroupTest extends FunSuite {
     val t2 = new Team(2, 2, 2)
     val t3 = new Team(3, 3, 3)
     val t4 = new Team(4, 4, 4)
-    val group = new Group("Group B", List(t1, t2, t3, t4))
+    val group = new Group("Group B", List(t1, t2, t3, t4))(roundInfo)
 
     //when
     val playedUnit = group.playFixture(0)
@@ -209,7 +215,7 @@ class GroupTest extends FunSuite {
     val t2 = new Team(2, 2, 2)
     val t3 = new Team(3, 3, 3)
     val t4 = new Team(4, 4, 4)
-    val group = new Group("Group B", List(t1, t2, t3, t4))
+    val group = new Group("Group B", List(t1, t2, t3, t4))(roundInfo)
 
     //when
     val playedUnit = group.playFixture(0).playFixture(1)

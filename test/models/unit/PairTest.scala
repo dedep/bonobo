@@ -3,7 +3,9 @@ package models.unit
 import models.Common._
 import models._match.PlayedMatch
 import models._match.result.{Draw, WinA}
+import models.reverse.{RoundUnitInfo, RoundInfo, TournamentInfo}
 import models.team.Team
+import models.tournament.GameRules
 import modules.ServiceModule
 import org.joda.time.DateTime
 import org.scalatest.FunSuite
@@ -12,11 +14,15 @@ class PairTest extends FunSuite {
 
   implicit val inj = new ServiceModule
 
+  val tournamentInfo = new TournamentInfo("t", None, GameRules(0, 1, 3))
+  val roundInfo = new RoundInfo(tournamentInfo)("rName", None)
+  val unitInfo = new RoundUnitInfo(roundInfo)("uName", None)
+
   test("test teams") {
     //given
     val t1 = new Team(1, 1, 1)
     val t2 = new Team(2, 2, 2)
-    val pair = new Pair("Pair A", (t1, t2))
+    val pair = new Pair("Pair A", (t1, t2))(roundInfo)
 
     //then
     assert(pair.teams == t1 :: t2 :: Nil)
@@ -26,7 +32,7 @@ class PairTest extends FunSuite {
     //given
     val t1 = new Team(1, 1, 1)
     val t2 = new Team(2, 2, 2)
-    val pair = new Pair("Pair A", (t1, t2))
+    val pair = new Pair("Pair A", (t1, t2))(roundInfo)
 
     //then
     assert(pair.fixturesCount == 2)
@@ -36,7 +42,7 @@ class PairTest extends FunSuite {
     //given
     val t1 = new Team(1, 1, 1)
     val t2 = new Team(2, 2, 2)
-    val pair = new Pair("Pair A", (t1, t2))
+    val pair = new Pair("Pair A", (t1, t2))(roundInfo)
 
     //then
     assert(pair.fixtures(0).head.aTeam == t1)
@@ -49,7 +55,7 @@ class PairTest extends FunSuite {
   test("test default results") {
     val t1 = new Team(1, 1, 1)
     val t2 = new Team(2, 2, 2)
-    val pair = new Pair("Pair A", (t1, t2))
+    val pair = new Pair("Pair A", (t1, t2))(roundInfo)
 
     assert(pair.results.size == 2)
 
@@ -68,10 +74,10 @@ class PairTest extends FunSuite {
     //given
     val t1 = new Team(1, 1, 1)
     val t2 = new Team(2, 2, 2)
-    val pair = new Pair("Pair A", (t1, t2))
+    val pair = new Pair("Pair A", (t1, t2))(roundInfo)
 
-    val m1 = PlayedMatch(t1, t2, Draw(1), Some(DateTime.now()))
-    val m2 = PlayedMatch(t2, t1, WinA(2, 0), Some(DateTime.now()))
+    val m1 = PlayedMatch(t1, t2, Draw(1), Some(DateTime.now()))(unitInfo)
+    val m2 = PlayedMatch(t2, t1, WinA(2, 0), Some(DateTime.now()))(unitInfo)
     val f: Fixture = List(m1, m2)
 
     //when
@@ -95,7 +101,7 @@ class PairTest extends FunSuite {
     //given
     val t1 = new Team(1, 1, 1)
     val t2 = new Team(2, 2, 2)
-    val pair = new Pair("Group A", (t1, t2))
+    val pair = new Pair("Group A", (t1, t2))(roundInfo)
 
     //when
     val playedUnit = pair.playFixture(0)
@@ -124,7 +130,7 @@ class PairTest extends FunSuite {
     //given
     val t1 = new Team(1, 1, 1)
     val t2 = new Team(2, 2, 2)
-    val pair = new Pair("Group A", (t1, t2))
+    val pair = new Pair("Group A", (t1, t2))(roundInfo)
 
     //when
     val playedUnit = pair.playFixture(0).playFixture(1)
