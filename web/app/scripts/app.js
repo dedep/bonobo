@@ -9,27 +9,28 @@
  * Main module of the application.
  */
 angular
-  .module('webApp', [
-    'ngAnimate',
-    'ngCookies',
-    'ngResource',
-    'ngRoute',
-    'ngSanitize',
-    'ngTouch',
-    'ui.bootstrap',
-    'cfp.hotkeys'
-  ])
-  .config(function ($routeProvider) {
-    $routeProvider
-      .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
-      })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
-      })
-      .otherwise({
-        redirectTo: '/'
-      });
-  });
+    .module('bonobo.webapp', [
+        'ngResource',
+        'ngRoute',
+        'ui.bootstrap',
+        'cfp.hotkeys',
+        'bonobo.webapp.directives'
+    ])
+    .config(function ($routeProvider) {
+        $routeProvider
+            .when('/', {
+                templateUrl: 'views/main.html',
+                controller: 'MainCtrl'
+            })
+            .when('/about', {
+                templateUrl: 'views/about.html',
+                controller: 'AboutCtrl'
+            })
+            .when('/territory/:id', {
+                templateUrl: 'views/territory.html',
+                controller: 'TerritoryCtrl'
+            })
+            .otherwise({
+                redirectTo: '/'
+            });
+    });

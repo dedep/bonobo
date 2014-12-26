@@ -3,6 +3,8 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
 
+$border-color: #e7e7e7;
+
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -27,10 +29,41 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
   }
 }
 
-.navbar-default {
+.navbar {
   background-color: #ffffff;
+
+  .navbar-item {
+    cursor: pointer;
+  }
 }
 
-.navbar-item {
-  cursor: pointer;
+.document {
+  margin-top: 10px;
+
+  .document-header {
+    @extend .page-header;
+    margin-bottom: 30px;
+  }
+
+  .document-section {
+    margin-bottom: 30px;
+
+    .document-item {
+      @extend h4;
+      color: #666666;
+    }
+  }
+}
+
+[bonobo-world-map] {
+  height: 600px;
+  border: 1px $border-color solid;
+
+  .jvectormap-zoomin {
+    display: none;
+  }
+
+  .jvectormap-zoomout {
+    display: none;
+  }
 }
