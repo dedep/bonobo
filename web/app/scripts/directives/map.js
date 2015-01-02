@@ -1,6 +1,6 @@
 'use strict';
 
-var directives = angular.module('bonobo.webapp.directives', []);
+var directives = angular.module('utils.world-map', []);
 
 directives.directive('bonoboWorldMap', ['$location',
     function($location) {

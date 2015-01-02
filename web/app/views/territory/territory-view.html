@@ -1,0 +1,39 @@
+<div class="document-header">
+    {{territory.name}}
+    <span ng-hide="view.territoryFound" class="not-found">Territory not found</span>
+
+    <span class="action-icons">
+        <button class="btn btn-success" ng-click="view.addTerritory()">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </button>
+        <button class="btn btn-info" ng-click="view.editTerritory()" ng-show="view.territoryFound" ng-disabled="{{!territory.canChange}}">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+        </button>
+        <button class="btn btn-danger" ng-click="view.deleteTerritory()" ng-show="view.territoryFound" ng-disabled="{{!territory.canChange}}">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </button>
+    </span>
+</div>
+
+<div class="document-section" ng-show="view.territoryFound">
+    <div class="document-item">Total population: {{territory.population | number}}</div>
+    <div class="document-item" ng-hide="view.hideContainer()">Container:
+        <a ng-href="#territory/{{territory.container.code}}">{{territory.container.name}}</a>
+    </div>
+</div>
+
+<div bonobo-world-map code='{{view.codeToFocus()}}' class="document-section" ng-show="view.territoryFound"></div>
+
+<script type="text/ng-template" id="removeTerritoryModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Remove confirmation</h3>
+    </div>
+    <div class="modal-body">
+        <div>Do you really want to delete territory <b>{{territoryName}}</b>?</div>
+        <div>This will remove also all territories and cities contained in {{territoryName}}</div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

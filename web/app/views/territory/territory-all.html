@@ -1,0 +1,48 @@
+<div class="document-header">
+    Territories
+
+    <span class="action-icons">
+        <button class="btn btn-success" ng-click="addTerritory()">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </button>
+    </span>
+</div>
+
+<!--todo: da się coś z tym zrobić?-->
+<div class="tree document-section">
+    <ul>
+        <li>
+            <a href="#/territory/{{territories.code}}">
+                <span class="glyphicon glyphicon-globe" aria-hidden="true"></span> {{territories.name}}
+            </a>
+            <ul>
+                <li ng-repeat="child in territories.children">
+                    <a href="#/territory/{{child.code}}">
+                        <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> {{child.name}}
+                    </a>
+                    <ul>
+                        <li ng-repeat="child2 in child.children">
+                            <a href="#/territory/{{child2.code}}">
+                                <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> {{child2.name}}
+                            </a>
+                            <ul>
+                                <li ng-repeat="child3 in child2.children">
+                                    <a href="#/territory/{{child3.code}}">
+                                        <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> {{child3.name}}
+                                    </a>
+                                    <ul>
+                                        <li ng-repeat="child4 in child3.children">
+                                            <a href="#/territory/{{child4.code}}">
+                                                <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> {{child4.name}}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

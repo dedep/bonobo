@@ -1,0 +1,23 @@
+<div class="document-header">{{view.title()}}</div>
+<form>
+    <div class="form-group">
+        <label for="inputName">Territory name</label>
+        <input ng-model="territory.name" type="text" class="form-control" id="inputName" placeholder="Enter name" required autofocus>
+    </div>
+    <div class="form-group">
+        <label for="inputPopulation">Population</label>
+        <input ng-model="territory.population" type="number" class="form-control" id="inputPopulation" placeholder="Enter population" required>
+    </div>
+    <div class="form-group">
+        <label for="inputCode">Code</label>
+        <input ng-model="territory.code" type="text" class="form-control" id="inputCode" placeholder="Enter code" required>
+    </div>
+    <div class="form-group">
+        <label for="inputParent">Parent territory</label>
+        <select ng-model="territory.parent" class="form-control" id="inputParent" required
+                ng-options="t.name for t in view.territories track by t.code">
+        </select>
+    </div>
+    <button type="submit" class="btn btn-default btn-lg">Save</button>
+    <button ng-click="view.back()" type="button" class="btn btn-default btn-lg">Cancel</button>
+</form>

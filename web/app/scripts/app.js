@@ -14,7 +14,8 @@ angular
         'ngRoute',
         'ui.bootstrap',
         'cfp.hotkeys',
-        'bonobo.webapp.directives'
+        'utils.world-map',
+        'utils.autofocus'
     ])
     .config(function ($routeProvider) {
         $routeProvider
@@ -26,9 +27,21 @@ angular
                 templateUrl: 'views/about.html',
                 controller: 'AboutCtrl'
             })
-            .when('/territory/:id', {
-                templateUrl: 'views/territory.html',
-                controller: 'TerritoryCtrl'
+            .when('/territory/new', {
+                templateUrl: 'views/territory/territory-edit.html',
+                controller: 'TerritoryEditCtrl'
+            })
+            .when('/territory/:code', {
+                templateUrl: 'views/territory/territory-view.html',
+                controller: 'TerritoryViewCtrl'
+            })
+            .when('/territory/:code/edit', {
+                templateUrl: 'views/territory/territory-edit.html',
+                controller: 'TerritoryEditCtrl'
+            })
+            .when('/territory', {
+                templateUrl: 'views/territory/territory-all.html',
+                controller: 'TerritoryAllCtrl'
             })
             .otherwise({
                 redirectTo: '/'

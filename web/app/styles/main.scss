@@ -42,7 +42,16 @@ $border-color: #e7e7e7;
 
   .document-header {
     @extend .page-header;
+    @extend h1;
     margin-bottom: 30px;
+
+    .not-found {
+      color: red;
+    }
+
+    .action-icons {
+      float: right;
+    }
   }
 
   .document-section {

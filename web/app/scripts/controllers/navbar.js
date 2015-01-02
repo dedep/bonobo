@@ -14,7 +14,7 @@ angular.module('bonobo.webapp')
                 combo: 'alt+w',
                 description: 'World page',
                 callback: function() {
-                    $location.path('/territory/world');
+                    $location.path('/territory/W');
                 }
             })
             .add({
