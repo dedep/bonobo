@@ -57,7 +57,7 @@ class TerritoryDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
-      val t1 = new Territory(1, "Mazowieckie", 1000, None, "")
+      val t1 = new Territory(1, "Mazowieckie", 1000, None, "", false, false)
 
       //when
       territoryDao.update(t1)

@@ -1,21 +1,15 @@
 'use strict';
 
-/**
- * @ngdoc overview
- * @name webApp
- * @description
- * # webApp
- *
- * Main module of the application.
- */
 angular
     .module('bonobo.webapp', [
         'ngResource',
         'ngRoute',
         'ui.bootstrap',
         'cfp.hotkeys',
+        'utils.ajaxloader',
+        'utils.autofocus',
         'utils.world-map',
-        'utils.autofocus'
+        'bonobo.services'
     ])
     .config(function ($routeProvider) {
         $routeProvider

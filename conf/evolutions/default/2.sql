@@ -1,10 +1,10 @@
 # --- !Ups
 
-INSERT INTO territories VALUES (4, 'World', 7243000000, NULL, 'W');
-INSERT INTO territories VALUES (3, 'Poland', 1, 4, 'PL');
-INSERT INTO territories VALUES (5, 'Great Britain', 1, 4, 'GB');
+INSERT INTO territories VALUES (4, 'World', 7243000000, NULL, 'W', false, false);
+INSERT INTO territories VALUES (3, 'Poland', 1, 4, 'PL', true);
+INSERT INTO territories VALUES (5, 'Great Britain', 1, 4, 'GB', true);
 
-INSERT INTO territories VALUES (1, 'Podkarpackie', 2101732, 3, 'PLPK');
+INSERT INTO territories VALUES (1, 'Podkarpackie', 2101732, 3, 'PLPK', false);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Rzeszów', 182028, 1, 50.33, 22);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Przemyśl', 64276, 1, 52.02, 22);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Stalowa Wola', 64189, 1, 52.02, 22);
@@ -56,7 +56,7 @@ INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Ba
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Ulanów', 1482, 1, 52.02, 22);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Kołaczyce', 1447, 1, 52.02, 22);
 
-INSERT INTO territories VALUES (2, 'Lubelskie', 2175251, 3, 'PLLU');
+INSERT INTO territories VALUES (2, 'Lubelskie', 2175251, 3, 'PLLU', false);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Lublin', 343598, 2, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Chełm', 65481, 2, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Zamość', 65255, 2, 0, 0);
@@ -100,7 +100,7 @@ INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Ł
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Ostrów Lubelski', 2207, 2, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Frampol', 1482, 2, 0, 0);
 
-INSERT INTO territories VALUES (6, 'Lithuania', 2944459, 4, 'LT');
+INSERT INTO territories VALUES (6, 'Lithuania', 2944459, 4, 'LT', true);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Vilnius', 529022, 6, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Kaunas', 304012, 6, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Klaipėda', 157305, 6, 0, 0);
@@ -170,7 +170,7 @@ INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Š
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Akmenė', 2504, 6, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Birštonas', 2475, 6, 0, 0);
 
-INSERT INTO territories VALUES (7, 'Podlaskie', 1197610, 3, 'PLPD');
+INSERT INTO territories VALUES (7, 'Podlaskie', 1197610, 3, 'PLPD', false);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Białystok', 295282, 7, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Suwałki', 69317, 7, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Łomża', 62711, 7, 0, 0);

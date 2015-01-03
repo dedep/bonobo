@@ -12,6 +12,7 @@
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/ajaxloader.css">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/tree.css">
     <link rel="stylesheet" href="bower_components/bower-jvectormap/jquery-jvectormap-1.2.2.css" />
@@ -85,16 +86,18 @@
     <!-- endbuild -->
     <script src="bower_components/bower-jvectormap/jquery-jvectormap-world-mill-en.js"></script>
 
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/about.js"></script>
-        <script src="scripts/controllers/navbar.js"></script>
-        <script src="scripts/controllers/territory/territory-view.js"></script>
-        <script src="scripts/controllers/territory/territory-all.js"></script>
-        <script src="scripts/controllers/territory/territory-edit.js"></script>
-        <script src="scripts/directives/map.js"></script>
-        <script src="scripts/directives/autofocus.js"></script>
-        <!-- endbuild -->
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/controllers/about.js"></script>
+    <script src="scripts/controllers/navbar.js"></script>
+    <script src="scripts/controllers/territory/territory-view.js"></script>
+    <script src="scripts/controllers/territory/territory-all.js"></script>
+    <script src="scripts/controllers/territory/territory-edit.js"></script>
+    <script src="scripts/directives/ajaxloader.js"></script>
+    <script src="scripts/directives/autofocus.js"></script>
+    <script src="scripts/directives/map.js"></script>
+    <script src="scripts/services/services.js"></script>
+    <!-- endbuild -->
 </body>
 </html>

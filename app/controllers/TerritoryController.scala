@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import play.api.data.Forms._
 import play.api.data._
 import play.api.db.slick._
+import play.api.libs.json.JsArray
 import play.api.mvc.{Action, AnyContent, Result}
 import scaldi.{Injectable, Injector}
 
@@ -38,9 +39,10 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
       .getOrElse(NotFound(code))
   }
 
-  private def handleOptionalTerritory(t: Option[Territory]) = t match {
-    case None => NotFound(views.html.error("Territory not found"))
-    case Some(t: Territory) => Ok(views.html.territory(t))
+  def findAllAsJson() = wrapDBRequest { implicit rs =>
+    Ok(JsArray(territoryDao.findAll()
+      .map(t => TerritoryDto.parse(t).toJson))
+    )
   }
 
   def startTournament(): Action[AnyContent] = wrapDBRequest { implicit rs =>
@@ -62,6 +64,11 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
         startTournament(success.id, success.name)
       }
     )
+  }
+
+  private def handleOptionalTerritory(t: Option[Territory]) = t match {
+    case None => NotFound(views.html.error("Territory not found"))
+    case Some(t: Territory) => Ok(views.html.territory(t))
   }
 
   private def startTournament(territoryId: Int, name: String)(implicit rs: JdbcBackend#Session): Result = {

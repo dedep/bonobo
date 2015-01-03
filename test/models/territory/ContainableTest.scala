@@ -5,9 +5,9 @@ import org.specs2.mutable.Specification
 class ContainableTest extends Specification {
   "should return parent containers for city" in {
     //given
-    val ctr1 = new Territory(0, "World", 100000000, None,"")
-    val ctr2 = new Territory(1, "Europe", 1000000, Some(ctr1), "")
-    val ctr3 = new Territory(2, "Poland", 100000, Some(ctr2), "")
+    val ctr1 = new Territory(0, "World", 100000000, None,"", false, true)
+    val ctr2 = new Territory(1, "Europe", 1000000, Some(ctr1), "", false, true)
+    val ctr3 = new Territory(2, "Poland", 100000, Some(ctr2), "", false, true)
     val city1 = new City(0, "Lublin", 300000, 500000, ctr3, 0, 0)
 
     //when
@@ -20,8 +20,8 @@ class ContainableTest extends Specification {
 
   "should return parent containers for territory" in {
     //given
-    val ctr1 = new Territory(0, "World", 100000000, None, "")
-    val ctr2 = new Territory(1, "Europe", 1000000, Some(ctr1), "")
+    val ctr1 = new Territory(0, "World", 100000000, None, "", false, true)
+    val ctr2 = new Territory(1, "Europe", 1000000, Some(ctr1), "", false, true)
 
     //when
     val ctr2Containers = ctr2.getContainers
@@ -33,7 +33,7 @@ class ContainableTest extends Specification {
 
   "should return parent containers for super territory" in {
     //given
-    val ctr1 = new Territory(0, "World", 100000000, None, "")
+    val ctr1 = new Territory(0, "World", 100000000, None, "", false, true)
 
     //when
     val ctr1Containers = ctr1.getContainers

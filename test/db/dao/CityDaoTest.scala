@@ -78,7 +78,7 @@ class CityDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables
-      val t1 = new Territory(99, "Non", 2222, None, "NN")
+      val t1 = new Territory(99, "Non", 2222, None, "NN", false, false)
       val c1 = new City(1, "Warszawa", 1000, 2, t1, 0, 0)
 
       //when - then

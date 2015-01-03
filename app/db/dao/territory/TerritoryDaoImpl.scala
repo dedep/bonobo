@@ -18,25 +18,29 @@ class TerritoryDaoImpl(implicit inj: Injector) extends TerritoryDao with Injecta
 
   override val selectQuery = for (territory <- ds) yield territory
 
+  override def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[Territory] = 
+    fromFilter(_.id === id)
+
+  override def fromCode(code: String)(implicit rs: JdbcBackend#Session): Option[Territory] = 
+    fromFilter(_.code === code)
+
+  override def fromRow(row: TerritoryDBRow)(implicit rs: JdbcBackend#Session) =
+    new Territory(row.id, row.name, row.population, row.containerId.flatMap(fromId), row.code, row.isCountry, row.modifiable)
+
+  override def findAll()(implicit rs: JdbcBackend#Session): List[Territory] =
+    selectQuery.list.map(fromRow)
+
+  override def update(t: Territory)(implicit rs: JdbcBackend#Session): Long =
+    ds.filter(_.id === t.id)
+      .log(x => "Updating territory " + t).info()
+      .update(TerritoryDBRow(t.id, t.name, t.population, t.container.map(_.id), t.code, t.isCountry, t.modifiable))
+
+  override def getChildrenTerritories(t: Territory)(implicit rs: JdbcBackend#Session): List[Territory] =
+    selectQuery.filter(_.containerId === t.id).list.map(fromRow)
+
   private def fromFilter(filter: TerritoriesTable => Column[Boolean])(implicit rs: JdbcBackend#Session): Option[Territory] =
     selectQuery.filter(filter)
       .firstOption
       .log("Getting territory " + _.map(_.name)).info()
       .map(fromRow)
-
-  override def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[Territory] = fromFilter(_.id === id)
-
-  override def fromCode(code: String)(implicit rs: JdbcBackend#Session): Option[Territory] = fromFilter(_.code === code)
-
-  override def fromRow(row: TerritoryDBRow)(implicit rs: JdbcBackend#Session) =
-    new Territory(row.id, row.name, row.population, row.containerId.flatMap(fromId), row.code)
-
-  override def update(t: Territory)(implicit rs: JdbcBackend#Session): Long =
-    ds.filter(_.id === t.id)
-      .log(x => "Updating territory " + t).info()
-      .update(TerritoryDBRow(t.id, t.name, t.population, t.container.map(_.id), t.code))
-
-  override def getChildrenTerritories(t: Territory)(implicit rs: JdbcBackend#Session): List[Territory] =
-  (for (territory <- ds if territory.containerId === t.id) yield territory).list.map(a => fromId(a.id).get)
-
 }

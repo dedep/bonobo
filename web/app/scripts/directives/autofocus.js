@@ -1,7 +1,6 @@
 'use strict';
 
 angular.module('utils.autofocus', [])
-
     .directive('autofocus', ['$timeout', function($timeout) {
         return {
             restrict: 'A',

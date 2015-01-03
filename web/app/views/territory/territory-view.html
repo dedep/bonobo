@@ -1,28 +1,28 @@
 <div class="document-header">
     {{territory.name}}
-    <span ng-hide="view.territoryFound" class="not-found">Territory not found</span>
+    <span ng-hide="territoryFound || duringRequest" class="not-found">Territory not found</span>
 
     <span class="action-icons">
-        <button class="btn btn-success" ng-click="view.addTerritory()">
+        <button class="btn btn-success" ng-click="addTerritory()">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         </button>
-        <button class="btn btn-info" ng-click="view.editTerritory()" ng-show="view.territoryFound" ng-disabled="{{!territory.canChange}}">
+        <button class="btn btn-info" ng-click="editTerritory()" ng-show="territoryFound" ng-disabled="!territory.modifiable">
             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
         </button>
-        <button class="btn btn-danger" ng-click="view.deleteTerritory()" ng-show="view.territoryFound" ng-disabled="{{!territory.canChange}}">
+        <button class="btn btn-danger" ng-click="deleteTerritory()" ng-show="territoryFound" ng-disabled="!territory.modifiable">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </button>
     </span>
 </div>
 
-<div class="document-section" ng-show="view.territoryFound">
+<div class="document-section" ng-show="territoryFound">
     <div class="document-item">Total population: {{territory.population | number}}</div>
-    <div class="document-item" ng-hide="view.hideContainer()">Container:
-        <a ng-href="#territory/{{territory.container.code}}">{{territory.container.name}}</a>
+    <div class="document-item" ng-hide="hideContainer()">Container:
+        <a ng-href="#territory/{{territory.parent.code}}">{{territory.parent.name}}</a>
     </div>
 </div>
 
-<div bonobo-world-map code='{{view.codeToFocus()}}' class="document-section" ng-show="view.territoryFound"></div>
+<div bonobo-world-map code='{{codeToFocus()}}' class="document-section" ng-show="territoryFound"></div>
 
 <script type="text/ng-template" id="removeTerritoryModal.html">
     <div class="modal-header">

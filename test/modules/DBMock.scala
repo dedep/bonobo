@@ -15,11 +15,11 @@ import scala.slick.jdbc.JdbcBackend
 //todo: a w sumie to czemu tego nie wstrzykiwać?
 object DBMock extends Mockito {
 
-  val ter5 = new Territory(5, "World", 1112129931, None, "W")
-  val ter4 = new Territory(4, "Europe", 112129931, Some(ter5), "EU")
-  val ter3 = new Territory(3, "Poland", 12129931, Some(ter4), "PL")
-  val ter2 = new Territory(2, "Lubelskie", 2129931, Some(ter3), "PLPK")
-  val ter1 = new Territory(1, "Podkarpackie", 2129951, Some(ter3), "PLPK")
+  val ter5 = new Territory(5, "World", 1112129931, None, "W", false, true)
+  val ter4 = new Territory(4, "Europe", 112129931, Some(ter5), "EU", false, true)
+  val ter3 = new Territory(3, "Poland", 12129931, Some(ter4), "PL", true, true)
+  val ter2 = new Territory(2, "Lubelskie", 2129931, Some(ter3), "PLPK", false, true)
+  val ter1 = new Territory(1, "Podkarpackie", 2129951, Some(ter3), "PLPK", false, true)
 
   val city1 = new City(1, "Rzeszów", 182028, 4, ter1, 0, 0)
   val city2 = new City(2, "Przemyśl", 64276, 2, ter1, 0, 0)

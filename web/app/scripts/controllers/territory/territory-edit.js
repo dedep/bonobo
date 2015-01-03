@@ -1,20 +1,33 @@
 'use strict';
 
 angular.module('bonobo.webapp')
-    .controller('TerritoryEditCtrl', function ($scope, $routeParams, $location) {
-        $scope.idToEdit = $routeParams.code;
-        $scope.isInEditMode = ($scope.idToEdit != undefined);
+    .controller('TerritoryEditCtrl', function ($scope, $routeParams, $location, TerritoryDao) {
+        $scope.codeToEdit = $routeParams.code;
+
+        $scope.isInEditMode = ($scope.codeToEdit != undefined);
+
+        $scope.territoryFound = function() {
+            return $scope.territory !== undefined && $scope.territory.name !== undefined;
+        };
+
+        $scope.failed = function() {
+            return false;
+        };
 
         if ($scope.isInEditMode) {
-            $scope.territory = {
-                name: "Australia",
-                population: 9028345,
-                code: "AU",
-                parent: {
-                    name: "World",
-                    code: "W"
-                }
+            var checkIfTerritoryCouldNotBeEdited = function() {
+                return !$scope.territoryFound || !$scope.territory.modifiable;
             };
+
+            $scope.territory = TerritoryDao.get({code: $scope.codeToEdit}, function() {
+                $scope.failed = function() {
+                    return checkIfTerritoryCouldNotBeEdited();
+                };
+            }, function() {
+                $scope.failed = function() {
+                    return true;
+                };
+            });
         } else {
             $scope.territory = {
                 name: "",
@@ -27,22 +40,26 @@ angular.module('bonobo.webapp')
             };
         }
 
+        $scope.territories = [{
+            name: "World",
+            code: "W"
+        }, {
+            name: "Poland",
+            code: "PL"
+        }];
+
         $scope.view = {
             title: function() {
                 if ($scope.isInEditMode) {
-                    return "Edit " + $scope.territory.name;
+                    if ($scope.territoryFound()) {
+                        return "Edit " + $scope.territory.name;
+                    } else {
+                        return "Edit ...";
+                    }
                 } else {
                     return "New territory";
                 }
             },
-
-            territories: [{
-                name: "World",
-                code: "W"
-            }, {
-                name: "Poland",
-                code: "PL"
-            }],
 
             back: function() {
                 if ($scope.isInEditMode) {
@@ -52,5 +69,4 @@ angular.module('bonobo.webapp')
                 }
             }
         };
-
     });

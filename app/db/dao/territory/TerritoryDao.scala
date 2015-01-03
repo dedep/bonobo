@@ -14,6 +14,8 @@ trait TerritoryDao {
 
   def fromCode(code: String)(implicit rs: JdbcBackend#Session): Option[Territory]
 
+  def findAll()(implicit rs: JdbcBackend#Session): List[Territory]
+
   def fromRow(row: TerritoryDBRow)(implicit rs: JdbcBackend#Session): Territory
 
   def update(t: Territory)(implicit rs: JdbcBackend#Session): Long
