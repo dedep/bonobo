@@ -3,16 +3,14 @@
 angular.module('bonobo.webapp')
     .controller('TerritoryViewCtrl', function ($scope, $routeParams, $location, $modal, TerritoryDao) {
         $scope.territoryFound = false;
-        $scope.duringRequest = true;
 
         $scope.territory = TerritoryDao.get({code: $routeParams.code},
             function() {
                 $scope.territoryFound = true;
-                $scope.duringRequest = false;
 
             }, function() {
+                $scope.$parent.alertMsg = 'Territory not found';
                 $scope.territoryFound = false;
-                $scope.duringRequest = false;
             }
         );
 

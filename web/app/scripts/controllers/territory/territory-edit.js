@@ -10,23 +10,17 @@ angular.module('bonobo.webapp')
             return $scope.territory !== undefined && $scope.territory.name !== undefined;
         };
 
-        $scope.failed = function() {
-            return false;
-        };
-
         if ($scope.isInEditMode) {
             var checkIfTerritoryCouldNotBeEdited = function() {
                 return !$scope.territoryFound || !$scope.territory.modifiable;
             };
 
             $scope.territory = TerritoryDao.get({code: $scope.codeToEdit}, function() {
-                $scope.failed = function() {
-                    return checkIfTerritoryCouldNotBeEdited();
-                };
+                if (checkIfTerritoryCouldNotBeEdited()) {
+                    $scope.$parent.alertMsg = 'Cannot edit specified territory';
+                }
             }, function() {
-                $scope.failed = function() {
-                    return true;
-                };
+                $scope.$parent.alertMsg = 'Territory not found';
             });
         } else {
             $scope.territory = {

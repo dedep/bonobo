@@ -40,4 +40,9 @@ angular
             .otherwise({
                 redirectTo: '/'
             });
+    })
+    .controller('RootCtrl', function ($scope) {
+        $scope.$on('$routeChangeSuccess', function() {
+            $scope.alertMsg = null;
+        });
     });

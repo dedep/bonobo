@@ -31,10 +31,15 @@
         <h1 class="header">Bonobo Application</h1>
     </div>
 
-    <div class="container document">
+    <div class="container document" ng-controller="RootCtrl">
         <div class="row">
             <div class="col-lg-12">
-                <div ng-view></div>
+                <div ng-view ng-hide="alertMsg"></div>
+                <div ng-show="alertMsg" ng-cloak>
+                    <div class="document-header">
+                        <span class="not-found">{{alertMsg}}</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
