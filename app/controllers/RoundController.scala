@@ -11,11 +11,11 @@ import scala.slick.jdbc.JdbcBackend
 class RoundController(implicit inj: Injector) extends BaseController with Injectable {
   private val roundDao = inject[RoundDao]
 
-  def find(id: Long) = wrapDBRequest { implicit rs =>
+  def find(id: Long) = performDBRequest { implicit rs =>
     findRound(id, "")(rs.dbSession)
   }
 
-  def findWithFilter = wrapDBRequest { implicit rs =>
+  def findWithFilter = performDBRequest { implicit rs =>
     case class FindRoundFormData(id: Int, filter: String)
 
     val findRoundForm = Form(

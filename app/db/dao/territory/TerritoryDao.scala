@@ -18,7 +18,7 @@ trait TerritoryDao {
 
   def fromRow(row: TerritoryDBRow)(implicit rs: JdbcBackend#Session): Territory
 
-  def update(t: Territory)(implicit rs: JdbcBackend#Session): Long
+  def update(t: Territory, oldCode: String)(implicit rs: JdbcBackend#Session): Long
 
   def getChildrenTerritories(t: Territory)(implicit rs: JdbcBackend#Session): List[Territory]
 }

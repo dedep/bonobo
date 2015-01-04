@@ -3,7 +3,7 @@ package models.dto
 import models.territory.Territory
 import play.api.libs.json._
 
-case class ContainerDto(name: String, code: String)
+case class ContainerDto(name: String, code: String, id: Long)
 
 case class TerritoryDto(id: Long, code: String, name: String, population: Long, parent: Option[ContainerDto],
                         isCountry: Boolean, modifiable: Boolean) {
@@ -15,7 +15,7 @@ case class TerritoryDto(id: Long, code: String, name: String, population: Long, 
 
 object TerritoryDto {
   def parse(t: Territory): TerritoryDto = {
-    val containerDto = t.container.map(c => ContainerDto(c.name, c.code))
+    val containerDto = t.container.map(c => ContainerDto(c.name, c.code, c.id))
     TerritoryDto(t.id, t.code, t.name, t.population, containerDto, t.isCountry, t.modifiable)
   }
 }

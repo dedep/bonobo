@@ -24,28 +24,63 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
   private val territoryDao = inject[TerritoryDao]
   private val tournamentDao = inject[TournamentDao]
 
-  def find(id: Long) = wrapDBRequest { implicit rs =>
+  def find(id: Long) = performDBRequest { implicit rs =>
     handleOptionalTerritory(territoryDao.fromId(id))
   }
 
-  def findByCode(code: String) = wrapDBRequest { implicit rs =>
+  def edit(oldCode: String) = performTransactionalDBRequest { implicit rs =>
+    val currentTerritory = territoryDao.fromCode(oldCode)
+    currentTerritory.map(t => {
+      if (!t.modifiable) BadRequest("Cannot edit unmodifiable territory.")
+      else bindRequestAndEditTerritory(oldCode)(rs.dbSession)
+    }).getOrElse(BadRequest("Cannot edit non-existent territory."))
+  }
+
+  private def bindRequestAndEditTerritory(oldCode: String)(rs: JdbcBackend#Session)(implicit request : play.api.mvc.Request[_]) = {
+    case class EditTerritoryFormData(id: Long, name: String, population: Long, code: String, modifiable: Boolean,
+                                     isCountry: Boolean, parentTerritoryId: Long)
+    Form(mapping(
+      "id" -> longNumber,
+      "name" -> text,
+      "population" -> longNumber,
+      "code" -> text,
+      "modifiable" -> boolean,
+      "isCountry" -> boolean,
+      "parent.id" -> longNumber)
+      (EditTerritoryFormData.apply)(EditTerritoryFormData.unapply)).bindFromRequest.fold(
+        hasErrors => {
+          log.warn("Binding edit request error " + hasErrors)
+          BadRequest("Cannot bind Edit territory request.")
+        },
+        success => {
+          val parentTerritoryStub = new Territory(success.parentTerritoryId, "", 0, None, "", false, false)
+          val t = new Territory(success.id, success.name, success.population,
+            Some(parentTerritoryStub), success.code, success.isCountry, success.modifiable)
+
+          territoryDao.update(t, oldCode)(rs)
+          Ok("Territory has been successfully edited.")
+        }
+      )
+  }
+
+  def findByCode(code: String) = performDBRequest { implicit rs =>
     handleOptionalTerritory(territoryDao.fromCode(code))
   }
 
-  def findByCodeAsJson(code: String) = wrapDBRequest { implicit rs =>
+  def findByCodeAsJson(code: String) = performDBRequest { implicit rs =>
     territoryDao.fromCode(code)
       .map(t => TerritoryDto.parse(t))
       .map(t => Ok(t.toJson))
       .getOrElse(NotFound(code))
   }
 
-  def findAllAsJson() = wrapDBRequest { implicit rs =>
+  def findAllAsJson() = performDBRequest { implicit rs =>
     Ok(JsArray(territoryDao.findAll()
       .map(t => TerritoryDto.parse(t).toJson))
     )
   }
 
-  def startTournament(): Action[AnyContent] = wrapDBRequest { implicit rs =>
+  def startTournament(): Action[AnyContent] = performDBRequest { implicit rs =>
     case class StartTournamentFormData(name: String, id: Int)
 
     val startTournamentForm = Form(

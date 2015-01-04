@@ -6,7 +6,7 @@ import scaldi.{Injectable, Injector}
 class MatchController(implicit inj: Injector) extends BaseController with Injectable {
   private val matchDao = inject[MatchDao]
 
-  def find(id: Long) = wrapDBRequest {
+  def find(id: Long) = performDBRequest {
     implicit rs =>
       matchDao.fromId(id)(rs.dbSession) match {
         case None => NotFound(views.html.error("Match not found"))

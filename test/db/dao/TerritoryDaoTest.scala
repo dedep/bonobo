@@ -60,7 +60,7 @@ class TerritoryDaoTest extends Specification with Injectable with Mockito {
       val t1 = new Territory(1, "Mazowieckie", 1000, None, "", false, false)
 
       //when
-      territoryDao.update(t1)
+      territoryDao.update(t1, "PLMX")
 
       //then
       val query = session.prepareStatement("SELECT id, name, population, container FROM territories WHERE territories.id = ?")

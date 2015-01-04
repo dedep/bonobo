@@ -23,7 +23,7 @@ angular
             })
             .when('/territory/new', {
                 templateUrl: 'views/territory/territory-edit.html',
-                controller: 'TerritoryEditCtrl'
+                controller: 'TerritoryNewCtrl'
             })
             .when('/territory/:code', {
                 templateUrl: 'views/territory/territory-view.html',

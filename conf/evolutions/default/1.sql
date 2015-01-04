@@ -6,7 +6,7 @@ CREATE TABLE territories
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
   container bigint references territories NULL,
-  code varchar(7),
+  code varchar(9) UNIQUE,
   is_country boolean NOT NULL,
   modifiable boolean NOT NULL DEFAULT TRUE
 );

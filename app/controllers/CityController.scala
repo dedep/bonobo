@@ -8,7 +8,7 @@ import scaldi.{Injectable, Injector}
 class CityController(implicit inj: Injector) extends BaseController with Injectable {
   private val cityDao = inject[CityDao]
 
-  def find(id: Long) = wrapDBRequest {
+  def find(id: Long) = performDBRequest {
     implicit rs => {
       cityDao.fromId(id) match {
         case None => NotFound(views.html.error("City not found"))

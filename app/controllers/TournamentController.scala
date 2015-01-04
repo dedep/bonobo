@@ -18,14 +18,14 @@ class TournamentController(implicit inj: Injector) extends BaseController with I
 
   private val tournamentDao = inject[TournamentDao]
 
-  def find(id: Long) = wrapDBRequest { implicit rs =>
+  def find(id: Long) = performDBRequest { implicit rs =>
     tournamentDao.fromId(id) match {
       case None => NotFound(views.html.error("Tournament not found"))
       case Some(t: (Tournament)) => Ok(views.html.tournament(t))
     }
   }
 
-  def processNextStep(): Action[AnyContent] = wrapDBRequest { implicit rs =>
+  def processNextStep(): Action[AnyContent] = performDBRequest { implicit rs =>
     case class ProcessTournamentFormData(id: Int)
 
     val processTournamentForm = Form(

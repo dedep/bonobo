@@ -1,7 +1,7 @@
 # --- !Ups
 
 INSERT INTO territories VALUES (4, 'World', 7243000000, NULL, 'W', false, false);
-INSERT INTO territories VALUES (3, 'Poland', 1, 4, 'PL', true);
+INSERT INTO territories VALUES (3, 'Poland', 7, 4, 'PL', true);
 INSERT INTO territories VALUES (5, 'Great Britain', 1, 4, 'GB', true);
 
 INSERT INTO territories VALUES (1, 'Podkarpackie', 2101732, 3, 'PLPK', false);
@@ -212,7 +212,7 @@ INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Ra
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Kleszczele', 1345, 7, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Suraż', 1008 , 7, 0, 0);
 
-INSERT INTO territories VALUES (8, 'Świętokrzyskie', 1281796, 3, 'PLSW');
+INSERT INTO territories VALUES (8, 'Świętokrzyskie', 1281796, 3, 'PLSW', false);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Kielce', 199870, 8, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Ostrowiec Świętokrzyski', 72277, 8, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Starachowice', 51158, 8, 0, 0);
@@ -245,7 +245,7 @@ INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Za
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Skalbmierz', 1315, 8, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Działoszyce', 981 , 8, 0, 0);
 
-INSERT INTO territories VALUES (9, 'Mazowieckie', 5164612, 3, 'PLMZ');
+INSERT INTO territories VALUES (9, 'Mazowieckie', 5164612, 3, 'PLMZ', false);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Warszawa', 1724404, 9, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Radom', 218466, 9, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Płock', 122815, 9, 0, 0);
@@ -332,3 +332,5 @@ INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Bi
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Mordy', 1819, 9, 0, 0);
 
 # --- !Downs
+TRUNCATE TABLE cities CASCADE;
+TRUNCATE TABLE territories CASCADE;

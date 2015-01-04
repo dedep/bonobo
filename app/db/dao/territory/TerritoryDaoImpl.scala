@@ -30,9 +30,9 @@ class TerritoryDaoImpl(implicit inj: Injector) extends TerritoryDao with Injecta
   override def findAll()(implicit rs: JdbcBackend#Session): List[Territory] =
     selectQuery.list.map(fromRow)
 
-  override def update(t: Territory)(implicit rs: JdbcBackend#Session): Long =
-    ds.filter(_.id === t.id)
-      .log(x => "Updating territory " + t).info()
+  override def update(t: Territory, oldCode: String)(implicit rs: JdbcBackend#Session): Long =
+    ds.filter(_.code === oldCode)
+      .log(x => "Updating territory " + t.code).info()
       .update(TerritoryDBRow(t.id, t.name, t.population, t.container.map(_.id), t.code, t.isCountry, t.modifiable))
 
   override def getChildrenTerritories(t: Territory)(implicit rs: JdbcBackend#Session): List[Territory] =

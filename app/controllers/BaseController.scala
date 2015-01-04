@@ -11,12 +11,22 @@ import play.api.mvc._
 trait BaseController extends Controller {
   private lazy val log = Logger(LoggerFactory.getLogger(this.getClass))
 
-  protected def wrapDBRequest(requestHandler: DBSessionRequest[AnyContent] => Result) = DBAction {
+  protected val corsHeaders: List[(String, String)] = Map(
+    "Access-Control-Allow-Origin" -> Play.current.configuration.getString("web.url").getOrElse(""),
+    "Access-Control-Allow-Headers" -> "Accept, Content-Type"
+  ).toList
+
+  protected def performTransactionalDBRequest(requestHandler: DBSessionRequest[AnyContent] => Result) =
+    performDBRequest { implicit rs =>
+      rs.dbSession.withTransaction {
+        requestHandler.apply(rs)
+      }
+    }
+
+  protected def performDBRequest(requestHandler: DBSessionRequest[AnyContent] => Result) = DBAction {
     rs: DBSessionRequest[AnyContent] => {
       try {
-        requestHandler(rs).withHeaders(
-          "Access-Control-Allow-Origin" -> Play.current.configuration.getString("web.url").getOrElse("")
-        )
+        requestHandler(rs).withHeaders(corsHeaders:_*)
       } catch {
         case e: Exception => {
           log.error("Error occurred during processing DB Request " + e.getMessage + "\n" + ExceptionUtils.getStackTrace(e))
