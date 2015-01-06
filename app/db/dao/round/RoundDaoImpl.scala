@@ -69,7 +69,6 @@ class RoundDaoImpl(implicit inj: Injector) extends RoundDao with Injectable {
     if (r.id.nonEmpty) update(r, parentTournamentId)
     else save(r, parentTournamentId)
 
-  //todo: refaktoring
   private def save(r: Round, parentTournamentId: Long)(implicit rs: JdbcBackend#Session): Long = {
     log.info("Before saving new round " + r.name)
 

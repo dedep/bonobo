@@ -1,7 +1,7 @@
 package db.dao.territory
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db.table.{TerritoriesTable, TerritoryDBRow}
+import db.table.{NewTerritoryDBRow, TerritoriesTable, TerritoryDBRow}
 import models.territory.Territory
 import org.slf4j.LoggerFactory
 import play.api.db.slick.Config.driver.simple._
@@ -30,10 +30,15 @@ class TerritoryDaoImpl(implicit inj: Injector) extends TerritoryDao with Injecta
   override def findAll()(implicit rs: JdbcBackend#Session): List[Territory] =
     selectQuery.list.map(fromRow)
 
+  override def save(t: Territory)(implicit rs: JdbcBackend#Session): Long =
+    ds.map(_.autoInc) +=
+      NewTerritoryDBRow(t.name, t.population, t.container.map(_.id), t.code, t.isCountry, t.modifiable)
+      .log(x => "Saving new territory " + x.code).info()
+
   override def update(t: Territory, oldCode: String)(implicit rs: JdbcBackend#Session): Long =
     ds.filter(_.code === oldCode)
-      .log(x => "Updating territory " + t.code).info()
       .update(TerritoryDBRow(t.id, t.name, t.population, t.container.map(_.id), t.code, t.isCountry, t.modifiable))
+      .log(x => "Updating territory " + t.code).info()
 
   override def getChildrenTerritories(t: Territory)(implicit rs: JdbcBackend#Session): List[Territory] =
     selectQuery.filter(_.containerId === t.id).list.map(fromRow)

@@ -2,7 +2,8 @@ package db.table
 
 import play.api.db.slick.Config.driver.simple._
 
-case class CityDBRow(name: String, population: Int, points: Int, territoryId: Long, latitude: Double, longitude: Double)
+case class CityDBRow(id: Long, name: String, population: Int, points: Int, territoryId: Long, latitude: Double, longitude: Double)
+case class NewCityDBRow(name: String, population: Int, points: Int, territoryId: Long, latitude: Double, longitude: Double)
 
 class CitiesTable(tag: Tag) extends Table[CityDBRow](tag, "cities") {
    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -13,5 +14,6 @@ class CitiesTable(tag: Tag) extends Table[CityDBRow](tag, "cities") {
    def latitude = column[Double]("latitude", O.NotNull)
    def longitude = column[Double]("longitude", O.NotNull)
 
-   def * = (name, population, points, territoryId, latitude, longitude) <> (CityDBRow.tupled, CityDBRow.unapply)
+   def * = (id, name, population, points, territoryId, latitude, longitude) <> (CityDBRow.tupled, CityDBRow.unapply)
+   def autoInc = (name, population, points, territoryId, latitude, longitude) <> (NewCityDBRow.tupled, NewCityDBRow.unapply)
 }

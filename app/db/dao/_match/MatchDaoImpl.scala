@@ -40,17 +40,15 @@ class MatchDaoImpl(implicit inj: Injector) extends MatchDao with Injectable {
   override def fromId(ids: Seq[Long])(implicit rs: JdbcBackend#Session): List[models._match.Match] =
     fromFilter(_.id inSet ids)
 
-  //todo: przez te ID jest niezła rzeźba
   private def fromFilter(filter: MatchesTable => Column[Boolean])(implicit rs: JdbcBackend#Session): List[models._match.Match] =
     selectQuery
       .filter(x => filter(x._1))
-      .map(row => (row._1, row._2, row._3, row._1.id, row._2._1.id, row._3._1.id))
       .list
       .map { row =>
-        val aTeam = cityDao.fromRow(row._2, row._5)
-        val bTeam = cityDao.fromRow(row._3, row._6)
+        val aTeam = cityDao.fromRow(row._2)
+        val bTeam = cityDao.fromRow(row._3)
 
-        instantiateMatchFromTableRow(row._4, row._1.unitId, row._1.fixtureNum, aTeam, row._1.aTeamGoals, bTeam,
+        instantiateMatchFromTableRow(row._1.id, row._1.unitId, row._1.fixtureNum, aTeam, row._1.aTeamGoals, bTeam,
           row._1.bTeamGoals, row._1.playDate)
       }
 
@@ -78,7 +76,7 @@ class MatchDaoImpl(implicit inj: Injector) extends MatchDao with Injectable {
 
 
   private def save(m: models._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: JdbcBackend#Session): Long =
-    (ds returning ds.map(_.id)) += MatchDBRow.tupled(mapMatchToMatchesTable(m, fixtureNum, unitId))
+    ds.map(_.autoInc) += NewMatchDBRow.tupled(mapNewMatchToMatchesTable(m, fixtureNum, unitId))
 
   private def update(m: models._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: JdbcBackend#Session): Long = {
     ds.filter(_.id === m.id.get).update(
@@ -87,6 +85,13 @@ class MatchDaoImpl(implicit inj: Injector) extends MatchDao with Injectable {
   }
 
   private def mapMatchToMatchesTable(m: models._match.Match, fixtureNum: Int, unitId: Long) =
+    mapNewMatchToMatchesTable(m, fixtureNum, unitId) match {
+      case (unitId: Long, fixtureNum: Int, aTeamId: Long, aTeamGoals: Option[Int], bTeamId: Long,
+      bTeamGoals: Option[Int], playDate: Option[DateTime]) =>
+        (m.id.get, unitId, fixtureNum, aTeamId, aTeamGoals, bTeamId, bTeamGoals, playDate)
+    }
+
+  private def mapNewMatchToMatchesTable(m: models._match.Match, fixtureNum: Int, unitId: Long) =
     (
       unitId,
       fixtureNum,

@@ -2,7 +2,7 @@ package db.dao.city
 
 import com.typesafe.scalalogging.slf4j.Logger
 import db.dao.territory.TerritoryDao
-import db.table.{CitiesTable, CityDBRow, TerritoryDBRow}
+import db.table.{NewCityDBRow, CitiesTable, CityDBRow, TerritoryDBRow}
 import models.territory.{City, Territory}
 import org.slf4j.LoggerFactory
 import play.api.db.slick.Config.driver.simple._
@@ -42,11 +42,10 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
         new City(id, citiesResult.name, citiesResult.population, citiesResult.points, t, citiesResult.latitude, citiesResult.longitude)
     }
 
-  //todo: ten id przeszkadza
-  override def fromRow(row: (CityDBRow, TerritoryDBRow), id: Long)(implicit rs: JdbcBackend#Session): City = row match {
+  override def fromRow(row: (CityDBRow, TerritoryDBRow))(implicit rs: JdbcBackend#Session): City = row match {
     case (citiesRow: CityDBRow, territoriesRow: TerritoryDBRow) =>
       val t = territoryDao.fromRow(territoriesRow)
-      new City(id, citiesRow.name, citiesRow.population, citiesRow.points, t, citiesRow.latitude, citiesRow.longitude)
+      new City(citiesRow.id, citiesRow.name, citiesRow.population, citiesRow.points, t, citiesRow.latitude, citiesRow.longitude)
   }
 
   override def saveOrUpdate(c: City)(implicit rs: JdbcBackend#Session): Long = {
@@ -58,12 +57,12 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
 
   private def save(c: City)(implicit rs: JdbcBackend#Session): Long = {
     log.info("Saving new city in DB " + c)
-    (ds returning ds.map(_.id)) += CityDBRow(c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude)
+    ds.map(_.autoInc) += NewCityDBRow(c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude)
   }
 
   private def update(c: City)(implicit rs: JdbcBackend#Session): Long = {
     log.info("Updating city in DB " + c)
-    ds.filter(_.id === c.id).update(CityDBRow(c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude))
+    ds.filter(_.id === c.id).update(CityDBRow(c.id, c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude))
   }
 
   override def getAllWithinTerritoryCascade(t: Territory)(implicit rs: JdbcBackend#Session): List[City] =
