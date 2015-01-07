@@ -1,36 +1,34 @@
 'use strict';
 
 angular.module('bonobo.webapp')
-    .controller('TerritoryNewCtrl', function ($scope, $location) {
-        $scope.territory = {
-            name: "",
-            population: "",
-            code: "",
-            parent: {
-                name: "World",
-                code: "W"
-            }
-        };
+  .controller('TerritoryNewCtrl', function ($scope, TerritoryDao, $window, $location) {
 
-        $scope.territories = [{
-            name: "World",
-            code: "W"
-        }, {
-            name: "Poland",
-            code: "PL"
-        }];
+    $scope.territory = {
+      id: -1,
+      name: "",
+      population: "",
+      code: "",
+      isCountry: false,
+      modifiable: true
+    };
 
-        $scope.view = {
-            title: function() {
-                return "New territory";
-            },
-
-            submit: function() {
-
-            },
-
-            back: function() {
-                $location.path("/territory")
-            }
-        };
+    $scope.territories = TerritoryDao.query(function() {
+      $scope.territory.parent = $scope.territories[0];
     });
+
+    $scope.view = {
+      title: function() {
+        return "New territory";
+      },
+
+      submit: function() {
+        TerritoryDao.save($scope.territory, function() {
+          $location.path("/territory/" + $scope.territory.code);
+        });
+      },
+
+      back: function() {
+        $window.history.back();
+      }
+    };
+  });

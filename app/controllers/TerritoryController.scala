@@ -28,37 +28,36 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
     handleOptionalTerritory(territoryDao.fromId(id))
   }
 
+  def create() = performTransactionalDBRequest { implicit rs =>
+    bindRequestAndPerform { t =>
+      territoryDao.save(t)(rs.dbSession)
+    }(rs.dbSession)
+  }
+
   def edit(oldCode: String) = performTransactionalDBRequest { implicit rs =>
     val currentTerritory = territoryDao.fromCode(oldCode)
     currentTerritory.map(t => {
       if (!t.modifiable) BadRequest("Cannot edit unmodifiable territory.")
-      else bindRequestAndEditTerritory(oldCode)(rs.dbSession)
+      else bindRequestAndPerform { t =>
+        territoryDao.update(t, oldCode)(rs.dbSession)
+      }(rs.dbSession)
     }).getOrElse(BadRequest("Cannot edit non-existent territory."))
   }
 
-  private def bindRequestAndEditTerritory(oldCode: String)(rs: JdbcBackend#Session)(implicit request : play.api.mvc.Request[_]) = {
-    case class EditTerritoryFormData(id: Long, name: String, population: Long, code: String, modifiable: Boolean,
-                                     isCountry: Boolean, parentTerritoryId: Long)
-    Form(mapping(
-      "id" -> longNumber,
-      "name" -> text,
-      "population" -> longNumber,
-      "code" -> text,
-      "modifiable" -> boolean,
-      "isCountry" -> boolean,
-      "parent.id" -> longNumber)
-      (EditTerritoryFormData.apply)(EditTerritoryFormData.unapply)).bindFromRequest.fold(
+  private def bindRequestAndPerform(f: Territory => Unit)(rs: JdbcBackend#Session)
+                                         (implicit request : play.api.mvc.Request[_]) = {
+    TerritoryDto.form.bindFromRequest.fold(
         hasErrors => {
-          log.warn("Binding edit request error " + hasErrors)
-          BadRequest("Cannot bind Edit territory request.")
+          log.warn("Binding territory error " + hasErrors)
+          BadRequest("Cannot bind territory from request.")
         },
         success => {
-          val parentTerritoryStub = new Territory(success.parentTerritoryId, "", 0, None, "", false, false)
-          val t = new Territory(success.id, success.name, success.population,
-            Some(parentTerritoryStub), success.code, success.isCountry, success.modifiable)
+          val parentTerritoryStub = success.parent.map(p => new Territory(p.id, "", 0, None, "", false, false))
+          val t = new Territory(success.id, success.name, success.population, parentTerritoryStub,
+            success.code, success.isCountry, true)
 
-          territoryDao.update(t, oldCode)(rs)
-          Ok("Territory has been successfully edited.")
+          f.apply(t)
+          Ok("Territory has been successfully saved.")
         }
       )
   }

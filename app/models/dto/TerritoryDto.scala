@@ -1,6 +1,8 @@
 package models.dto
 
 import models.territory.Territory
+import play.api.data.Form
+import play.api.data.Forms._
 import play.api.libs.json._
 
 case class ContainerDto(name: String, code: String, id: Long)
@@ -18,4 +20,18 @@ object TerritoryDto {
     val containerDto = t.container.map(c => ContainerDto(c.name, c.code, c.id))
     TerritoryDto(t.id, t.code, t.name, t.population, containerDto, t.isCountry, t.modifiable)
   }
+
+  val form = Form(mapping(
+    "id" -> longNumber,
+    "code" -> text,
+    "name" -> text,
+    "population" -> longNumber,
+    "parent" -> optional(mapping(
+      "name" -> text,
+      "code" -> text,
+      "id" -> longNumber
+    )(ContainerDto.apply)(ContainerDto.unapply)),
+    "isCountry" -> boolean,
+    "modifiable" -> boolean)
+    (TerritoryDto.apply)(TerritoryDto.unapply))
 }

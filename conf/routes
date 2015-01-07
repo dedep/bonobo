@@ -15,6 +15,7 @@ GET         /territory/$t<[0-9]+>        @controllers.TerritoryController.find(t
 GET         /territory/:t                @controllers.TerritoryController.findByCode(t: String)
 GET         /json/territory              @controllers.TerritoryController.findAllAsJson()
 GET         /json/territory/:t           @controllers.TerritoryController.findByCodeAsJson(t: String)
+POST        /json/territory              @controllers.TerritoryController.create()
 POST        /json/territory/:t           @controllers.TerritoryController.edit(t: String)
 
 # Tournaments

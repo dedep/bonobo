@@ -1,15 +1,15 @@
 package controllers
 
 import com.typesafe.scalalogging.slf4j.Logger
-import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory
 import play.api.Play
 import play.api.db.slick._
 import play.api.mvc._
+import utils.FunLogger._
 
 //todo: może dać logowanie requestów?
 trait BaseController extends Controller {
-  private lazy val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private implicit lazy val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   protected val corsHeaders: List[(String, String)] = Map(
     "Access-Control-Allow-Origin" -> Play.current.configuration.getString("web.url").getOrElse(""),
@@ -26,12 +26,13 @@ trait BaseController extends Controller {
   protected def performDBRequest(requestHandler: DBSessionRequest[AnyContent] => Result) = DBAction {
     rs: DBSessionRequest[AnyContent] => {
       try {
-        requestHandler(rs).withHeaders(corsHeaders:_*)
+        requestHandler(rs)
+          .withHeaders(corsHeaders:_*)
       } catch {
-        case e: Exception => {
-          log.error("Error occurred during processing DB Request " + e.getMessage + "\n" + ExceptionUtils.getStackTrace(e))
-          InternalServerError(views.html.error(e.getMessage))
-        }
+        case e: Exception =>
+          InternalServerError("There was an internal error during request.")
+            .log(x => "Error occurred during processing DB Request." + e).error()
+            .withHeaders(corsHeaders:_*)
       }
     }
   }

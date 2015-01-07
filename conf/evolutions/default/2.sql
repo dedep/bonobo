@@ -331,6 +331,8 @@ INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Br
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Bieżuń', 1911, 9, 0, 0);
 INSERT INTO cities(name, population, container, latitude, longitude) VALUES ('Mordy', 1819, 9, 0, 0);
 
+ALTER SEQUENCE territories_id_seq RESTART WITH 1000;
+
 # --- !Downs
 TRUNCATE TABLE cities CASCADE;
 TRUNCATE TABLE territories CASCADE;

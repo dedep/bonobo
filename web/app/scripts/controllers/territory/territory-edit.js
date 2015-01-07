@@ -20,15 +20,7 @@ angular.module('bonobo.webapp')
             $scope.$parent.alertMsg = 'Territory not found';
         });
 
-        $scope.territories = [{
-            name: "World",
-            code: "W",
-            id: 4
-        }, {
-            name: "Poland",
-            code: "PL",
-            id: 3
-        }];
+        $scope.territories = TerritoryDao.query();
 
         $scope.view = {
             title: function() {
