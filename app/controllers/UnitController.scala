@@ -7,7 +7,7 @@ import scaldi.{Injectable, Injector}
 class UnitController(implicit inj: Injector) extends BaseController with Injectable {
   private val unitDao = inject[UnitDao]
 
-  def find(id: Long) = performDBRequest {
+  def find(id: Long) = serveHttpResponseWithDB {
     implicit rs =>
       unitDao.fromId(id)(rs.dbSession) match {
         case None => NotFound(views.html.error("Unit not found"))

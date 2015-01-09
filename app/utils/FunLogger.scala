@@ -3,7 +3,7 @@ package utils
 import com.typesafe.scalalogging.slf4j.Logger
 
 object FunLogger {
-  implicit class FLogger[+A](x: A) {
+  implicit class FLogger[A](x: A) {
     case class FunctionalLoggingFacade(logger: Logger, message: String, cause: Option[Throwable], args: AnyRef*) {
       def error(): A = {
         if (cause.nonEmpty) logger.error(message, cause.get)
@@ -49,10 +49,19 @@ object FunLogger {
     def log(message: A => Any)(implicit logger: Logger): FunctionalLoggingFacade =
       FunctionalLoggingFacade(logger, message(x).toString, None, Seq())
 
-    def log(message: A => Any, cause: Throwable)(implicit logger: Logger): FunctionalLoggingFacade =
+    def plainLog(message: Any)(implicit logger: Logger): FunctionalLoggingFacade =
+      FunctionalLoggingFacade(logger, message.toString, None, Seq())
+
+    def logException(message: A => Any, cause: Throwable)(implicit logger: Logger): FunctionalLoggingFacade =
       FunctionalLoggingFacade(logger, message(x).toString, Some(cause), Seq())
 
-    def log(message: A => Any, args: Seq[AnyRef])(implicit logger: Logger): FunctionalLoggingFacade =
+    def logPlainException(message: Any, cause: Throwable)(implicit logger: Logger): FunctionalLoggingFacade =
+      FunctionalLoggingFacade(logger, message.toString, Some(cause), Seq())
+
+    def logWithArgs(message: A => Any, args: Seq[AnyRef])(implicit logger: Logger): FunctionalLoggingFacade =
       FunctionalLoggingFacade(logger, message(x).toString, None, args)
+
+    def logPlainWithArgs(message: Any, args: Seq[AnyRef])(implicit logger: Logger): FunctionalLoggingFacade =
+      FunctionalLoggingFacade(logger, message.toString, None, args)
   }
 }

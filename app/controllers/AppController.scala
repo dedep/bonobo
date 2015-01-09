@@ -20,7 +20,7 @@ class AppController(implicit inj: Injector) extends BaseController with Injectab
 
   private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
 
-  def updateCitiesDefinitions() = performDBRequest {
+  def updateCitiesDefinitions() = serveHttpResponseWithDB {
     implicit rs =>
       implicit val dbSession = rs.dbSession
 
@@ -39,7 +39,7 @@ class AppController(implicit inj: Injector) extends BaseController with Injectab
     ).as("text/javascript")
   }
 
-  def preflight(all: String) = Action {
+  def preflight(all: String) = serveHttpResponse {
     Ok("").withHeaders(corsHeaders:_*)
   }
 }

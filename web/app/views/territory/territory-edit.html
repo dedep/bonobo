@@ -1,7 +1,7 @@
 <div class="document-header">
     <span>{{view.title()}}</span>
 </div>
-<form>
+<form name="editTerritory">
     <div class="form-group">
         <label for="inputName">Territory name</label>
         <input ng-model="territory.name" type="text" class="form-control" id="inputName" placeholder="Enter name" required autofocus>
@@ -22,9 +22,9 @@
     </div>
     <div class="form-group">
       <label for="inputCountry">Is country?</label>
-          <input ng-model="territory.isCountry" type="checkbox" id="inputCountry" class="checkbox" style="float: right">
+          <input ng-model="territory.isCountry" type="checkbox" id="inputCountry" class="checkbox checkbox-form">
       </div>
     </div>
-    <button ng-click="view.submit()" type="submit" class="btn btn-default btn-lg">Save</button>
+    <button ng-click="view.submit()" type="submit" ng-disabled="editTerritory.$invalid" class="btn btn-default btn-lg">Save</button>
     <button ng-click="view.back()" type="button" class="btn btn-default btn-lg">Cancel</button>
 </form>

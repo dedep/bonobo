@@ -14,27 +14,28 @@ import play.api.db.slick._
 import play.api.libs.json.JsArray
 import play.api.mvc.{Action, AnyContent, Result}
 import scaldi.{Injectable, Injector}
+import utils.FunLogger._
 
 import scala.slick.jdbc.JdbcBackend
 
 class TerritoryController(implicit inj: Injector) extends BaseController with Injectable {
-  private val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   private val cityDao = inject[CityDao]
   private val territoryDao = inject[TerritoryDao]
   private val tournamentDao = inject[TournamentDao]
 
-  def find(id: Long) = performDBRequest { implicit rs =>
+  def find(id: Long) = serveHttpResponseWithDB { implicit rs =>
     handleOptionalTerritory(territoryDao.fromId(id))
   }
 
-  def create() = performTransactionalDBRequest { implicit rs =>
+  def create() = serveHttpResponseWithTransactionalDB { implicit rs =>
     bindRequestAndPerform { t =>
       territoryDao.save(t)(rs.dbSession)
     }(rs.dbSession)
   }
 
-  def edit(oldCode: String) = performTransactionalDBRequest { implicit rs =>
+  def edit(oldCode: String) = serveHttpResponseWithTransactionalDB { implicit rs =>
     val currentTerritory = territoryDao.fromCode(oldCode)
     currentTerritory.map(t => {
       if (!t.modifiable) BadRequest("Cannot edit unmodifiable territory.")
@@ -48,8 +49,8 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
                                          (implicit request : play.api.mvc.Request[_]) = {
     TerritoryDto.form.bindFromRequest.fold(
         hasErrors => {
-          log.warn("Binding territory error " + hasErrors)
           BadRequest("Cannot bind territory from request.")
+            .plainLog("Binding territory error " + hasErrors).warn()
         },
         success => {
           val parentTerritoryStub = success.parent.map(p => new Territory(p.id, "", 0, None, "", false, false))
@@ -62,24 +63,24 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
       )
   }
 
-  def findByCode(code: String) = performDBRequest { implicit rs =>
+  def findByCode(code: String) = serveHttpResponseWithDB { implicit rs =>
     handleOptionalTerritory(territoryDao.fromCode(code))
   }
 
-  def findByCodeAsJson(code: String) = performDBRequest { implicit rs =>
+  def findByCodeAsJson(code: String) = serveHttpResponseWithDB { implicit rs =>
     territoryDao.fromCode(code)
       .map(t => TerritoryDto.parse(t))
       .map(t => Ok(t.toJson))
       .getOrElse(NotFound(code))
   }
 
-  def findAllAsJson() = performDBRequest { implicit rs =>
+  def findAllAsJson() = serveHttpResponseWithDB { implicit rs =>
     Ok(JsArray(territoryDao.findAll()
       .map(t => TerritoryDto.parse(t).toJson))
     )
   }
 
-  def startTournament(): Action[AnyContent] = performDBRequest { implicit rs =>
+  def startTournament(): Action[AnyContent] = serveHttpResponseWithDB { implicit rs =>
     case class StartTournamentFormData(name: String, id: Int)
 
     val startTournamentForm = Form(

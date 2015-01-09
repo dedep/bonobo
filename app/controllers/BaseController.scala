@@ -7,7 +7,6 @@ import play.api.db.slick._
 import play.api.mvc._
 import utils.FunLogger._
 
-//todo: może dać logowanie requestów?
 trait BaseController extends Controller {
   private implicit lazy val log = Logger(LoggerFactory.getLogger(this.getClass))
 
@@ -16,24 +15,35 @@ trait BaseController extends Controller {
     "Access-Control-Allow-Headers" -> "Accept, Content-Type"
   ).toList
 
-  protected def performTransactionalDBRequest(requestHandler: DBSessionRequest[AnyContent] => Result) =
-    performDBRequest { implicit rs =>
+  protected def serveHttpResponseWithTransactionalDB(requestHandler: DBSessionRequest[AnyContent] => Result) =
+    serveHttpResponseWithDB { implicit rs =>
       rs.dbSession.withTransaction {
         requestHandler.apply(rs)
       }
     }
 
-  protected def performDBRequest(requestHandler: DBSessionRequest[AnyContent] => Result) = DBAction {
+  protected def serveHttpResponseWithDB(requestHandler: DBSessionRequest[AnyContent] => Result) = DBAction {
     rs: DBSessionRequest[AnyContent] => {
-      try {
-        requestHandler(rs)
-          .withHeaders(corsHeaders:_*)
-      } catch {
-        case e: Exception =>
-          InternalServerError("There was an internal error during request.")
-            .log(x => "Error occurred during processing DB Request." + e).error()
-            .withHeaders(corsHeaders:_*)
-      }
+      prepareFinalResponse(requestHandler(rs))(rs.request)
     }
   }
+
+  protected def serveHttpResponse(block: => Result) = Action { implicit request =>
+    prepareFinalResponse(block)(request)
+  }
+  
+  private def prepareFinalResponse(block: => Result)(request: Request[AnyContent]): Result =
+    try {
+      block.withHeaders(corsHeaders: _*)
+        .log(response => {
+        "REQUEST: " + request.method + " " + request.path + "\n" +
+          "Headers: " + request.headers.toSimpleMap + "\n" +
+          "Body: " + request.body + "\n" +
+          "RESPONSE: " + response.toString()
+      }).info()
+    } catch {
+      case e: Exception =>
+        InternalServerError("There was an internal error during request.")
+          .logException(r => "Error occurred during request processing.", e).error()
+    }
 }

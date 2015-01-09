@@ -18,14 +18,14 @@ class TournamentController(implicit inj: Injector) extends BaseController with I
 
   private val tournamentDao = inject[TournamentDao]
 
-  def find(id: Long) = performDBRequest { implicit rs =>
+  def find(id: Long) = serveHttpResponseWithDB { implicit rs =>
     tournamentDao.fromId(id) match {
       case None => NotFound(views.html.error("Tournament not found"))
       case Some(t: (Tournament)) => Ok(views.html.tournament(t))
     }
   }
 
-  def processNextStep(): Action[AnyContent] = performDBRequest { implicit rs =>
+  def processNextStep(): Action[AnyContent] = serveHttpResponseWithDB { implicit rs =>
     case class ProcessTournamentFormData(id: Int)
 
     val processTournamentForm = Form(
@@ -35,11 +35,11 @@ class TournamentController(implicit inj: Injector) extends BaseController with I
     processTournamentForm.bindFromRequest.fold(
       hasErrors =>
         BadRequest("Cannot bind Process Tournament Request")
-          .log(x => "Cannot bind Process Tournament Request " + hasErrors).error()
+          .plainLog("Cannot bind Process Tournament Request " + hasErrors).error()
       ,
       success =>
         processNextStep(success.id)
-          .log(x => "Processing tournament with ID = " + success.id).info()
+          .plainLog("Processing tournament with ID = " + success.id).info()
     )
   }
 
