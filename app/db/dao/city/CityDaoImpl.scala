@@ -13,7 +13,7 @@ import scala.slick.jdbc.JdbcBackend
 import scala.slick.lifted.TableQuery
 
 class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
-  private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private implicit val log = Logger(LoggerFactory.getLogger("app"))
 
   private val territoryDao = inject[TerritoryDao]
 

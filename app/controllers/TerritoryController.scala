@@ -19,7 +19,7 @@ import utils.FunLogger._
 import scala.slick.jdbc.JdbcBackend
 
 class TerritoryController(implicit inj: Injector) extends BaseController with Injectable {
-  private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private implicit val log = Logger(LoggerFactory.getLogger("app"))
 
   private val cityDao = inject[CityDao]
   private val territoryDao = inject[TerritoryDao]

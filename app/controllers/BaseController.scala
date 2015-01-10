@@ -8,7 +8,8 @@ import play.api.mvc._
 import utils.FunLogger._
 
 trait BaseController extends Controller {
-  private implicit lazy val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private implicit lazy val log = Logger(LoggerFactory.getLogger("request"))
+  private lazy val appLog = Logger(LoggerFactory.getLogger("app"))
 
   protected val corsHeaders: List[(String, String)] = Map(
     "Access-Control-Allow-Origin" -> Play.current.configuration.getString("web.url").getOrElse(""),
@@ -44,6 +45,6 @@ trait BaseController extends Controller {
     } catch {
       case e: Exception =>
         InternalServerError("There was an internal error during request.")
-          .logException(r => "Error occurred during request processing.", e).error()
+          .logException(r => "Error occurred during request processing.", e)(appLog).error()
     }
 }

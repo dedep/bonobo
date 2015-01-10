@@ -25,7 +25,7 @@ trait RoundUnit {
   implicit val inj: Injector
   implicit val rules = roundInfo.rules
 
-  private val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private val log = Logger(LoggerFactory.getLogger("app"))
 
   lazy val fixturesCount: Int = fixtures.size
   lazy val playedFixtures: Int = results(0).matchesAmount

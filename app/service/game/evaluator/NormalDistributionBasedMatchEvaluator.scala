@@ -10,7 +10,7 @@ import scala.util.Random
 
 class NormalDistributionBasedMatchEvaluator extends MatchEvaluator {
 
-  private val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private val log = Logger(LoggerFactory.getLogger("app"))
 
   private val hostPremium = 0.15
 

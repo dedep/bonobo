@@ -13,7 +13,7 @@ class Match(val aTeam: Team, val bTeam: Team, val id: Option[Long] = None)
            (val unitInfo: RoundUnitInfo)
            (implicit inj: Injector) extends Injectable {
 
-  private val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private val log = Logger(LoggerFactory.getLogger("app"))
 
   private val matchEvaluator = inject[MatchEvaluator]
 

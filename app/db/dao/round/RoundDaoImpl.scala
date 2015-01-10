@@ -25,7 +25,7 @@ class RoundDaoImpl(implicit inj: Injector) extends RoundDao with Injectable {
   private val cityDao = inject[CityDao]
   private val rulesDao = inject[TournamentRulesDao]
 
-  private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private implicit val log = Logger(LoggerFactory.getLogger("app"))
 
   override def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[models.round.Round] =
     (for (round <- ds if round.id === id) yield round).firstOption match {

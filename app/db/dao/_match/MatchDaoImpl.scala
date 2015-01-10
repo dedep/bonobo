@@ -23,7 +23,7 @@ class MatchDaoImpl(implicit inj: Injector) extends MatchDao with Injectable {
   private val cityDao = inject[CityDao]
   private val rulesDao = inject[TournamentRulesDao]
 
-  private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private implicit val log = Logger(LoggerFactory.getLogger("app"))
 
   val selectQuery =
     for {

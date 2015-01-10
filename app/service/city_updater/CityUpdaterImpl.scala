@@ -16,7 +16,7 @@ import scala.xml.Elem
 
 class CityUpdaterImpl(implicit inj: Injector) extends CityUpdater with Injectable {
 
-  private val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private val log = Logger(LoggerFactory.getLogger("app"))
 
   private val cityDao = inject[CityDao]
 

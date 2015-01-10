@@ -14,7 +14,7 @@ class FiniteSampleMatchEvaluator extends MatchEvaluator {
   // = 1 / 12.5495297376
   val goalsDifferencePowerFactor = 1.3
 
-  private val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private val log = Logger(LoggerFactory.getLogger("app"))
 
   override def eval(m: Match): MatchResult = {
     log.info("Evaluating match: {} result", m)

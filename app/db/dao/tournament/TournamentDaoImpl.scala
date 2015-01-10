@@ -14,7 +14,7 @@ import utils.FunLogger._
 import scala.slick.jdbc.JdbcBackend
 
 class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injectable {
-  private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private implicit val log = Logger(LoggerFactory.getLogger("app"))
 
   private val roundDao = inject[RoundDao]
   private val cityDao = inject[CityDao]

@@ -18,7 +18,7 @@ class AppController(implicit inj: Injector) extends BaseController with Injectab
 
   def world = territoryController.findByCode("W")
 
-  private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private implicit val log = Logger(LoggerFactory.getLogger("app"))
 
   def updateCitiesDefinitions() = serveHttpResponseWithDB {
     implicit rs =>

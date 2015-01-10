@@ -24,7 +24,7 @@ class UnitDaoImpl(implicit inj: Injector) extends UnitDao with Injectable {
   private val cityDao = inject[CityDao]
   private val rulesDao = inject[TournamentRulesDao]
 
-  private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private implicit val log = Logger(LoggerFactory.getLogger("app"))
 
   override def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[RoundUnit] =
     (for (m <- ds if m.id === id) yield m).firstOption match {

@@ -23,7 +23,7 @@ class Pair(override val name: String, teamsCbn: => List[Team], fixturesCbn: => L
 
   val strategy = inject[PromotionsStrategy]
 
-  private val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private val log = Logger(LoggerFactory.getLogger("app"))
 
   override lazy val teams = teamsCbn
   override lazy val results = if (!generateFixtures) resultsCbn else defaultResults

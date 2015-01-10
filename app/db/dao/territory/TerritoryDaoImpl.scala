@@ -12,7 +12,7 @@ import scala.slick.jdbc.JdbcBackend
 import scala.slick.lifted.TableQuery
 
 class TerritoryDaoImpl(implicit inj: Injector) extends TerritoryDao with Injectable {
-  private implicit val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private implicit val log = Logger(LoggerFactory.getLogger("app"))
 
   private val ds = TableQuery[TerritoriesTable]
 

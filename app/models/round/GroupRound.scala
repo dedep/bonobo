@@ -22,7 +22,7 @@ class GroupRound(override val name: String,
                 (override val tournamentInfo: TournamentInfo)
                 (implicit inj: Injector) extends Round {
 
-  private val log = Logger(LoggerFactory.getLogger(this.getClass))
+  private val log = Logger(LoggerFactory.getLogger("app"))
 
   override lazy val teams = teamsCbn
   override lazy val pots = potsCbn
