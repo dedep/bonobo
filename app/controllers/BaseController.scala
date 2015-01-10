@@ -13,7 +13,8 @@ trait BaseController extends Controller {
 
   protected val corsHeaders: List[(String, String)] = Map(
     "Access-Control-Allow-Origin" -> Play.current.configuration.getString("web.url").getOrElse(""),
-    "Access-Control-Allow-Headers" -> "Accept, Content-Type"
+    "Access-Control-Allow-Headers" -> "Accept, Content-Type",
+    "Access-Control-Allow-Methods" -> "GET, POST, DELETE, OPTIONS"
   ).toList
 
   protected def serveHttpResponseWithTransactionalDB(requestHandler: DBSessionRequest[AnyContent] => Result) =
@@ -45,6 +46,7 @@ trait BaseController extends Controller {
     } catch {
       case e: Exception =>
         InternalServerError("There was an internal error during request.")
+          .withHeaders(corsHeaders: _*)
           .logException(r => "Error occurred during request processing.", e)(appLog).error()
     }
 }

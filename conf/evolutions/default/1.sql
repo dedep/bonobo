@@ -5,7 +5,7 @@ CREATE TABLE territories
   id bigserial PRIMARY KEY,
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
-  container bigint references territories NULL,
+  container bigint NULL references territories ON DELETE CASCADE,
   code varchar(9) UNIQUE,
   is_country boolean NOT NULL,
   modifiable boolean NOT NULL DEFAULT TRUE
@@ -17,7 +17,7 @@ CREATE TABLE cities
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
   points int NOT NULL DEFAULT 0,
-  container bigint references territories NOT NULL,
+  container bigint NOT NULL references territories ON DELETE CASCADE,
   latitude double precision NULL,
   longitude double precision NULL
 );

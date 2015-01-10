@@ -19,7 +19,7 @@ footer .licence a{color:#999;}
 #top{
     margin-top:60px;
     background-image: url('/assets/images/bg.png');
-    background-color:rgb(184, 225, 134);
+    background-color: rgba(229, 19, 1, 0.69);
     box-shadow:0 -4px 0 rgba(0, 0, 0, 0.1) inset;padding:0;position:relative;
 }
 

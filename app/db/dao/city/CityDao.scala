@@ -18,6 +18,8 @@ trait CityDao {
 
   def saveOrUpdate(c: City)(implicit rs: JdbcBackend#Session): Long
 
+  def delete(c: City)(implicit rs: JdbcBackend#Session): Unit
+
   def getAllWithinTerritoryCascade(t: Territory)(implicit rs: JdbcBackend#Session): List[City]
 
   def getAllWithinTerritory(t: Territory)(implicit rs: JdbcBackend#Session): List[City]

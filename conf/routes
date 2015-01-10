@@ -17,6 +17,7 @@ GET         /json/territory              @controllers.TerritoryController.findAl
 GET         /json/territory/:t           @controllers.TerritoryController.findByCodeAsJson(t: String)
 POST        /json/territory              @controllers.TerritoryController.create()
 POST        /json/territory/:t           @controllers.TerritoryController.edit(t: String)
+DELETE      /json/territory/:t           @controllers.TerritoryController.delete(t: String)
 
 # Tournaments
 POST        /tournament/new              @controllers.TerritoryController.startTournament()

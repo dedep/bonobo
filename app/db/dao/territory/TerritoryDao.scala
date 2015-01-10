@@ -20,7 +20,9 @@ trait TerritoryDao {
 
   def save(t: Territory)(implicit rs: JdbcBackend#Session): Long
 
-  def update(t: Territory, oldCode: String)(implicit rs: JdbcBackend#Session): Long
+  def update(t: Territory, oldCode: String)(rs: JdbcBackend#Session): Long
+
+  def delete(t: Territory)(rs: JdbcBackend#Session): Long
 
   def getChildrenTerritories(t: Territory)(implicit rs: JdbcBackend#Session): List[Territory]
 }

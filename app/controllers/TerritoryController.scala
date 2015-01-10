@@ -25,48 +25,7 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
   private val territoryDao = inject[TerritoryDao]
   private val tournamentDao = inject[TournamentDao]
 
-  def find(id: Long) = serveHttpResponseWithDB { implicit rs =>
-    handleOptionalTerritory(territoryDao.fromId(id))
-  }
-
-  def create() = serveHttpResponseWithTransactionalDB { implicit rs =>
-    bindRequestAndPerform { t =>
-      territoryDao.save(t)(rs.dbSession)
-    }(rs.dbSession)
-  }
-
-  def edit(oldCode: String) = serveHttpResponseWithTransactionalDB { implicit rs =>
-    val currentTerritory = territoryDao.fromCode(oldCode)
-    currentTerritory.map(t => {
-      if (!t.modifiable) BadRequest("Cannot edit unmodifiable territory.")
-      else bindRequestAndPerform { t =>
-        territoryDao.update(t, oldCode)(rs.dbSession)
-      }(rs.dbSession)
-    }).getOrElse(BadRequest("Cannot edit non-existent territory."))
-  }
-
-  private def bindRequestAndPerform(f: Territory => Unit)(rs: JdbcBackend#Session)
-                                         (implicit request : play.api.mvc.Request[_]) = {
-    TerritoryDto.form.bindFromRequest.fold(
-        hasErrors => {
-          BadRequest("Cannot bind territory from request.")
-            .plainLog("Binding territory error " + hasErrors).warn()
-        },
-        success => {
-          val parentTerritoryStub = success.parent.map(p => new Territory(p.id, "", 0, None, "", false, false))
-          val t = new Territory(success.id, success.name, success.population, parentTerritoryStub,
-            success.code, success.isCountry, true)
-
-          f.apply(t)
-          Ok("Territory has been successfully saved.")
-        }
-      )
-  }
-
-  def findByCode(code: String) = serveHttpResponseWithDB { implicit rs =>
-    handleOptionalTerritory(territoryDao.fromCode(code))
-  }
-
+//  JSON API
   def findByCodeAsJson(code: String) = serveHttpResponseWithDB { implicit rs =>
     territoryDao.fromCode(code)
       .map(t => TerritoryDto.parse(t))
@@ -79,6 +38,68 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
       .map(t => TerritoryDto.parse(t).toJson))
     )
   }
+
+  def create() = serveHttpResponseWithTransactionalDB { implicit rs =>
+    bindRequestAndPerform { t =>
+      territoryDao.save(t)(rs.dbSession)
+    }(rs.dbSession)
+  }
+
+  def edit(oldCode: String) = serveHttpResponseWithTransactionalDB { implicit rs =>
+    modifyTerritory(oldCode)(rs.dbSession) { () =>
+      bindRequestAndPerform { t =>
+        territoryDao.update(t, oldCode)(rs.dbSession)
+      }(rs.dbSession)
+    }
+  }
+
+  def delete(code: String) = serveHttpResponseWithTransactionalDB { implicit rs =>
+    val currentTerritory = territoryDao.fromCode(code)
+    modifyTerritory(code)(rs.dbSession) { () =>
+      performTerritoryAction { t =>
+        territoryDao.delete(t)(rs.dbSession)
+      }(currentTerritory.get)(rs.dbSession)
+    }
+  }
+
+  private def modifyTerritory(code: String)(rs: JdbcBackend#Session)(action: () => Result)
+                             (implicit request : play.api.mvc.Request[_]): Result = {
+      val currentTerritory = territoryDao.fromCode(code)(rs)
+      currentTerritory.map(t => {
+        if (!t.modifiable) BadRequest("Cannot modify unmodifiable territory.")
+        else action()
+      }).getOrElse(NotFound("Cannot modify non-existent territory."))
+    }
+
+  private def bindRequestAndPerform(f: Territory => Unit)(rs: JdbcBackend#Session)
+                                         (implicit request : play.api.mvc.Request[_]): Result = {
+    TerritoryDto.form.bindFromRequest.fold(
+        hasErrors => {
+          BadRequest("Cannot bind territory from request.")
+            .plainLog("Binding territory error " + hasErrors).warn()
+        },
+        success => {
+          val parentTerritoryStub = success.parent.map(p => new Territory(p.id, "", 0, None, "", false, false))
+          val t = new Territory(success.id, success.name, success.population, parentTerritoryStub,
+            success.code, success.isCountry, true)
+
+          performTerritoryAction(f)(t)(rs)
+        }
+      )
+  }
+
+  private def performTerritoryAction(f: Territory => Unit)(t: Territory)(rs: JdbcBackend#Session)
+                                    (implicit request : play.api.mvc.Request[_]): Result = {
+    f.apply(t)
+    Ok("Territory action has been successfully performed.")
+  }
+  //  END: JSON API
+
+
+  def findByCode(code: String) = serveHttpResponseWithDB { implicit rs =>
+    handleOptionalTerritory(territoryDao.fromCode(code))
+  }
+
 
   def startTournament(): Action[AnyContent] = serveHttpResponseWithDB { implicit rs =>
     case class StartTournamentFormData(name: String, id: Int)
@@ -99,6 +120,10 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
         startTournament(success.id, success.name)
       }
     )
+  }
+
+  def find(id: Long) = serveHttpResponseWithDB { implicit rs =>
+    handleOptionalTerritory(territoryDao.fromId(id))
   }
 
   private def handleOptionalTerritory(t: Option[Territory]) = t match {

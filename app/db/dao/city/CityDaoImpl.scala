@@ -60,6 +60,10 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
     ds.map(_.autoInc) += NewCityDBRow(c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude)
   }
 
+  override def delete(c: City)(implicit rs: JdbcBackend#Session) =
+    ds.filter(_.id === c.id).delete
+      .plainLog("Deleting city: " + c.name + " in database.")
+
   private def update(c: City)(implicit rs: JdbcBackend#Session): Long = {
     log.info("Updating city in DB " + c)
     ds.filter(_.id === c.id).update(CityDBRow(c.id, c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude))
