@@ -141,7 +141,7 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
         }
         else {
           val rules = new GameRules(0, 1, 3)
-          val newIndex = tournamentDao.saveNew(new TournamentImpl(cities, name)(rules))
+          val newIndex = tournamentDao.saveNew(new TournamentImpl(t, cities, name)(rules))
           val successMsg = "Tournament with ID=" + newIndex + " has been created successfully."
 
           Ok(successMsg)

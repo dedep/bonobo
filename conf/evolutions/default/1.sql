@@ -26,7 +26,8 @@ CREATE TABLE tournaments
 (
   id bigserial PRIMARY KEY,
   name text NOT NULL,
-  status text NOT NULL
+  status text NOT NULL,
+  territory_id bigint NOT NULL REFERENCES territories
 );
 
 CREATE TABLE tournament_rules
@@ -115,6 +116,7 @@ CREATE INDEX matches_unit_idx ON matches(unit_id);
 CREATE INDEX matches_fixture_idx ON matches(fixture);
 CREATE INDEX units_cities_city_idx ON units_cities(city_id);
 CREATE INDEX units_cities_unit_idx ON units_cities(unit_id);
+CREATE INDEX tournaments_territory_idx ON tournaments(territory_id);
 
 # --- !Downs
 DROP TABLE IF EXISTS cities_tournaments;

@@ -2,11 +2,11 @@ package db.table
 
 import scala.slick.driver.PostgresDriver.simple._
 
-//todo: dać przyporządkowanie do territory
-case class TournamentsTable(tag: Tag) extends Table[(String, String)](tag, "tournaments") {
+class TournamentsTable(tag: Tag) extends Table[(String, String, Long)](tag, "tournaments") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def name = column[String]("name", O.NotNull)
   def status = column[String]("status", O.NotNull)
+  def territoryId = column[Long]("territory_id", O.NotNull)
 
-  def * = (name, status)
+  def * = (name, status, territoryId)
 }

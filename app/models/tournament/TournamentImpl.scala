@@ -2,13 +2,14 @@ package models.tournament
 
 import models.round.{GroupRound, PlayoffRound, Round}
 import models.team.Team
+import models.territory.Territory
 import models.tournament.TournamentStatus.TournamentStatus
 import scaldi.Injector
 import utils.MathUtils
 
-class TournamentImpl(override val teams: List[Team], override val name: String, roundsCbn: => List[Round] = Nil,
-                     override val id: Option[Long] = None, override val status: TournamentStatus = TournamentStatus.NOT_STARTED,
-                     val playingTeams: List[Boolean] = Nil)
+class TournamentImpl(override val territory: Territory, override val teams: List[Team], override val name: String,
+                     roundsCbn: => List[Round] = Nil, override val id: Option[Long] = None,
+                     override val status: TournamentStatus = TournamentStatus.NOT_STARTED, val playingTeams: List[Boolean] = Nil)
                     (override val gameRules: GameRules)
                     (implicit inj: Injector) extends Tournament {
 
@@ -41,7 +42,7 @@ class TournamentImpl(override val teams: List[Team], override val name: String, 
     if (isPreliminaryRoundRequired) {
       val roundName = "Preliminary round"
       val teams = getPreliminaryRoundTeams
-      new TournamentImpl(this.teams, name, new PlayoffRound(roundName, teams, Nil, Nil, 0, true)(toTournamentInfo) :: rounds,
+      new TournamentImpl(this.territory, this.teams, name, new PlayoffRound(roundName, teams, Nil, Nil, 0, true)(toTournamentInfo) :: rounds,
         id, TournamentStatus.PLAYING, this.teams.map(x => true))(gameRules)
     }
     else {
@@ -51,16 +52,17 @@ class TournamentImpl(override val teams: List[Team], override val name: String, 
   private def createNextRound(teams: List[Team]): Tournament = {
     val roundIndex = if (isPreliminaryRoundRequired) rounds.size else rounds.size + 1
 
+    //todo: przenieść nazywanie rund to osobnego serwisu
     if (teams.length >= 32) {
       val roundName = "Round " + roundIndex
       val newRounds = new GroupRound(roundName, teams)(toTournamentInfo) :: rounds
-      new TournamentImpl(this.teams, name, newRounds, id, TournamentStatus.PLAYING,
+      new TournamentImpl(this.territory, this.teams, name, newRounds, id, TournamentStatus.PLAYING,
         this.teams.map(t => greedyIsTeamStillInGame(t.id, newRounds)))(gameRules)
     }
     else {
       val roundName = "Round " + roundIndex
       val newRounds = new PlayoffRound(roundName, teams)(toTournamentInfo) :: rounds
-      new TournamentImpl(this.teams, name, newRounds, id, TournamentStatus.PLAYING,
+      new TournamentImpl(this.territory, this.teams, name, newRounds, id, TournamentStatus.PLAYING,
         this.teams.map(t => greedyIsTeamStillInGame(t.id, newRounds)))(gameRules)
     }
   }
@@ -75,7 +77,7 @@ class TournamentImpl(override val teams: List[Team], override val name: String, 
       else TournamentStatus.PLAYING
     }
 
-    new TournamentImpl(this.teams, name, newRounds, id, status,
+    new TournamentImpl(territory, this.teams, name, newRounds, id, status,
       this.teams.map(t => greedyIsTeamStillInGame(t.id, newRounds)))(gameRules)
   }
 

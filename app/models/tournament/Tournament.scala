@@ -3,6 +3,7 @@ package models.tournament
 import models.reverse.TournamentInfo
 import models.round.Round
 import models.team.Team
+import models.territory.Territory
 import models.tournament.TournamentStatus.TournamentStatus
 
 trait Tournament {
@@ -13,6 +14,7 @@ trait Tournament {
   val status: TournamentStatus
   val teamsInGame: List[Boolean]
   val gameRules: GameRules
+  val territory: Territory
 
   def doStep(): Tournament
 
