@@ -4,8 +4,9 @@ import com.typesafe.scalalogging.slf4j.Logger
 import db.dao.city.CityDao
 import db.dao.round.RoundDao
 import db.dao.territory.TerritoryDao
-import db.table.{TournamentRulesTable, CitiesTournamentsTable, TournamentsTable}
+import db.table._
 import models.team.Team
+import models.territory.Territory
 import models.tournament.{Tournament, TournamentImpl, TournamentStatus}
 import org.slf4j.LoggerFactory
 import play.api.db.slick.Config.driver.simple._
@@ -26,27 +27,23 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
   private val citiesDs = TableQuery[CitiesTournamentsTable]
   private val rulesDs = TableQuery[TournamentRulesTable]
 
-  override def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[models.tournament.Tournament] = {
-    (for (tournament <- ds if tournament.id === id) yield tournament).firstOption match {
-      case None => None
-      case Some((name: String, status: String, territoryId: Long)) =>
-        Some(instantiateFromTableRow(id, name, status, territoryId))
-    }
-  }
+  override def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[models.tournament.Tournament] =
+    (for (tournament <- ds if tournament.id === id) yield tournament)
+      .firstOption.map(t => instantiateFromTableRow(t))
 
-  private def instantiateFromTableRow(id: Long, name: String, statusStr: String, territoryId: Long)
-                                     (implicit rs: JdbcBackend#Session): Tournament = {
-    val tournamentCities = getTournamentCities(id)
+  private def instantiateFromTableRow(row: TournamentDBRow)(implicit rs: JdbcBackend#Session): Tournament = {
+    val tournamentCities = getTournamentCities(row.id)
     val cities = tournamentCities._1
-    val territory = territoryDao.fromId(territoryId).getOrElse(throw new IllegalStateException("Unknown territory " + territoryId))
     val playingTeams = tournamentCities._2
-    val status = TournamentStatus.withName(statusStr)
-    val rules = rulesDao.fromTournamentId(id)
-      .getOrElse(throw new IllegalStateException("Inconsistent DB state while looking for tournament rules in " + id))
+    val status = TournamentStatus.withName(row.status)
+    val rules = rulesDao.fromTournamentId(row.id)
+      .getOrElse(throw new IllegalStateException("Inconsistent DB state while looking for tournament rules in " + row.id))
+    val territory = territoryDao.fromId(row.territoryId)
+      .getOrElse(throw new IllegalStateException("Unknown territory " + row.territoryId))
 
-    lazy val rounds = roundDao.getTournamentRounds(id)
+    lazy val rounds = roundDao.getTournamentRounds(row.id)
 
-    new TournamentImpl(territory, cities, name, rounds, Some(id), status, playingTeams)(rules)
+    new TournamentImpl(territory, cities, row.name, rounds, Some(row.id), status, playingTeams)(rules)
   }
 
   private def getTournamentCities(id: Long)(implicit rs: JdbcBackend#Session): (List[Team], List[Boolean]) = {
@@ -75,7 +72,8 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
   }
 
   private def updateTournamentRow(t: Tournament)(implicit rs: JdbcBackend#Session): Unit =
-    ds.filter(_.id === t.id.get).update(t.name, t.status.toString, t.territory.id)
+    ds.filter(_.id === t.id.get)
+      .update(TournamentDBRow(t.id.get, t.name, t.status.toString, t.territory.id))
 
   private def updateTournamentCitiesRow(t: Tournament)(implicit rs: JdbcBackend#Session): Unit =
     t.teams.zip(t.teamsInGame).foreach { case (city, plays) =>
@@ -94,12 +92,23 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
   private def save(t: Tournament)(implicit rs: JdbcBackend#Session): Long = {
     "".log(x => "Before saving new tournament " + t.name).info()
 
-    val newIndex = (ds returning ds.map(_.id)) += (t.name, t.status.toString, t.territory.id)
+    val newIndex = ds.map(_.autoInc) returning ds.map(_.id) += NewTournamentDBRow(t.name, t.status.toString, t.territory.id)
     citiesDs.filter(_.tournamentId === newIndex).delete
-    citiesDs ++= t.teams.map(city => (city.id, newIndex, true))
+    citiesDs ++= t.teams.map(city => (city.id, newIndex.toLong, true))
     rulesDs += (newIndex, t.gameRules.winPoints, t.gameRules.drawPoints, t.gameRules.losePoints)
 
     newIndex
       .log(x => "After saving new tournament " + t.name).info()
   }
+
+  override def getActiveTournaments()(implicit rs: JdbcBackend#Session): List[Tournament] =
+    getActiveTournamentsWithCustomFilter(f => true)
+
+  override def getActiveTournamentsWithinTerritory(territory: Territory)(implicit rs: JdbcBackend#Session): List[Tournament] =
+    getActiveTournamentsWithCustomFilter(_.territoryId === territory.id)
+
+  private def getActiveTournamentsWithCustomFilter(filter: TournamentsTable => Column[Boolean])
+                                                  (implicit rs: JdbcBackend#Session): List[Tournament] =
+    ds.filter(_.status === TournamentStatus.PLAYING.toString).filter(filter)
+      .list.map(instantiateFromTableRow)
 }

@@ -76,7 +76,8 @@ class MatchDaoImpl(implicit inj: Injector) extends MatchDao with Injectable {
 
 
   private def save(m: models._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: JdbcBackend#Session): Long =
-    ds.map(_.autoInc) += NewMatchDBRow.tupled(mapNewMatchToMatchesTable(m, fixtureNum, unitId))
+    ds.map(_.autoInc) returning ds.map(_.id) +=
+      NewMatchDBRow.tupled(mapNewMatchToMatchesTable(m, fixtureNum, unitId))
 
   private def update(m: models._match.Match, fixtureNum: Int, unitId: Long)(implicit rs: JdbcBackend#Session): Long = {
     ds.filter(_.id === m.id.get).update(

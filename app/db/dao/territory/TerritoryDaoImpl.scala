@@ -31,7 +31,7 @@ class TerritoryDaoImpl(implicit inj: Injector) extends TerritoryDao with Injecta
     selectQuery.list.map(fromRow)
 
   override def save(t: Territory)(implicit rs: JdbcBackend#Session): Long =
-    ds.map(_.autoInc) +=
+    ds.map(_.autoInc) returning ds.map(_.id) +=
       NewTerritoryDBRow(t.name, t.population, t.container.map(_.id), t.code, t.isCountry, t.modifiable)
       .log(x => "Saving new territory " + x.code).info()
 

@@ -57,7 +57,8 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
 
   private def save(c: City)(implicit rs: JdbcBackend#Session): Long = {
     log.info("Saving new city in DB " + c)
-    ds.map(_.autoInc) += NewCityDBRow(c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude)
+    ds.map(_.autoInc) returning ds.map(_.id) +=
+      NewCityDBRow(c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude)
   }
 
   override def delete(c: City)(implicit rs: JdbcBackend#Session) =
