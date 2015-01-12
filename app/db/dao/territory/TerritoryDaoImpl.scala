@@ -35,14 +35,17 @@ class TerritoryDaoImpl(implicit inj: Injector) extends TerritoryDao with Injecta
       NewTerritoryDBRow(t.name, t.population, t.container.map(_.id), t.code, t.isCountry, t.modifiable)
       .log(x => "Saving new territory " + x.code).info()
 
-  override def update(t: Territory, oldCode: String)(rs: JdbcBackend#Session): Long =
+  override def update(t: Territory)(implicit rs: JdbcBackend#Session): Long =
+    update(t, t.code)
+
+  override def update(t: Territory, oldCode: String)(implicit rs: JdbcBackend#Session): Long =
     ds.filter(_.code === oldCode)
       .update(TerritoryDBRow(t.id, t.name, t.population, t.container.map(_.id), t.code, t.isCountry, t.modifiable))(rs)
       .log(x => "Updating territory " + t.code).info()
 
-  override def delete(t: Territory)(rs: JdbcBackend#Session): Long =
+  override def delete(t: Territory)(implicit rs: JdbcBackend#Session): Long =
     ds.filter(_.code === t.code)
-      .delete(rs)
+      .delete
       .log(x => "Deleting territory " + t.code).info()
 
   override def getChildrenTerritories(t: Territory)(implicit rs: JdbcBackend#Session): List[Territory] =

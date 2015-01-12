@@ -15,4 +15,6 @@ trait TournamentDao {
   def getActiveTournaments()(implicit rs: JdbcBackend#Session): List[Tournament]
 
   def getActiveTournamentsWithinTerritory(territory: Territory)(implicit rs: JdbcBackend#Session): List[Tournament]
+
+  def getActiveTournamentsWithinTerritory(territoryId: Long)(implicit rs: JdbcBackend#Session): List[Tournament]
 }

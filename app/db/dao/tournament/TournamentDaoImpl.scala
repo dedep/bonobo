@@ -65,10 +65,20 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
           if (t.rounds.head.id.isEmpty) updateTournamentCitiesRow(t)
           roundDao.saveOrUpdate(t.rounds.head, t.id.get)
         }
+
+        updateTournamentsTerritoryModifiableTrait(t)
       }.getOrElse(throw new IllegalArgumentException("Cannot update rounds in non-started tournament"))
 
       t.id.get
     }
+  }
+
+  private def updateTournamentsTerritoryModifiableTrait(t: Tournament)(implicit rs: JdbcBackend#Session) = {
+    val modifiable = getActiveTournamentsWithinTerritory(t.territory.id)(rs).isEmpty
+    val newTerritory = new Territory(t.territory.id, t.territory.name, t.territory.population, t.territory.container,
+      t.territory.code, t.territory.isCountry, modifiable)
+
+    territoryDao.update(newTerritory)(rs)
   }
 
   private def updateTournamentRow(t: Tournament)(implicit rs: JdbcBackend#Session): Unit =
@@ -106,6 +116,9 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
 
   override def getActiveTournamentsWithinTerritory(territory: Territory)(implicit rs: JdbcBackend#Session): List[Tournament] =
     getActiveTournamentsWithCustomFilter(_.territoryId === territory.id)
+
+  override def getActiveTournamentsWithinTerritory(territoryId: Long)(implicit rs: JdbcBackend#Session): List[Tournament] =
+    getActiveTournamentsWithCustomFilter(_.territoryId === territoryId)
 
   private def getActiveTournamentsWithCustomFilter(filter: TournamentsTable => Column[Boolean])
                                                   (implicit rs: JdbcBackend#Session): List[Tournament] =
