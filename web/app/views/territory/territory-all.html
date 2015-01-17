@@ -8,41 +8,28 @@
     </span>
 </div>
 
-<!--todo: da się coś z tym zrobić?-->
-<div class="tree document-section">
-    <ul>
-        <li>
-            <a href="#/territory/{{territories.code}}">
-                <span class="glyphicon glyphicon-globe" aria-hidden="true"></span> {{territories.name}}
-            </a>
-            <ul>
-                <li ng-repeat="child in territories.children">
-                    <a href="#/territory/{{child.code}}">
-                        <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> {{child.name}}
-                    </a>
-                    <ul>
-                        <li ng-repeat="child2 in child.children">
-                            <a href="#/territory/{{child2.code}}">
-                                <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> {{child2.name}}
-                            </a>
-                            <ul>
-                                <li ng-repeat="child3 in child2.children">
-                                    <a href="#/territory/{{child3.code}}">
-                                        <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> {{child3.name}}
-                                    </a>
-                                    <ul>
-                                        <li ng-repeat="child4 in child3.children">
-                                            <a href="#/territory/{{child4.code}}">
-                                                <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> {{child4.name}}
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-    </ul>
+<div class="input-group col-lg-12 filter-box">
+  <input id="filter" type="text" class="form-control" ng-model="search.name" placeholder="Type filter here...">
 </div>
+
+<table class="table table-hover">
+  <thead>
+  <tr>
+    <th>#</th>
+    <th>Territory</th>
+    <th>Code</th>
+    <th>Population</th>
+    <th>Parent</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="t in territories | filter:search">
+    <td>{{$index}}</td>
+    <td><a ng-href="#/territory/{{t.code}}">{{t.name}}</a></td>
+    <td>{{t.code}}</td>
+    <td>{{t.population | number}}</td>
+    <td><a ng-href="#/territory/{{t.parent.code}}">{{t.parent.name}}</a></td>
+  </tr>
+  </tbody>
+</table>
+

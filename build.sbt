@@ -1,6 +1,6 @@
 import play.PlayScala
 
-lazy val root = (project in file("."))
+lazy val bonobo = (project in file("."))
   .enablePlugins(PlayScala)
   .settings(
     name := """bonobo""",
