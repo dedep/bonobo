@@ -1,20 +1,19 @@
 'use strict';
 
 angular.module('bonobo.webapp')
-  .controller('TerritoryViewCtrl', function ($scope, $routeParams, $location, $modal, TerritoryDao) {
+  .controller('TerritoryViewCtrl', function ($scope, $routeParams, $location, $modal, TerritoryDao, configuration, hotkeys) {
+
     $scope.territoryFound = false;
 
-    $scope.territory = TerritoryDao.get({code: $routeParams.code},
-      function() {
+    $scope.territory = TerritoryDao.get({code: $routeParams.code}, function() {
         $scope.territoryFound = true;
-
+        $scope.appendHotKeys();
       }, function() {
         $scope.$parent.alertMsg = 'Territory not found';
         $scope.territoryFound = false;
       }
     );
 
-//      todo: UNIT - TEST
     $scope.codeToFocus = function() {
       if ($scope.territoryFound) {
         if ($scope.territory.isCountry) {
@@ -48,13 +47,33 @@ angular.module('bonobo.webapp')
 
       modalInstance.result.then(function() {
         TerritoryDao.delete({code: $routeParams.code});
-        $location.path('/territory/W');
+        $location.path('/territory/' + configuration.WORLD_CODE);
       });
     };
 
     $scope.hideContainer = function() {
       return $scope.territory.parent === undefined;
     };
+
+    $scope.appendHotKeys = function() {
+      if ($scope.territory.modifiable) {
+        hotkeys.bindTo($scope)
+          .add({
+            combo: 'shift+del',
+            description: 'Delete territory',
+            callback: function () {
+              $scope.deleteTerritory();
+            }
+          })
+          .add({
+            combo: 'shift+e',
+            description: 'Edit territory',
+            callback: function () {
+              $scope.editTerritory();
+            }
+          });
+      }
+    }
   })
   .controller('ModalInstanceCtrl', function ($scope, $location, $modalInstance, territoryName) {
     $scope.territoryName = territoryName;

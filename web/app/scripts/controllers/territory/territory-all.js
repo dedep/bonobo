@@ -6,5 +6,5 @@ angular.module('bonobo.webapp')
 
     $scope.addTerritory = function() {
       $location.path('/territory/new');
-    }
+    };
   });
