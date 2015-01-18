@@ -3,37 +3,39 @@
 # ~~~~
 
 # Home page
-GET         /                            @controllers.AppController.world
-OPTIONS     /*all                        @controllers.AppController.preflight(all: String)
-
-# Cities
-GET         /city/$c<[0-9]+>             @controllers.CityController.find(c: Long)
-POST        /city/update                 @controllers.AppController.updateCitiesDefinitions
+GET            /                            @controllers.AppController.world
+OPTIONS        /*all                        @controllers.AppController.preflight(all: String)
 
 # Territories
-GET         /territory/$t<[0-9]+>        @controllers.TerritoryController.find(t: Long)
-GET         /territory/:t                @controllers.TerritoryController.findByCode(t: String)
-GET         /json/territory              @controllers.TerritoryController.findAllAsJson()
-GET         /json/territory/:t           @controllers.TerritoryController.findByCodeAsJson(t: String)
-POST        /json/territory              @controllers.TerritoryController.create()
-POST        /json/territory/:t           @controllers.TerritoryController.edit(t: String)
-DELETE      /json/territory/:t           @controllers.TerritoryController.delete(t: String)
+GET            /territory/$t<[0-9]+>        @controllers.TerritoryController.find(t: Long)
+GET            /territory/:t                @controllers.TerritoryController.findByCode(t: String)
+GET            /json/territory              @controllers.TerritoryController.findAllAsJson()
+GET            /json/territory/:t           @controllers.TerritoryController.findByCodeAsJson(t: String)
+POST           /json/territory              @controllers.TerritoryController.create()
+POST           /json/territory/:t           @controllers.TerritoryController.edit(t: String)
+DELETE         /json/territory/:t           @controllers.TerritoryController.delete(t: String)
+
+# Cities
+GET            /city/$c<[0-9]+>             @controllers.CityController.find(c: Long)
+POST           /city/update                 @controllers.AppController.updateCitiesDefinitions
+GET            /json/territory/:t/city/:c   @controllers.CityController.findAsJson(c: Long, t: Long)
+GET            /json/territory/:t/city      @controllers.CityController.findAll(t: Long)
 
 # Tournaments
-POST        /tournament/new              @controllers.TerritoryController.startTournament()
-POST        /tournament/process          @controllers.TournamentController.processNextStep()
-GET         /tournament/:t               @controllers.TournamentController.find(t: Long)
+POST           /tournament/new              @controllers.TerritoryController.startTournament()
+POST           /tournament/process          @controllers.TournamentController.processNextStep()
+GET            /tournament/:t               @controllers.TournamentController.find(t: Long)
 
 # Rounds
-GET         /round/filter                @controllers.RoundController.findWithFilter
-GET         /round/:t                    @controllers.RoundController.find(t: Long)
+GET            /round/filter                @controllers.RoundController.findWithFilter
+GET            /round/:t                    @controllers.RoundController.find(t: Long)
 
 # Matches
-GET         /match/:t                    @controllers.MatchController.find(t: Long)
+GET            /match/:t                    @controllers.MatchController.find(t: Long)
 
 # Units
-GET         /unit/:t                     @controllers.UnitController.find(t: Long)
+GET            /unit/:t                     @controllers.UnitController.find(t: Long)
 
 # Static resources
-GET         /assets/*file                controllers.Assets.at(path="/public", file)
-GET         /javascriptRoutes            @controllers.AppController.javascriptRoutes
+GET            /assets/*file                controllers.Assets.at(path="/public", file)
+GET            /javascriptRoutes            @controllers.AppController.javascriptRoutes

@@ -3,7 +3,7 @@ package db.dao.city
 import com.typesafe.scalalogging.slf4j.Logger
 import db.dao.territory.TerritoryDao
 import db.table.{NewCityDBRow, CitiesTable, CityDBRow, TerritoryDBRow}
-import models.territory.{City, Territory}
+import models.territory.City
 import org.slf4j.LoggerFactory
 import play.api.db.slick.Config.driver.simple._
 import scaldi.{Injectable, Injector}
@@ -70,12 +70,12 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
     ds.filter(_.id === c.id).update(CityDBRow(c.id, c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude))
   }
 
-  override def getAllWithinTerritoryCascade(t: Territory)(implicit rs: JdbcBackend#Session): List[City] =
-    territoryDao.getChildrenTerritories(t) match {
-      case Nil => getAllWithinTerritory(t)
-      case el => getAllWithinTerritory(t) ::: el.flatMap(getAllWithinTerritoryCascade)
+  override def getAllWithinTerritoryCascade(territoryId: Long)(implicit rs: JdbcBackend#Session): List[City] =
+    territoryDao.getChildrenTerritories(territoryId) match {
+      case Nil => getAllWithinTerritory(territoryId)
+      case tr => getAllWithinTerritory(territoryId) ::: tr.flatMap(c => getAllWithinTerritoryCascade(c.id))
     }
 
-  override def getAllWithinTerritory(t: Territory)(implicit rs: JdbcBackend#Session): List[City] =
-    ds.filter(_.territoryId === t.id).map(_.id).list.map(fromId(_).get)
+  override def getAllWithinTerritory(territoryId: Long)(implicit rs: JdbcBackend#Session): List[City] =
+    ds.filter(_.territoryId === territoryId).map(_.id).list.map(fromId(_).get)
 }

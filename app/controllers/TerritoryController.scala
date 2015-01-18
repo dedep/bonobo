@@ -135,7 +135,7 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
     territoryDao.fromId(territoryId) match {
       case None => NotFound("Territory with ID = " + territoryId + " does not exists.")
       case Some(t: Territory) =>
-        val cities = cityDao.getAllWithinTerritoryCascade(t)
+        val cities = cityDao.getAllWithinTerritoryCascade(t.id)
         if (cities.length < 2) {
           PreconditionFailed("Tournament requires at least 2 cities in territory.")
         }

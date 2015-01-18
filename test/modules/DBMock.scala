@@ -31,7 +31,8 @@ object DBMock extends Mockito {
 
   val rules = GameRules(0, 1, 3)
 
-  val tour1 = new TournamentImpl(city1 :: city2 :: Nil, "Test 1 tournament", Nil, Some(1))(rules)(new Module {})
+  val tr = new Territory(1, "test-territory", 22, None, "CD", false, false)
+  val tour1 = new TournamentImpl(tr, city1 :: city2 :: Nil, "Test 1 tournament", Nil, Some(1))(rules)(new Module {})
 
   def prepareCityDaoMockData(cityDao: CityDao): CityDao = {
     cityDao.fromId(org.mockito.Matchers.eq(Long.box(1)))(any[JdbcBackend#Session]) returns Some(city1)

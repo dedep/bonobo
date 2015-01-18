@@ -5,10 +5,8 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json._
 
-case class ContainerDto(name: String, code: String, id: Long)
-
 case class TerritoryDto(id: Long, code: String, name: String, population: Long, parent: Option[ContainerDto],
-                        isCountry: Boolean, modifiable: Boolean) {
+                        isCountry: Boolean, modifiable: Boolean) extends JsonDto {
   private implicit val containerFormat = Json.format[ContainerDto]
   private implicit val territoryFormat = Json.format[TerritoryDto]
 

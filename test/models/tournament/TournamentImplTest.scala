@@ -2,9 +2,9 @@ package models.tournament
 
 import models.round.{PlayoffRound, GroupRound}
 import models.team.Team
+import models.territory.Territory
 import modules.ServiceModule
 import org.scalatest.FunSuite
-import scaldi.Injector
 
 class TournamentImplTest extends FunSuite {
 
@@ -25,7 +25,8 @@ class TournamentImplTest extends FunSuite {
     val t9 = new Team(9, 9, 9)
     val t10 = new Team(10, 10, 0)
 
-    val t = new TournamentImpl(List(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10), "Test tournament")(rules)
+    val tr = new Territory(1, "test-territory", 22, None, "CD", false, false)
+    val t = new TournamentImpl(tr, List(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10), "Test tournament")(rules)
 
     //when
     val tournament = t.doStep()
@@ -73,7 +74,8 @@ class TournamentImplTest extends FunSuite {
     val t31 = new Team(31, 7, 7)
     val t32 = new Team(32, 8, 8)
 
-    val t = new TournamentImpl(List(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19,
+    val tr = new Territory(1, "test-territory", 22, None, "CD", false, false)
+    val t = new TournamentImpl(tr, List(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19,
       t20, t21, t22, t23, t24, t25, t26, t27, t28, t29, t30, t31, t32), "Test tournament")(rules)
 
     //when
@@ -96,7 +98,8 @@ class TournamentImplTest extends FunSuite {
     val t7 = new Team(7, 7, 7)
     val t8 = new Team(8, 8, 8)
 
-    val t = new TournamentImpl(List(t1, t2, t3, t4, t5, t6, t7, t8), "Test tournament")(rules)
+    val tr = new Territory(1, "test-territory", 22, None, "CD", false, false)
+    val t = new TournamentImpl(tr, List(t1, t2, t3, t4, t5, t6, t7, t8), "Test tournament")(rules)
 
     //when
     val tournament = t.doStep()
@@ -119,7 +122,8 @@ class TournamentImplTest extends FunSuite {
     val t8 = new Team(8, 8, 8)
     val t9 = new Team(9, 9, 0)
 
-    val t = new TournamentImpl(List(t1, t2, t3, t4, t5, t6, t7, t8, t9), "Test tournament")(rules)
+    val tr = new Territory(1, "test-territory", 22, None, "CD", false, false)
+    val t = new TournamentImpl(tr, List(t1, t2, t3, t4, t5, t6, t7, t8, t9), "Test tournament")(rules)
 
     val tournament = t.doStep()
 

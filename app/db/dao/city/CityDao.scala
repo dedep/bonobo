@@ -1,7 +1,7 @@
 package db.dao.city
 
 import db.table.{CitiesTable, CityDBRow, TerritoriesTable, TerritoryDBRow}
-import models.territory.{City, Territory}
+import models.territory.City
 
 import scala.slick.jdbc.JdbcBackend
 import scala.slick.lifted.Query
@@ -20,7 +20,7 @@ trait CityDao {
 
   def delete(c: City)(implicit rs: JdbcBackend#Session): Unit
 
-  def getAllWithinTerritoryCascade(t: Territory)(implicit rs: JdbcBackend#Session): List[City]
+  def getAllWithinTerritoryCascade(territoryId: Long)(implicit rs: JdbcBackend#Session): List[City]
 
-  def getAllWithinTerritory(t: Territory)(implicit rs: JdbcBackend#Session): List[City]
+  def getAllWithinTerritory(territoryId: Long)(implicit rs: JdbcBackend#Session): List[City]
 }

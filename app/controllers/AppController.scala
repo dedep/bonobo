@@ -24,7 +24,7 @@ class AppController(implicit inj: Injector) extends BaseController with Injectab
     implicit rs =>
       implicit val dbSession = rs.dbSession
 
-      val notUpdatedCount = cityDao.getAllWithinTerritoryCascade(territoryDao.fromCode("W").get)
+      val notUpdatedCount = cityDao.getAllWithinTerritoryCascade(territoryDao.fromCode("W").get.id)
         .map(city => cityUpdater.update(city))
         .count(_ == false)
         .log(x => "Cities update request finished. Not updated cities: " + x).info()

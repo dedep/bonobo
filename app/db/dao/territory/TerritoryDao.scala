@@ -27,4 +27,6 @@ trait TerritoryDao {
   def delete(t: Territory)(implicit rs: JdbcBackend#Session): Long
 
   def getChildrenTerritories(t: Territory)(implicit rs: JdbcBackend#Session): List[Territory]
+
+  def getChildrenTerritories(territoryId: Long)(implicit rs: JdbcBackend#Session): List[Territory]
 }

@@ -48,8 +48,11 @@ class TerritoryDaoImpl(implicit inj: Injector) extends TerritoryDao with Injecta
       .delete
       .log(x => "Deleting territory " + t.code).info()
 
+  override def getChildrenTerritories(territoryId: Long)(implicit rs: JdbcBackend#Session): List[Territory] =
+    selectQuery.filter(_.containerId === territoryId).list.map(fromRow)
+
   override def getChildrenTerritories(t: Territory)(implicit rs: JdbcBackend#Session): List[Territory] =
-    selectQuery.filter(_.containerId === t.id).list.map(fromRow)
+    getChildrenTerritories(t.id)
 
   private def fromFilter(filter: TerritoriesTable => Column[Boolean])(implicit rs: JdbcBackend#Session): Option[Territory] =
     selectQuery.filter(filter)
