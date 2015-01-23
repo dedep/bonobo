@@ -6,14 +6,14 @@ angular.module('utils.world-map', [])
       return {
         scope: {
           code: '@',
-          markers: '@'
+          markers: '='
         },
         link: function(scope, element) {
           scope.$on('$routeChangeStart', function() {
             $('.jvectormap-label').remove();
           });
 
-          scope.$watch('code', function() {
+          var refresh = function() {
             $('.jvectormap-container').remove();
 
             element.vectorMap({
@@ -49,7 +49,10 @@ angular.module('utils.world-map', [])
                 }
               }
             });
-          });
+          };
+
+          scope.$watch('code', refresh);
+          scope.$watch('markers', refresh);
         }
       };
     }]);

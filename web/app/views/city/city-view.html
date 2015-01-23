@@ -1,0 +1,25 @@
+<div class="document-header">
+  {{city.name}}
+
+    <span class="action-icons">
+        <button class="btn btn-success">
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </button>
+        <button class="btn btn-info">
+          <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+        </button>
+        <button class="btn btn-danger">
+          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </button>
+    </span>
+</div>
+
+<div class="document-section">
+  <div class="document-item">Total population: {{city.population | number}}</div>
+  <div class="document-item">Points: {{city.points}}</div>
+  <div class="document-item" ng-hide="hideContainer()">Container:
+    <a ng-href="#territory/{{city.territory.code}}">{{city.territory.name}}</a>
+  </div>
+</div>
+
+<div bonobo-world-map code="" markers="markers" class="document-section"></div>

@@ -19,7 +19,7 @@ class CityController(implicit inj: Injector) extends BaseController with Injecta
     }
   }
 
-  def findAsJson(id: Long, territoryId: Long) = serveHttpResponseWithDB {
+  def findAsJson(id: Long, territoryCode: String) = serveHttpResponseWithDB {
     implicit rs => {
       cityDao.fromId(id)
         .map(c => CityDto.parse(c))

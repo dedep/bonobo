@@ -20,6 +20,7 @@ class CityDtoTest extends Specification {
     result \ "population" mustEqual JsNumber(500100)
     result \ "latitude" mustEqual JsNumber(50.12)
     result \ "longitude" mustEqual JsNumber(12.5)
+    result \ "points" mustEqual JsNumber(287)
     result \ "territory" must beAnInstanceOf[JsObject]
     result \ "territory" \ "name" mustEqual JsString("test-tr")
     result \ "territory" \ "code" mustEqual JsString("TTR")
