@@ -10,5 +10,9 @@ angular.module('bonobo.webapp')
         latLng: [$scope.city.latitude, $scope.city.longitude],
         name: $scope.city.name
       }];
+
+      $scope.cityFound = true;
+    }, function() {
+      $scope.$parent.alertMsg = 'City not found';
     });
   });

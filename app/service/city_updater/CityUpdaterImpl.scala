@@ -38,7 +38,7 @@ class CityUpdaterImpl(implicit inj: Injector) extends CityUpdater with Injectabl
 
       log.info("Got successful response for city [" + city.name + "] from GeoNames Web Service")
 
-      cityDao.saveOrUpdate(updatedCity)
+      cityDao.update(updatedCity)
 
       true
     } catch {

@@ -48,27 +48,19 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
       new City(citiesRow.id, citiesRow.name, citiesRow.population, citiesRow.points, t, citiesRow.latitude, citiesRow.longitude)
   }
 
-  override def saveOrUpdate(c: City)(implicit rs: JdbcBackend#Session): Long = {
-    if (territoryDao.fromId(c.territory.id).isEmpty)
-      throw new IllegalStateException("City cannot refer to non-existent territory")
+  override def update(c: City)(implicit rs: JdbcBackend#Session): Long =
+    ds.filter(_.id === c.id)
+      .update(CityDBRow(c.id, c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude))
+      .plainLog("Updating city in DB " + c).info()
 
-    if (fromId(c.id).isEmpty) save(c) else update(c)
-  }
-
-  private def save(c: City)(implicit rs: JdbcBackend#Session): Long = {
-    log.info("Saving new city in DB " + c)
+  override def save(c: City)(implicit rs: JdbcBackend#Session): Long =
     ds.map(_.autoInc) returning ds.map(_.id) +=
       NewCityDBRow(c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude)
-  }
+      .plainLog("Saving new city in DB " + c).info()
 
   override def delete(c: City)(implicit rs: JdbcBackend#Session) =
     ds.filter(_.id === c.id).delete
       .plainLog("Deleting city: " + c.name + " in database.")
-
-  private def update(c: City)(implicit rs: JdbcBackend#Session): Long = {
-    log.info("Updating city in DB " + c)
-    ds.filter(_.id === c.id).update(CityDBRow(c.id, c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude))
-  }
 
   override def getAllWithinTerritoryCascade(territoryId: Long)(implicit rs: JdbcBackend#Session): List[City] =
     territoryDao.getChildrenTerritories(territoryId) match {

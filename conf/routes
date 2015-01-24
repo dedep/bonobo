@@ -20,6 +20,9 @@ GET            /city/$c<[0-9]+>             @controllers.CityController.find(c: 
 POST           /city/update                 @controllers.AppController.updateCitiesDefinitions
 GET            /json/territory/:t/city/:c   @controllers.CityController.findAsJson(c: Long, t: String)
 GET            /json/territory/:t/city      @controllers.CityController.findAll(t: Long)
+POST           /json/territory/:t/city      @controllers.CityController.save(t: String)
+POST           /json/territory/:t/city/:c   @controllers.CityController.edit(t: String, c: Long)
+DELETE         /json/territory/:t/city/:c   @controllers.CityController.delete(t: String, c: Long)
 
 # Tournaments
 POST           /tournament/new              @controllers.TerritoryController.startTournament()

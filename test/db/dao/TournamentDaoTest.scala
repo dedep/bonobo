@@ -38,8 +38,8 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
       tournamentDao.updateLastRound(t)
 
       //then
-      there was one(cityDao).saveOrUpdate(c1)
-      there was one(cityDao).saveOrUpdate(c2)
+      there was one(cityDao).update(c1)
+      there was one(cityDao).update(c2)
     }
   }
 
@@ -75,8 +75,8 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
       tournamentDao.updateLastRound(t)
 
       //then
-      there was one(cityDao).saveOrUpdate(city1)
-      there was one(cityDao).saveOrUpdate(city2)
+      there was one(cityDao).update(city1)
+      there was one(cityDao).update(city2)
     }
   }
 

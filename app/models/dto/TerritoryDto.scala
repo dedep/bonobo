@@ -24,11 +24,7 @@ object TerritoryDto {
     "code" -> text,
     "name" -> text,
     "population" -> longNumber,
-    "parent" -> optional(mapping(
-      "name" -> text,
-      "code" -> text,
-      "id" -> longNumber
-    )(ContainerDto.apply)(ContainerDto.unapply)),
+    "parent" -> optional(ContainerDto.form),
     "isCountry" -> boolean,
     "modifiable" -> boolean)
     (TerritoryDto.apply)(TerritoryDto.unapply))

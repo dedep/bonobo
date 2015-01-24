@@ -1,7 +1,7 @@
 <div class="document-header">
   {{city.name}}
 
-    <span class="action-icons">
+    <span class="action-icons" ng-show="cityFound">
         <button class="btn btn-success">
           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         </button>
@@ -14,7 +14,7 @@
     </span>
 </div>
 
-<div class="document-section">
+<div class="document-section" ng-show="cityFound">
   <div class="document-item">Total population: {{city.population | number}}</div>
   <div class="document-item">Points: {{city.points}}</div>
   <div class="document-item" ng-hide="hideContainer()">Container:
@@ -22,4 +22,4 @@
   </div>
 </div>
 
-<div bonobo-world-map code="" markers="markers" class="document-section"></div>
+<div bonobo-world-map code="" markers="markers" class="document-section" ng-show="cityFound"></div>

@@ -40,7 +40,7 @@ object DBMock extends Mockito {
     cityDao.fromId(org.mockito.Matchers.eq(Long.box(3)))(any[JdbcBackend#Session]) returns Some(city3)
     cityDao.fromId(org.mockito.Matchers.eq(Long.box(4)))(any[JdbcBackend#Session]) returns Some(city4)
     cityDao.fromId(org.mockito.Matchers.eq(Long.box(99)))(any[JdbcBackend#Session]) returns None
-    cityDao.saveOrUpdate(any[City])(any[JdbcBackend#Session]) returns 1
+    cityDao.update(any[City])(any[JdbcBackend#Session]) returns 1
   }
 
   def prepareTerritoryDaoMockData(territoryDao: TerritoryDao): TerritoryDao = {

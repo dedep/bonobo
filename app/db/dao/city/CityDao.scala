@@ -16,7 +16,9 @@ trait CityDao {
 
   def fromRow(row: (CityDBRow, TerritoryDBRow))(implicit rs: JdbcBackend#Session): City
 
-  def saveOrUpdate(c: City)(implicit rs: JdbcBackend#Session): Long
+  def update(c: City)(implicit rs: JdbcBackend#Session): Long
+
+  def save(c: City)(implicit rs: JdbcBackend#Session): Long
 
   def delete(c: City)(implicit rs: JdbcBackend#Session): Unit
 

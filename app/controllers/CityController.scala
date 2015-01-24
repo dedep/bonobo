@@ -35,4 +35,51 @@ class CityController(implicit inj: Injector) extends BaseController with Injecta
         .map(c => c.toJson)))
     }
   }
+
+  def save(territoryId: String) = serveHttpResponseWithTransactionalDB {
+    implicit rs => {
+      CityDto.form.bindFromRequest.fold(
+        hasErrors => {
+          BadRequest("Cannot bind City from request " + hasErrors)
+        },
+        success => {
+          val id = cityDao.save(success.toCity)
+          Ok(s"City with id: $id has been successfully created.")
+        }
+      )
+    }
+  }
+
+  def delete(territoryCode: String, cityId: Long) = serveHttpResponseWithTransactionalDB {
+    implicit rs => {
+      cityDao.fromId(cityId).map(c => {
+        if (c.territory.modifiable) {
+          cityDao.delete(c)
+          Ok(s"City $cityId has been deleted")
+        } else {
+          BadRequest(s"Cannot delete non-modifiable city: $cityId")
+        }
+      }).getOrElse(BadRequest(s"Cannot delete non-existent city: $cityId"))
+    }
+  }
+
+  def edit(territoryCode: String, cityId: Long) = serveHttpResponseWithTransactionalDB {
+    implicit rs => {
+      cityDao.fromId(cityId).map(c => {
+        if (c.territory.modifiable) {
+          CityDto.form.bindFromRequest.fold(
+            hasErrors => {
+              BadRequest(s"Cannot bind City from request $hasErrors")
+            },
+            success => {
+              val id = cityDao.update(success.toCity)
+              Ok(s"City with id: $id has been successfully edited.")
+            }
+          )
+        } else {
+          BadRequest(s"Cannot edit non-modifiable city: $cityId")
+        }
+      }).getOrElse(BadRequest(s"Cannot edit non-existent city: $cityId"))
+    }
+  }
 }
