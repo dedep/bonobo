@@ -2,11 +2,10 @@
 
 CREATE TABLE territories
 (
-  id bigserial PRIMARY KEY,
+  code varchar(9) PRIMARY KEY,
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
-  container bigint NULL references territories ON DELETE CASCADE,
-  code varchar(9) UNIQUE,
+  container varchar(9) NULL references territories ON DELETE CASCADE,
   is_country boolean NOT NULL,
   modifiable boolean NOT NULL DEFAULT TRUE
 );
@@ -17,7 +16,7 @@ CREATE TABLE cities
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
   points int NOT NULL DEFAULT 0,
-  container bigint NOT NULL references territories ON DELETE CASCADE,
+  container varchar(9) NOT NULL references territories ON DELETE CASCADE,
   latitude double precision NULL,
   longitude double precision NULL
 );
@@ -27,7 +26,7 @@ CREATE TABLE tournaments
   id bigserial PRIMARY KEY,
   name text NOT NULL,
   status text NOT NULL,
-  territory_id bigint NOT NULL REFERENCES territories
+  territory_code varchar(9) NOT NULL REFERENCES territories
 );
 
 CREATE TABLE tournament_rules
@@ -116,7 +115,7 @@ CREATE INDEX matches_unit_idx ON matches(unit_id);
 CREATE INDEX matches_fixture_idx ON matches(fixture);
 CREATE INDEX units_cities_city_idx ON units_cities(city_id);
 CREATE INDEX units_cities_unit_idx ON units_cities(unit_id);
-CREATE INDEX tournaments_territory_idx ON tournaments(territory_id);
+CREATE INDEX tournaments_territory_idx ON tournaments(territory_code);
 
 # --- !Downs
 DROP TABLE IF EXISTS cities_tournaments;

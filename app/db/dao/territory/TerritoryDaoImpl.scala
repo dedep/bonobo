@@ -1,7 +1,7 @@
 package db.dao.territory
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db.table.{NewTerritoryDBRow, TerritoriesTable, TerritoryDBRow}
+import db.table.{TerritoriesTable, TerritoryDBRow}
 import models.territory.Territory
 import org.slf4j.LoggerFactory
 import play.api.db.slick.Config.driver.simple._
@@ -18,41 +18,38 @@ class TerritoryDaoImpl(implicit inj: Injector) extends TerritoryDao with Injecta
 
   override val selectQuery = for (territory <- ds) yield territory
 
-  override def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[Territory] = 
-    fromFilter(_.id === id)
-
   override def fromCode(code: String)(implicit rs: JdbcBackend#Session): Option[Territory] = 
     fromFilter(_.code === code)
 
   override def fromRow(row: TerritoryDBRow)(implicit rs: JdbcBackend#Session) =
-    new Territory(row.id, row.name, row.population, row.containerId.flatMap(fromId), row.code, row.isCountry, row.modifiable)
+    new Territory(row.code, row.name, row.population, row.containerCode.flatMap(fromCode), row.isCountry, row.modifiable)
 
   override def findAll()(implicit rs: JdbcBackend#Session): List[Territory] =
     selectQuery.list.map(fromRow)
 
-  override def save(t: Territory)(implicit rs: JdbcBackend#Session): Long =
-    ds.map(_.autoInc) returning ds.map(_.id) +=
-      NewTerritoryDBRow(t.name, t.population, t.container.map(_.id), t.code, t.isCountry, t.modifiable)
+  override def save(t: Territory)(implicit rs: JdbcBackend#Session): String =
+    ds returning ds.map(_.code) +=
+      TerritoryDBRow(t.code, t.name, t.population, t.container.map(_.code), t.isCountry, t.modifiable)
       .log(x => "Saving new territory " + x.code).info()
 
-  override def update(t: Territory)(implicit rs: JdbcBackend#Session): Long =
+  override def update(t: Territory)(implicit rs: JdbcBackend#Session): Unit =
     update(t, t.code)
 
-  override def update(t: Territory, oldCode: String)(implicit rs: JdbcBackend#Session): Long =
+  override def update(t: Territory, oldCode: String)(implicit rs: JdbcBackend#Session): Unit =
     ds.filter(_.code === oldCode)
-      .update(TerritoryDBRow(t.id, t.name, t.population, t.container.map(_.id), t.code, t.isCountry, t.modifiable))(rs)
+      .update(TerritoryDBRow(t.code, t.name, t.population, t.container.map(_.code), t.isCountry, t.modifiable))(rs)
       .log(x => "Updating territory " + t.code).info()
 
-  override def delete(t: Territory)(implicit rs: JdbcBackend#Session): Long =
+  override def delete(t: Territory)(implicit rs: JdbcBackend#Session): Unit =
     ds.filter(_.code === t.code)
       .delete
       .log(x => "Deleting territory " + t.code).info()
 
-  override def getChildrenTerritories(territoryId: Long)(implicit rs: JdbcBackend#Session): List[Territory] =
-    selectQuery.filter(_.containerId === territoryId).list.map(fromRow)
+  override def getChildrenTerritories(territoryCode: String)(implicit rs: JdbcBackend#Session): List[Territory] =
+    selectQuery.filter(_.containerCode === territoryCode).list.map(fromRow)
 
   override def getChildrenTerritories(t: Territory)(implicit rs: JdbcBackend#Session): List[Territory] =
-    getChildrenTerritories(t.id)
+    getChildrenTerritories(t.code)
 
   private def fromFilter(filter: TerritoriesTable => Column[Boolean])(implicit rs: JdbcBackend#Session): Option[Territory] =
     selectQuery.filter(filter)

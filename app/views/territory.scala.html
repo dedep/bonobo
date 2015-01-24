@@ -7,7 +7,7 @@
     <h4 style="margin-left: 50px">Total population: @java.text.NumberFormat.getNumberInstance(java.util.Locale.US).format(territory.population)</h4>
     @if(territory.container.nonEmpty) {
         <h4 style="margin-left: 50px">Container:
-            <a href="@routes.TerritoryController.find(territory.container.get.id)">@territory.container.map(_.name)</a>
+            <a href="@routes.TerritoryController.findByCode(territory.container.get.code)">@territory.container.map(_.name)</a>
         </h4>
     }
 
@@ -53,7 +53,7 @@ $(document).ready(function () {
             type : 'POST',
             url : '@routes.TerritoryController.startTournament()',
             data: {
-                id: @territory.id,
+                id: @territory.code,
                 name: $("#t_name").val()
             },
             dataType : "text",

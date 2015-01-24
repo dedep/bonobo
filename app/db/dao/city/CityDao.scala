@@ -22,7 +22,7 @@ trait CityDao {
 
   def delete(c: City)(implicit rs: JdbcBackend#Session): Unit
 
-  def getAllWithinTerritoryCascade(territoryId: Long)(implicit rs: JdbcBackend#Session): List[City]
+  def getAllWithinTerritoryCascade(territoryCode: String)(implicit rs: JdbcBackend#Session): List[City]
 
-  def getAllWithinTerritory(territoryId: Long)(implicit rs: JdbcBackend#Session): List[City]
+  def getAllWithinTerritory(territoryCode: String)(implicit rs: JdbcBackend#Session): List[City]
 }

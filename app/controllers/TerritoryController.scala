@@ -79,9 +79,9 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
             .plainLog("Binding territory error " + hasErrors).warn()
         },
         success => {
-          val parentTerritoryStub = success.parent.map(p => new Territory(p.id, "", 0, None, "", false, false))
-          val t = new Territory(success.id, success.name, success.population, parentTerritoryStub,
-            success.code, success.isCountry, true)
+          val parentTerritoryStub = success.parent.map(p => new Territory(p.code, "", 0, None, false, false))
+          val t = new Territory(success.code, success.name, success.population, parentTerritoryStub,
+            success.isCountry, true)
 
           performTerritoryAction(f)(t)(rs)
         }
@@ -102,12 +102,12 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
 
 
   def startTournament(): Action[AnyContent] = serveHttpResponseWithDB { implicit rs =>
-    case class StartTournamentFormData(name: String, id: Int)
+    case class StartTournamentFormData(name: String, code: String)
 
     val startTournamentForm = Form(
       mapping(
         "name" -> text,
-        "id" -> number
+        "code" -> text
       )(StartTournamentFormData.apply)(StartTournamentFormData.unapply)
     )
 
@@ -117,13 +117,9 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
         BadRequest("Cannot bind Start Tournament Request")
       },
       success => {
-        startTournament(success.id, success.name)
+        startTournament(success.code, success.name)
       }
     )
-  }
-
-  def find(id: Long) = serveHttpResponseWithDB { implicit rs =>
-    handleOptionalTerritory(territoryDao.fromId(id))
   }
 
   private def handleOptionalTerritory(t: Option[Territory]) = t match {
@@ -131,11 +127,11 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
     case Some(t: Territory) => Ok(views.html.territory(t))
   }
 
-  private def startTournament(territoryId: Int, name: String)(implicit rs: JdbcBackend#Session): Result = {
-    territoryDao.fromId(territoryId) match {
-      case None => NotFound("Territory with ID = " + territoryId + " does not exists.")
+  private def startTournament(territoryCode: String, name: String)(implicit rs: JdbcBackend#Session): Result = {
+    territoryDao.fromCode(territoryCode) match {
+      case None => NotFound(s"Territory with ID = $territoryCode does not exists.")
       case Some(t: Territory) =>
-        val cities = cityDao.getAllWithinTerritoryCascade(t.id)
+        val cities = cityDao.getAllWithinTerritoryCascade(t.code)
         if (cities.length < 2) {
           PreconditionFailed("Tournament requires at least 2 cities in territory.")
         }

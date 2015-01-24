@@ -23,7 +23,7 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
     for {
       city <- ds
       terr <- territoryDao.selectQuery
-      if terr.id === city.territoryId
+      if terr.code === city.territoryCode
     } yield (city, terr)
 
   override def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[City] = fromId(Seq(id)).headOption
@@ -50,24 +50,24 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
 
   override def update(c: City)(implicit rs: JdbcBackend#Session): Long =
     ds.filter(_.id === c.id)
-      .update(CityDBRow(c.id, c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude))
+      .update(CityDBRow(c.id, c.name, c.population, c.points, c.territory.code, c.latitude, c.longitude))
       .plainLog("Updating city in DB " + c).info()
 
   override def save(c: City)(implicit rs: JdbcBackend#Session): Long =
     ds.map(_.autoInc) returning ds.map(_.id) +=
-      NewCityDBRow(c.name, c.population, c.points, c.territory.id, c.latitude, c.longitude)
+      NewCityDBRow(c.name, c.population, c.points, c.territory.code, c.latitude, c.longitude)
       .plainLog("Saving new city in DB " + c).info()
 
   override def delete(c: City)(implicit rs: JdbcBackend#Session) =
     ds.filter(_.id === c.id).delete
       .plainLog("Deleting city: " + c.name + " in database.")
 
-  override def getAllWithinTerritoryCascade(territoryId: Long)(implicit rs: JdbcBackend#Session): List[City] =
-    territoryDao.getChildrenTerritories(territoryId) match {
-      case Nil => getAllWithinTerritory(territoryId)
-      case tr => getAllWithinTerritory(territoryId) ::: tr.flatMap(c => getAllWithinTerritoryCascade(c.id))
+  override def getAllWithinTerritoryCascade(territoryCode: String)(implicit rs: JdbcBackend#Session): List[City] =
+    territoryDao.getChildrenTerritories(territoryCode) match {
+      case Nil => getAllWithinTerritory(territoryCode)
+      case tr => getAllWithinTerritory(territoryCode) ::: tr.flatMap(c => getAllWithinTerritoryCascade(c.code))
     }
 
-  override def getAllWithinTerritory(territoryId: Long)(implicit rs: JdbcBackend#Session): List[City] =
-    ds.filter(_.territoryId === territoryId).map(_.id).list.map(fromId(_).get)
+  override def getAllWithinTerritory(territoryCode: String)(implicit rs: JdbcBackend#Session): List[City] =
+    ds.filter(_.territoryCode === territoryCode).map(_.id).list.map(fromId(_).get)
 }

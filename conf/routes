@@ -7,7 +7,6 @@ GET            /                            @controllers.AppController.world
 OPTIONS        /*all                        @controllers.AppController.preflight(all: String)
 
 # Territories
-GET            /territory/$t<[0-9]+>        @controllers.TerritoryController.find(t: Long)
 GET            /territory/:t                @controllers.TerritoryController.findByCode(t: String)
 GET            /json/territory              @controllers.TerritoryController.findAllAsJson()
 GET            /json/territory/:t           @controllers.TerritoryController.findByCodeAsJson(t: String)
@@ -19,7 +18,7 @@ DELETE         /json/territory/:t           @controllers.TerritoryController.del
 GET            /city/$c<[0-9]+>             @controllers.CityController.find(c: Long)
 POST           /city/update                 @controllers.AppController.updateCitiesDefinitions
 GET            /json/territory/:t/city/:c   @controllers.CityController.findAsJson(c: Long, t: String)
-GET            /json/territory/:t/city      @controllers.CityController.findAll(t: Long)
+GET            /json/territory/:t/city      @controllers.CityController.findAll(t: String)
 POST           /json/territory/:t/city      @controllers.CityController.save(t: String)
 POST           /json/territory/:t/city/:c   @controllers.CityController.edit(t: String, c: Long)
 DELETE         /json/territory/:t/city/:c   @controllers.CityController.delete(t: String, c: Long)

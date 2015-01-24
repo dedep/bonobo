@@ -28,9 +28,9 @@ class CityController(implicit inj: Injector) extends BaseController with Injecta
     }
   }
 
-  def findAll(territoryId: Long) = serveHttpResponseWithDB {
+  def findAll(territoryCode: String) = serveHttpResponseWithDB {
     implicit rs => {
-      Ok(JsArray(cityDao.getAllWithinTerritoryCascade(territoryId)
+      Ok(JsArray(cityDao.getAllWithinTerritoryCascade(territoryCode)
         .map(c => CityDto.parse(c))
         .map(c => c.toJson)))
     }
@@ -43,8 +43,12 @@ class CityController(implicit inj: Injector) extends BaseController with Injecta
           BadRequest("Cannot bind City from request " + hasErrors)
         },
         success => {
-          val id = cityDao.save(success.toCity)
-          Ok(s"City with id: $id has been successfully created.")
+          if (success.points == 0) {
+            val id = cityDao.save(success.toCity)
+            Ok(s"City with id: $id has been successfully created.")
+          } else {
+            BadRequest("Cities points modification is forbidden")
+          }
         }
       )
     }
@@ -63,6 +67,7 @@ class CityController(implicit inj: Injector) extends BaseController with Injecta
     }
   }
 
+  //todo: unit tests
   def edit(territoryCode: String, cityId: Long) = serveHttpResponseWithTransactionalDB {
     implicit rs => {
       cityDao.fromId(cityId).map(c => {
@@ -72,8 +77,12 @@ class CityController(implicit inj: Injector) extends BaseController with Injecta
               BadRequest(s"Cannot bind City from request $hasErrors")
             },
             success => {
-              val id = cityDao.update(success.toCity)
-              Ok(s"City with id: $id has been successfully edited.")
+              if (success.points == c.points) {
+                val id = cityDao.update(success.toCity)
+                Ok(s"City with id: $id has been successfully edited.")
+              } else {
+                BadRequest("Cities points modification is forbidden")
+              }
             }
           )
         } else {

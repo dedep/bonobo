@@ -1,0 +1,30 @@
+<div class="document-header">
+  <span>New territory</span>
+</div>
+<form name="editCity">
+  <div class="form-group">
+    <label for="inputName">City name</label>
+    <input ng-model="city.name" type="text" class="form-control" id="inputName" placeholder="Enter name" required autofocus>
+  </div>
+  <div class="form-group">
+    <label for="inputPopulation">Population</label>
+    <input ng-model="city.population" type="number" class="form-control" id="inputPopulation" placeholder="Enter population" required>
+  </div>
+  <div class="form-group">
+    <label for="inputLatitude">Latitude</label>
+    <input ng-model="city.latitude" type="text" class="form-control" id="inputLatitude" placeholder="Enter latitude" required>
+  </div>
+  <div class="form-group">
+    <label for="inputLongitude">Longitude</label>
+    <input ng-model="city.longitude" type="text" class="form-control" id="inputLongitude" placeholder="Enter longitude" required>
+  </div>
+  <div class="form-group">
+    <label for="inputParent">Territory</label>
+    <select ng-model="city.territory" class="form-control" id="inputParent" required
+            ng-options="t.name for t in territories track by t.code">
+    </select>
+  </div>
+
+  <button ng-click="view.submit()" type="submit" ng-disabled="editTerritory.$invalid" class="btn btn-default btn-lg">Save</button>
+  <button ng-click="view.back()" type="button" class="btn btn-default btn-lg">Cancel</button>
+</form>
