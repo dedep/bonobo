@@ -77,10 +77,14 @@ $border-color: #e7e7e7;
   }
 }
 
-.checkbox-form {
-  float: right;
-}
-
 .filter-box {
   margin-bottom: 20px;
+}
+
+form {
+  .error-container {
+    color: #bb1f34;
+    font-size: 0.95em;
+    margin: 0.8em 0;
+  }
 }

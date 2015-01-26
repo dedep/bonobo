@@ -1,30 +1,67 @@
 <div class="document-header">
     <span>{{view.title()}}</span>
 </div>
-<form name="editTerritory">
-    <div class="form-group">
-        <label for="inputName">Territory name</label>
-        <input ng-model="territory.name" type="text" class="form-control" id="inputName" placeholder="Enter name" required autofocus>
-    </div>
-    <div class="form-group">
-        <label for="inputPopulation">Population</label>
-        <input ng-model="territory.population" type="number" class="form-control" id="inputPopulation" placeholder="Enter population" required>
-    </div>
-    <div class="form-group">
-        <label for="inputCode">Code</label>
-        <input ng-model="territory.code" type="text" class="form-control" id="inputCode" placeholder="Enter code" required>
-    </div>
-    <div class="form-group">
-        <label for="inputParent">Parent territory</label>
-        <select ng-model="territory.parent" class="form-control" id="inputParent" required
-                ng-options="t.name for t in territories track by t.code">
-        </select>
-    </div>
-    <div class="form-group">
-      <label for="inputCountry">Is country?</label>
-          <input ng-model="territory.isCountry" type="checkbox" id="inputCountry" class="checkbox checkbox-form">
+
+<form class="form-horizontal" name="editTerritory" novalidate>
+  <div class="form-group">
+    <label for="inputName" class="col-sm-2 control-label">Territory name</label>
+    <div class="col-sm-10">
+      <input ng-model="territory.name" type="text" class="form-control" id="inputName" placeholder="Enter name" name="name" required autofocus>
+      <div class="error-container" ng-show="editTerritory.name.$invalid && editTerritory.name.$dirty">
+        <div ng-show="editTerritory.name.$error.required">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          Territory name is required.
+        </div>
       </div>
     </div>
-    <button ng-click="view.submit()" type="submit" ng-disabled="editTerritory.$invalid" class="btn btn-default btn-lg">Save</button>
-    <button ng-click="view.back()" type="button" class="btn btn-default btn-lg">Cancel</button>
+  </div>
+
+  <div class="form-group">
+    <label for="inputCode" class="col-sm-2 control-label">Code</label>
+    <div class="col-sm-10">
+      <input ng-model="territory.code" type="text" class="form-control" id="inputCode" placeholder="Enter code" name="code" required code-validator>
+      <div class="error-container" ng-show="editTerritory.code.$invalid && editTerritory.code.$dirty">
+        <div ng-show="editTerritory.code.$error.required">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          Territory code is required.
+        </div>
+        <div ng-show="editTerritory.code.$error.occupiedCode">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          Code is already used.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputPopulation" class="col-sm-2 control-label">Population</label>
+    <div class="col-sm-10">
+      <input ng-model="territory.population" type="number" class="form-control" id="inputPopulation" placeholder="Enter population" name="population" required>
+      <div class="error-container" ng-show="editTerritory.population.$invalid && editTerritory.population.$dirty">
+        <div ng-show="editTerritory.population.$error.required">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          Territory population is required and has to be a number.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputParent" class="col-sm-2 control-label">Parent territory</label>
+    <div class="col-sm-10">
+      <select ng-model="territory.parent" class="form-control" id="inputParent" required
+              ng-options="t.name for t in territories track by t.code">
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputCountry" class="col-sm-2 control-label">Is country</label>
+    <div class="col-sm-10">
+      <input type="checkbox" id="inputCountry" class="checkbox" ng-model="territory.isCountry">
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button ng-click="view.submit()" type="submit" ng-disabled="editTerritory.$invalid" class="btn btn-default btn-lg">Save</button>
+      <button ng-click="view.back()" type="button" class="btn btn-default btn-lg">Cancel</button>
+    </div>
+  </div>
 </form>

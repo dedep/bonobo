@@ -14,7 +14,8 @@
     "angular-touch": "1.2.8",
     "angular-bootstrap": "0.12.0",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5",
-    "bower-jvectormap": "~1.2.2"
+    "bower-jvectormap": "~1.2.2",
+    "underscore": "~1.7.0"
   },
   "devDependencies": {
     "angular-mocks": "1.2.8",

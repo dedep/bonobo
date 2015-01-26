@@ -8,7 +8,8 @@ angular
     'cfp.hotkeys',
     'utils.ajaxloader',
     'utils.autofocus',
-    'utils.world-map'
+    'utils.world-map',
+    'underscore'
   ])
   .constant('configuration', {
     SERVER_URL: 'http://localhost:9000/json',
