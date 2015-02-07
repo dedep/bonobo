@@ -44,7 +44,7 @@ class CityController(implicit inj: Injector) extends BaseController with Injecta
         },
         success => {
           if (success.points == 0) {
-            val id = cityDao.save(success.toCity)
+            val id = cityDao.save(success.toObject)
             Ok(s"City with id: $id has been successfully created.")
           } else {
             BadRequest("Cities points modification is forbidden")
@@ -78,7 +78,7 @@ class CityController(implicit inj: Injector) extends BaseController with Injecta
             },
             success => {
               if (success.points == c.points) {
-                val id = cityDao.update(success.toCity)
+                val id = cityDao.update(success.toObject)
                 Ok(s"City with id: $id has been successfully edited.")
               } else {
                 BadRequest("Cities points modification is forbidden")

@@ -1,10 +1,12 @@
 package controllers
 
 import com.typesafe.scalalogging.slf4j.Logger
+import controllers.validator.{BaseCrudValidator, TerritoryValidator}
+import db.dao.BaseCrudDao
 import db.dao.city.CityDao
 import db.dao.territory.TerritoryDao
 import db.dao.tournament.TournamentDao
-import models.dto.TerritoryDto
+import models.dto.{JsonDtoService, TerritoryDto}
 import models.territory.Territory
 import models.tournament.{GameRules, TournamentImpl}
 import org.slf4j.LoggerFactory
@@ -18,88 +20,20 @@ import utils.FunLogger._
 
 import scala.slick.jdbc.JdbcBackend
 
-class TerritoryController(implicit inj: Injector) extends BaseController with Injectable {
+class TerritoryController(implicit inj: Injector) extends BaseCrudController[Territory, String] with Injectable {
   private implicit val log = Logger(LoggerFactory.getLogger("app"))
 
   private val cityDao = inject[CityDao]
   private val territoryDao = inject[TerritoryDao]
   private val tournamentDao = inject[TournamentDao]
 
-//  JSON API
-  def findByCodeAsJson(code: String) = serveHttpResponseWithDB { implicit rs =>
-    territoryDao.fromCode(code)
-      .map(t => TerritoryDto.parse(t))
-      .map(t => Ok(t.toJson))
-      .getOrElse(NotFound(code))
-  }
-
-  def findAllAsJson() = serveHttpResponseWithDB { implicit rs =>
-    Ok(JsArray(territoryDao.findAll()
-      .map(t => TerritoryDto.parse(t).toJson))
-    )
-  }
-
-  def create() = serveHttpResponseWithTransactionalDB { implicit rs =>
-    bindRequestAndPerform { t =>
-      territoryDao.save(t)(rs.dbSession)
-    }(rs.dbSession)
-  }
-
-  def edit(oldCode: String) = serveHttpResponseWithTransactionalDB { implicit rs =>
-    modifyTerritory(oldCode)(rs.dbSession) { () =>
-      bindRequestAndPerform { t =>
-        territoryDao.update(t, oldCode)(rs.dbSession)
-      }(rs.dbSession)
-    }
-  }
-
-  def delete(code: String) = serveHttpResponseWithTransactionalDB { implicit rs =>
-    val currentTerritory = territoryDao.fromCode(code)
-    modifyTerritory(code)(rs.dbSession) { () =>
-      performTerritoryAction { t =>
-        territoryDao.delete(t)(rs.dbSession)
-      }(currentTerritory.get)(rs.dbSession)
-    }
-  }
-
-  private def modifyTerritory(code: String)(rs: JdbcBackend#Session)(action: () => Result)
-                             (implicit request : play.api.mvc.Request[_]): Result = {
-      val currentTerritory = territoryDao.fromCode(code)(rs)
-      currentTerritory.map(t => {
-        if (!t.modifiable) BadRequest("Cannot modify unmodifiable territory.")
-        else action()
-      }).getOrElse(NotFound("Cannot modify non-existent territory."))
-    }
-
-  private def bindRequestAndPerform(f: Territory => Unit)(rs: JdbcBackend#Session)
-                                         (implicit request : play.api.mvc.Request[_]): Result = {
-    TerritoryDto.form.bindFromRequest.fold(
-        hasErrors => {
-          BadRequest("Cannot bind territory from request.")
-            .plainLog("Binding territory error " + hasErrors).warn()
-        },
-        success => {
-          val parentTerritoryStub = success.parent.map(p => new Territory(p.code, "", 0, None, false, false))
-          val t = new Territory(success.code, success.name, success.population, parentTerritoryStub,
-            success.isCountry, true)
-
-          performTerritoryAction(f)(t)(rs)
-        }
-      )
-  }
-
-  private def performTerritoryAction(f: Territory => Unit)(t: Territory)(rs: JdbcBackend#Session)
-                                    (implicit request : play.api.mvc.Request[_]): Result = {
-    f.apply(t)
-    Ok("Territory action has been successfully performed.")
-  }
-  //  END: JSON API
-
+  override protected val validator = inject[TerritoryValidator]
+  override protected val dto = TerritoryDto //todo: inject
+  override protected val dao = inject[TerritoryDao]
 
   def findByCode(code: String) = serveHttpResponseWithDB { implicit rs =>
-    handleOptionalTerritory(territoryDao.fromCode(code))
+    handleOptionalTerritory(territoryDao.find(code))
   }
-
 
   def startTournament(): Action[AnyContent] = serveHttpResponseWithDB { implicit rs =>
     case class StartTournamentFormData(name: String, code: String)
@@ -128,7 +62,7 @@ class TerritoryController(implicit inj: Injector) extends BaseController with In
   }
 
   private def startTournament(territoryCode: String, name: String)(implicit rs: JdbcBackend#Session): Result = {
-    territoryDao.fromCode(territoryCode) match {
+    territoryDao.find(territoryCode) match {
       case None => NotFound(s"Territory with ID = $territoryCode does not exists.")
       case Some(t: Territory) =>
         val cities = cityDao.getAllWithinTerritoryCascade(t.code)

@@ -1,6 +1,7 @@
 package controllers
 
 import com.typesafe.scalalogging.slf4j.Logger
+import controllers.validator.ValidationException
 import org.slf4j.LoggerFactory
 import play.api.Play
 import play.api.db.slick._
@@ -35,18 +36,19 @@ trait BaseController extends Controller {
   }
   
   private def prepareFinalResponse(block: => Result)(request: Request[AnyContent]): Result =
-    try {
-      block.withHeaders(corsHeaders: _*)
-        .log(response => {
+    (try {
+      block.log(response => {
         "REQUEST: " + request.method + " " + request.path + "\n" +
           "Headers: " + request.headers.toSimpleMap + "\n" +
           "Body: " + request.body + "\n" +
           "RESPONSE: " + response.toString()
       }).info()
     } catch {
+      case e: ValidationException =>
+        PreconditionFailed(e.msg) //todo: skorzystać z message z java.lang.Exception
+          .log(r => s"Validation failed. Cause: ${e.msg}")(appLog).info()
       case e: Exception =>
         InternalServerError("There was an internal error during request.")
-          .withHeaders(corsHeaders: _*)
           .logException(r => "Error occurred during request processing.", e)(appLog).error()
-    }
+    }).withHeaders(corsHeaders: _*)
 }

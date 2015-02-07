@@ -8,8 +8,8 @@ OPTIONS        /*all                        @controllers.AppController.preflight
 
 # Territories
 GET            /territory/:t                @controllers.TerritoryController.findByCode(t: String)
-GET            /json/territory              @controllers.TerritoryController.findAllAsJson()
-GET            /json/territory/:t           @controllers.TerritoryController.findByCodeAsJson(t: String)
+GET            /json/territory              @controllers.TerritoryController.findAll()
+GET            /json/territory/:t           @controllers.TerritoryController.find(t: String)
 POST           /json/territory              @controllers.TerritoryController.create()
 POST           /json/territory/:t           @controllers.TerritoryController.edit(t: String)
 DELETE         /json/territory/:t           @controllers.TerritoryController.delete(t: String)

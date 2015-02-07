@@ -38,7 +38,7 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
     val status = TournamentStatus.withName(row.status)
     val rules = rulesDao.fromTournamentId(row.id)
       .getOrElse(throw new IllegalStateException("Inconsistent DB state while looking for tournament rules in " + row.id))
-    val territory = territoryDao.fromCode(row.territoryCode)
+    val territory = territoryDao.find(row.territoryCode)
       .getOrElse(throw new IllegalStateException("Unknown territory " + row.territoryCode))
 
     lazy val rounds = roundDao.getTournamentRounds(row.id)

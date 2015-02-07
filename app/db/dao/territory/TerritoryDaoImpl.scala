@@ -18,13 +18,13 @@ class TerritoryDaoImpl(implicit inj: Injector) extends TerritoryDao with Injecta
 
   override val selectQuery = for (territory <- ds) yield territory
 
-  override def fromCode(code: String)(implicit rs: JdbcBackend#Session): Option[Territory] = 
+  override def find(code: String)(implicit rs: JdbcBackend#Session): Option[Territory] =
     fromFilter(_.code === code)
 
   override def fromRow(row: TerritoryDBRow)(implicit rs: JdbcBackend#Session) =
-    new Territory(row.code, row.name, row.population, row.containerCode.flatMap(fromCode), row.isCountry, row.modifiable)
+    new Territory(row.code, row.name, row.population, row.containerCode.flatMap(find), row.isCountry, row.modifiable)
 
-  override def findAll()(implicit rs: JdbcBackend#Session): List[Territory] =
+  override def findAll(implicit rs: JdbcBackend#Session): List[Territory] =
     selectQuery.list.map(fromRow)
 
   override def save(t: Territory)(implicit rs: JdbcBackend#Session): String =
@@ -50,6 +50,17 @@ class TerritoryDaoImpl(implicit inj: Injector) extends TerritoryDao with Injecta
 
   override def getChildrenTerritories(t: Territory)(implicit rs: JdbcBackend#Session): List[Territory] =
     getChildrenTerritories(t.code)
+
+  override def getAllWithinTerritoryCascade(territoryCode: String)(implicit rs: JdbcBackend#Session): List[Territory] = {
+    def iterate(territoryCode: String, acc: List[Territory]): List[Territory] = {
+      getChildrenTerritories(territoryCode) match {
+        case Nil => acc
+        case tr  => acc ::: tr.flatMap(t => iterate(t.code, List(t)))
+      }
+    }
+
+    iterate(territoryCode, Nil)
+  }
 
   private def fromFilter(filter: TerritoriesTable => Column[Boolean])(implicit rs: JdbcBackend#Session): Option[Territory] =
     selectQuery.filter(filter)
