@@ -25,7 +25,7 @@ class CityDaoTest extends Specification with Injectable with Mockito {
       TestUtils.insertTestTournamentIntoDatabase
 
       //when
-      val city = cityDao.fromId(2)
+      val city = cityDao.find(2)
 
       //then
       city should beSome[City]
@@ -43,7 +43,7 @@ class CityDaoTest extends Specification with Injectable with Mockito {
       TestUtils.truncateTestTables
 
       //when
-      val city = cityDao.fromId(2)
+      val city = cityDao.find(2)
 
       //then
       city should beEmpty

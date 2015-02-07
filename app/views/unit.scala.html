@@ -22,7 +22,7 @@
             @for(result <- unit.sortedResults) {
                 <tr>
                     <td>@{unit.sortedResults.indexOf(result) + 1}</td>
-                    <td><a href="@routes.CityController.find(result.team.id)">@result.team.name</a></td>
+                    <td><a href="@routes.CityController.findCity(result.team.id)">@result.team.name</a></td>
                     <td>@result.matchesAmount</td>
                     <td>@result.wins</td>
                     <td>@result.draws</td>
@@ -52,8 +52,8 @@
             @for(fixture <- unit.fixtures ; m <- fixture) {
                 <tr>
                     <td>@{unit.fixtures.indexOf(fixture) + 1}</td>
-                    <td><a href="@routes.CityController.find(m.aTeam.id)">@m.aTeam.name</a></td>
-                    <td><a href="@routes.CityController.find(m.bTeam.id)">@m.bTeam.name</a></td>
+                    <td><a href="@routes.CityController.findCity(m.aTeam.id)">@m.aTeam.name</a></td>
+                    <td><a href="@routes.CityController.findCity(m.bTeam.id)">@m.bTeam.name</a></td>
                     <td>@m.playDate.map(org.joda.time.format.DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss").print(_))</td>
                     <td><a href=@routes.MatchController.find(m.id.get)>Details</a></td>
                     <td>

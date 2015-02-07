@@ -29,8 +29,8 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
-      val c1 = cityDao.fromId(1).get
-      val c2 = cityDao.fromId(2).get
+      val c1 = cityDao.find(1).get
+      val c2 = cityDao.find(2).get
       val tr = new Territory(1, "test-territory", 22, None, "CD", false, false)
       val t = new TournamentImpl(tr, List(c1, c2), "New tournament")(rules)
 

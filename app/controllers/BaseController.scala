@@ -45,8 +45,8 @@ trait BaseController extends Controller {
       }).info()
     } catch {
       case e: ValidationException =>
-        PreconditionFailed(e.msg) //todo: skorzystać z message z java.lang.Exception
-          .log(r => s"Validation failed. Cause: ${e.msg}")(appLog).info()
+        PreconditionFailed(e.getMessage)
+          .logException(r => s"Validation failed.", e)(appLog).info()
       case e: Exception =>
         InternalServerError("There was an internal error during request.")
           .logException(r => "Error occurred during request processing.", e)(appLog).error()

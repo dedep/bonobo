@@ -46,9 +46,9 @@
             <div class="list-group">
             @for(team <- tournament.teams.sortBy(_.name)) {
                 @if(tournament.isTeamStillInGame(team.id)) {
-                    <a href="@routes.CityController.find(team.id)" class="list-group-item">@team.name</a>
+                    <a href="@routes.CityController.findCity(team.id)" class="list-group-item">@team.name</a>
                 } else {
-                    <a href="@routes.CityController.find(team.id)" class="list-group-item list-group-item-warning">@team.name</a>
+                    <a href="@routes.CityController.findCity(team.id)" class="list-group-item list-group-item-warning">@team.name</a>
                 }
             }
             </div>

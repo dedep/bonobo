@@ -26,7 +26,7 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
       if terr.code === city.territoryCode
     } yield (city, terr)
 
-  override def fromId(id: Long)(implicit rs: JdbcBackend#Session): Option[City] = fromId(Seq(id)).headOption
+  override def find(id: Long)(implicit rs: JdbcBackend#Session): Option[City] = fromId(Seq(id)).headOption
 
   override def fromId(ids: Seq[Long])(implicit rs: JdbcBackend#Session): List[City] =
     selectQuery
@@ -48,7 +48,7 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
       new City(citiesRow.id, citiesRow.name, citiesRow.population, citiesRow.points, t, citiesRow.latitude, citiesRow.longitude)
   }
 
-  override def update(c: City)(implicit rs: JdbcBackend#Session): Long =
+  override def update(c: City, id: Long)(implicit rs: JdbcBackend#Session): Unit =
     ds.filter(_.id === c.id)
       .update(CityDBRow(c.id, c.name, c.population, c.points, c.territory.code, c.latitude, c.longitude))
       .plainLog("Updating city in DB " + c).info()
@@ -69,5 +69,5 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
     }
 
   override def getAllWithinTerritory(territoryCode: String)(implicit rs: JdbcBackend#Session): List[City] =
-    ds.filter(_.territoryCode === territoryCode).map(_.id).list.map(fromId(_).get)
+    ds.filter(_.territoryCode === territoryCode).map(_.id).list.map(find(_).get)
 }

@@ -35,11 +35,11 @@ object DBMock extends Mockito {
   val tour1 = new TournamentImpl(tr, city1 :: city2 :: Nil, "Test 1 tournament", Nil, Some(1))(rules)(new Module {})
 
   def prepareCityDaoMockData(cityDao: CityDao): CityDao = {
-    cityDao.fromId(org.mockito.Matchers.eq(Long.box(1)))(any[JdbcBackend#Session]) returns Some(city1)
-    cityDao.fromId(org.mockito.Matchers.eq(Long.box(2)))(any[JdbcBackend#Session]) returns Some(city2)
-    cityDao.fromId(org.mockito.Matchers.eq(Long.box(3)))(any[JdbcBackend#Session]) returns Some(city3)
-    cityDao.fromId(org.mockito.Matchers.eq(Long.box(4)))(any[JdbcBackend#Session]) returns Some(city4)
-    cityDao.fromId(org.mockito.Matchers.eq(Long.box(99)))(any[JdbcBackend#Session]) returns None
+    cityDao.find(org.mockito.Matchers.eq(Long.box(1)))(any[JdbcBackend#Session]) returns Some(city1)
+    cityDao.find(org.mockito.Matchers.eq(Long.box(2)))(any[JdbcBackend#Session]) returns Some(city2)
+    cityDao.find(org.mockito.Matchers.eq(Long.box(3)))(any[JdbcBackend#Session]) returns Some(city3)
+    cityDao.find(org.mockito.Matchers.eq(Long.box(4)))(any[JdbcBackend#Session]) returns Some(city4)
+    cityDao.find(org.mockito.Matchers.eq(Long.box(99)))(any[JdbcBackend#Session]) returns None
     cityDao.update(any[City])(any[JdbcBackend#Session]) returns 1
   }
 

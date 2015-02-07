@@ -15,11 +15,11 @@ POST           /json/territory/:t           @controllers.TerritoryController.edi
 DELETE         /json/territory/:t           @controllers.TerritoryController.delete(t: String)
 
 # Cities
-GET            /city/$c<[0-9]+>             @controllers.CityController.find(c: Long)
+GET            /city/$c<[0-9]+>             @controllers.CityController.findCity(c: Long)
 POST           /city/update                 @controllers.AppController.updateCitiesDefinitions
-GET            /json/territory/:t/city/:c   @controllers.CityController.findAsJson(c: Long, t: String)
+GET            /json/territory/:t/city/:c   @controllers.CityController.find(t: String, c: Long)
 GET            /json/territory/:t/city      @controllers.CityController.findAll(t: String)
-POST           /json/territory/:t/city      @controllers.CityController.save(t: String)
+POST           /json/territory/:t/city      @controllers.CityController.create(t: String)
 POST           /json/territory/:t/city/:c   @controllers.CityController.edit(t: String, c: Long)
 DELETE         /json/territory/:t/city/:c   @controllers.CityController.delete(t: String, c: Long)
 

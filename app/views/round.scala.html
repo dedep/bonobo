@@ -34,7 +34,7 @@
                     <div class="list-group">
                         <h4 style="color: #666666">Pot @{round.pots.indexOf(pot) + 1}</h4>
                         @for(team <- pot ; if containsIgnoreCase(team.name, filter)) {
-                            <a href="@routes.CityController.find(team.id)" class="list-group-item">@team.name</a>
+                            <a href="@routes.CityController.findCity(team.id)" class="list-group-item">@team.name</a>
                         }
                     </div>
                 </span>
