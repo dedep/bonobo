@@ -5,7 +5,8 @@ lazy val bonobo = (project in file("."))
   .settings(
     name := """bonobo""",
     version := "1.0-SNAPSHOT",
-    fork in Test := false,
+    fork in Test := true,
+    javaOptions ++= Seq("-Xms512M", "-Xmx2048M", "-XX:+CMSClassUnloadingEnabled"),
     libraryDependencies ++= Seq(
       ws,
       "org.webjars" %% "webjars-play" % "2.2.2",

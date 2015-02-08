@@ -31,15 +31,15 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
       TestUtils.insertTestTournamentIntoDatabase
       val c1 = cityDao.find(1).get
       val c2 = cityDao.find(2).get
-      val tr = new Territory(1, "test-territory", 22, None, "CD", false, false)
+      val tr = new Territory("CD", "test-territory", 22, None, false, false)
       val t = new TournamentImpl(tr, List(c1, c2), "New tournament")(rules)
 
       //when
       tournamentDao.updateLastRound(t)
 
       //then
-      there was one(cityDao).update(c1)
-      there was one(cityDao).update(c2)
+      there was one(cityDao).update(c1, 1)
+      there was one(cityDao).update(c2, 2)
     }
   }
 
@@ -47,7 +47,7 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
-      val tr = new Territory(1, "test-territory", 22, None, "CD", false, false)
+      val tr = new Territory("CD", "test-territory", 22, None, false, false)
       val t = new TournamentImpl(tr, List(city1, city2), "New tournament", id = Some(1))(rules)
 
       //when
@@ -68,15 +68,15 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
-      val tr = new Territory(1, "test-territory", 22, None, "CD", false, false)
+      val tr = new Territory("CD", "test-territory", 22, None, false, false)
       val t = new TournamentImpl(tr, List(city1, city2), "New tournament", id = Some(1))(rules)
 
       //when
       tournamentDao.updateLastRound(t)
 
       //then
-      there was one(cityDao).update(city1)
-      there was one(cityDao).update(city2)
+      there was one(cityDao).update(city1, 1)
+      there was one(cityDao).update(city2, 2)
     }
   }
 
@@ -107,7 +107,7 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
       session.createStatement().executeUpdate("INSERT INTO cities VALUES (1, 'Rzeszów', 182028, 0, 1, 0, 0);")
 
       val c2 = new City(99, "Lublin", 1600000, 100, ter1, 0, 0)
-      val tr = new Territory(1, "test-territory", 22, None, "CD", false, false)
+      val tr = new Territory("CD", "test-territory", 22, None, false, false)
       val t = new TournamentImpl(tr, List(city1, c2), "New tournament")(rules)
 
       //when - then
@@ -120,7 +120,7 @@ class TournamentDaoTest extends Specification with Injectable with Mockito {
       //given
       TestUtils.insertTestTournamentIntoDatabase
 
-      val tr = new Territory(1, "test-territory", 22, None, "CD", false, false)
+      val tr = new Territory("CD", "test-territory", 22, None, false, false)
       val t = new TournamentImpl(tr, List(city1, city2), "New tournament")(rules)
 
       //when

@@ -18,24 +18,101 @@ class TerritoryDaoTest extends Specification with Injectable with Mockito {
   lazy val territoryDao = inject[TerritoryDao]
   lazy val cityDao = inject[CityDao]
 
-  "Territory.fromId returns proper Territory" in new WithApplication {
+  "Territory.find returns proper Territory" in new WithApplication {
+    play.api.db.slick.DB("test").withSession { implicit session =>
+      //given
+      TestUtils.insertTestTournamentIntoDatabase
+      val origin = ter1
+
+      //when
+      val territory = territoryDao.find(origin.code)
+
+      //then
+      territory should beSome[Territory]
+      territory.get.code shouldEqual origin.code
+      territory.get.name shouldEqual origin.name
+      territory.get.population shouldEqual origin.population
+
+      territory.get.container should beSome[Territory]
+      territory.get.container.get.code shouldEqual origin.container.get.code
+      territory.get.container.get.name shouldEqual origin.container.get.name
+      territory.get.container.get.population shouldEqual origin.container.get.population
+    }
+  }
+
+  "Territory.findAll returns all territories" in new WithApplication {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
 
       //when
-      val territory = territoryDao.fromId(2)
+      val territories = territoryDao.findAll
 
       //then
-      territory should beSome[Territory]
-      territory.get.id shouldEqual 2
-      territory.get.name shouldEqual "Podkarpackie"
-      territory.get.population shouldEqual 2129951
+      territories should have size 5
+      territories should containAllOf(ter1 :: ter2 :: ter3 :: ter4 :: ter5 :: Nil)
+    }
+  }
 
-      territory.get.container should beSome[Territory]
-      territory.get.container.get.id shouldEqual 3
-      territory.get.container.get.name shouldEqual "Poland"
-      territory.get.container.get.population shouldEqual 1
+  "Territory updating test" in new WithApplication {
+    play.api.db.slick.DB("test").withSession { implicit session =>
+      //given
+      TestUtils.insertTestTournamentIntoDatabase
+      val t1 = new Territory("PLMZ", "Mazowieckie", 1000, None, false, false)
+
+      //when
+      territoryDao.update(t1, "PLLU")
+
+      //then
+      val query = session.prepareStatement("SELECT code, name, population, container FROM territories WHERE territories.code = ?")
+      query.setString(1, "PLMZ")
+      val result = query.executeQuery()
+      result.next()
+
+      result.getString(1) shouldEqual "PLMZ"
+      result.getString(2) shouldEqual "Mazowieckie"
+      result.getLong(3) shouldEqual 1000
+      result.getObject(4) should beNull
+    }
+  }
+
+  "Territory saving test" in new WithApplication {
+    play.api.db.slick.DB("test").withSession { implicit session =>
+      //given
+      TestUtils.insertTestTournamentIntoDatabase
+      val t1 = new Territory("PLSL", "Śląskie", 2000, None, false, false)
+
+      //when
+      territoryDao.save(t1)
+
+      //then
+      val query = session.prepareStatement("SELECT code, name, population, container FROM territories WHERE territories.code = ?")
+      query.setString(1, "PLSL")
+      val result = query.executeQuery()
+      result.next()
+
+      result.getString(1) shouldEqual "PLSL"
+      result.getString(2) shouldEqual "Śląskie"
+      result.getLong(3) shouldEqual 2000
+      result.getObject(4) should beNull
+    }
+  }
+
+  "Territory deletion test" in new WithApplication {
+    play.api.db.slick.DB("test").withSession { implicit session =>
+      //given
+      TestUtils.insertTestTournamentIntoDatabase
+      val territory = territoryDao.find("PLPK").get
+
+      //when
+      territoryDao.delete(territory)
+
+      //then
+      val query = session.prepareStatement("SELECT code, name, population, container FROM territories WHERE territories.code = ?")
+      query.setString(1, "PLPK")
+      val result = query.executeQuery()
+
+      result.next() should beFalse
     }
   }
 
@@ -49,29 +126,21 @@ class TerritoryDaoTest extends Specification with Injectable with Mockito {
 
       //then
       territories should have size 2
-      territories.map(_.name) should containAllOf("Podkarpackie" :: "Zachodniopomorskie" :: Nil)
+      territories should containAllOf(ter1 :: ter2 :: Nil)
     }
   }
 
-  "Territory updating test" in new WithApplication {
+  "Get children territories cascade test" in new WithApplication {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.insertTestTournamentIntoDatabase
-      val t1 = new Territory(1, "Mazowieckie", 1000, None, "", false, false)
 
       //when
-      territoryDao.update(t1, "PLMX")
+      val territories = territoryDao.getAllWithinTerritoryCascade(ter4.code)
 
       //then
-      val query = session.prepareStatement("SELECT id, name, population, container FROM territories WHERE territories.id = ?")
-      query.setLong(1, 1)
-      val result = query.executeQuery()
-      result.next()
-
-      result.getLong(1) shouldEqual 1
-      result.getString(2) shouldEqual "Mazowieckie"
-      result.getLong(3) shouldEqual 1000
-      result.getObject(4) should beNull
+      territories should have size 3
+      territories should containAllOf(ter3 :: ter2 :: ter1 :: Nil)
     }
   }
 }

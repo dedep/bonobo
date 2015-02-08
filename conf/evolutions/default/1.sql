@@ -5,7 +5,7 @@ CREATE TABLE territories
   code varchar(9) PRIMARY KEY,
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
-  container varchar(9) NULL references territories ON DELETE CASCADE,
+  container varchar(9) NULL references territories ON UPDATE CASCADE ON DELETE CASCADE,
   is_country boolean NOT NULL,
   modifiable boolean NOT NULL DEFAULT TRUE
 );
@@ -16,7 +16,7 @@ CREATE TABLE cities
   name text NOT NULL,
   population bigint NOT NULL CHECK (population > 0),
   points int NOT NULL DEFAULT 0,
-  container varchar(9) NOT NULL references territories ON DELETE CASCADE,
+  container varchar(9) NOT NULL references territories ON UPDATE CASCADE ON DELETE CASCADE,
   latitude double precision NULL,
   longitude double precision NULL
 );

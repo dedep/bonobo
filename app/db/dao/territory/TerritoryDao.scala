@@ -15,15 +15,15 @@ trait TerritoryDao extends BaseCrudDao[Territory, String] {
 
   override def findAll(implicit rs: JdbcBackend#Session): List[Territory]
 
-  def fromRow(row: TerritoryDBRow)(implicit rs: JdbcBackend#Session): Territory
-
   override def save(t: Territory)(implicit rs: JdbcBackend#Session): String
-
-  def update(t: Territory)(implicit rs: JdbcBackend#Session): Unit
 
   override def update(t: Territory, oldCode: String)(implicit rs: JdbcBackend#Session): Unit
 
   override def delete(t: Territory)(implicit rs: JdbcBackend#Session): Unit
+
+  def fromRow(row: TerritoryDBRow)(implicit rs: JdbcBackend#Session): Territory
+
+  def update(t: Territory)(implicit rs: JdbcBackend#Session): Unit
 
   def getChildrenTerritories(t: Territory)(implicit rs: JdbcBackend#Session): List[Territory]
 

@@ -8,7 +8,7 @@ class CityDtoTest extends Specification {
 
   "Should convert city to json" in {
     //given
-    val tr = new Territory(1, "test-tr", 500100900, None, "TTR", false, true)
+    val tr = new Territory("TTR", "test-tr", 500100900, None, false, true)
     val t = new City(9, "test-city", 500100, 287, tr, 50.12, 12.5)
 
     //when

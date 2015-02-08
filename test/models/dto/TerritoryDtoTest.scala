@@ -8,13 +8,12 @@ class TerritoryDtoTest extends Specification {
 
   "Should convert territory to json without container" in {
     //given
-    val t = new Territory(1, "test-tr", 500100900, None, "TTR", false, true)
+    val t = new Territory("TTR", "test-tr", 500100900, None, false, true)
 
     //when
     val result = TerritoryDto.parse(t).toJson
 
     //then
-    result \ "id" mustEqual JsNumber(1)
     result \ "name" mustEqual JsString("test-tr")
     result \ "population" mustEqual JsNumber(500100900)
     result \ "code" mustEqual JsString("TTR")
@@ -25,14 +24,13 @@ class TerritoryDtoTest extends Specification {
 
   "Should convert territory to json with container" in {
     //given
-    val container = new Territory(2, "p-terr", 100, None, "PTR", false, false)
-    val t = new Territory(1, "test-tr", 500100900, Some(container), "TTR", true, false)
+    val container = new Territory("PTR", "p-terr", 100, None, false, false)
+    val t = new Territory("TTR", "test-tr", 500100900, Some(container), true, false)
 
     //when
     val result = TerritoryDto.parse(t).toJson
 
     //then
-    result \ "id" mustEqual JsNumber(1)
     result \ "name" mustEqual JsString("test-tr")
     result \ "population" mustEqual JsNumber(500100900)
     result \ "code" mustEqual JsString("TTR")

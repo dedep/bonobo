@@ -33,7 +33,7 @@ class CityDaoTest extends Specification with Injectable with Mockito {
       city.get.name shouldEqual "Koszalin"
       city.get.points shouldEqual 0
       city.get.population shouldEqual 64276
-      city.get.territory.id shouldEqual 1
+      city.get.territory.code shouldEqual "PLPZ"
     }
   }
 
@@ -58,7 +58,7 @@ class CityDaoTest extends Specification with Injectable with Mockito {
       val c1 = new City(1, "Warszawa", 1000, 2, ter1, 0, 0)
 
       //when
-      val cityId = cityDao.update(c1)
+      val cityId = cityDao.save(c1)
 
       //then
       val query = session.prepareStatement("SELECT id, name, population, points, container FROM cities WHERE cities.id = ?")
@@ -78,11 +78,11 @@ class CityDaoTest extends Specification with Injectable with Mockito {
     play.api.db.slick.DB("test").withSession { implicit session =>
       //given
       TestUtils.truncateTestTables
-      val t1 = new Territory(99, "Non", 2222, None, "NN", false, false)
+      val t1 = new Territory("NN", "Non", 2222, None, false, false)
       val c1 = new City(1, "Warszawa", 1000, 2, t1, 0, 0)
 
       //when - then
-      cityDao.update(c1) must throwA(new IllegalStateException("City cannot refer to non-existent territory"))
+      cityDao.save(c1) must throwA(new IllegalStateException("City cannot refer to non-existent territory"))
     }
   }
 
@@ -91,18 +91,18 @@ class CityDaoTest extends Specification with Injectable with Mockito {
       //given
       TestUtils.insertTestTournamentIntoDatabase
 
-      val c1 = new City(2, "Warszawa", 1000, 2, ter1, 0, 0)
+      val c1 = new City(299, "Warszawa", 1000, 2, ter1, 0, 0)
 
       //when
-      cityDao.update(c1)
+      cityDao.update(c1, 5)
 
       //then
       val query = session.prepareStatement("SELECT id, name, population, points, container FROM cities WHERE cities.id = ?")
-      query.setLong(1, 2)
+      query.setLong(1, 299)
       val result = query.executeQuery()
       result.next()
 
-      assert(result.getLong(1) === 2)
+      assert(result.getLong(1) === 299)
       assert(result.getString(2) === "Warszawa")
       assert(result.getLong(3) === 1000)
       assert(result.getLong(4) === 2)
@@ -116,7 +116,7 @@ class CityDaoTest extends Specification with Injectable with Mockito {
       TestUtils.insertTestTournamentIntoDatabase
 
       //when
-      val directCities = cityDao.getAllWithinTerritory(ter2)
+      val directCities = cityDao.getAllWithinTerritory(ter2.code)
 
       //then
       directCities should have size 5
@@ -130,7 +130,7 @@ class CityDaoTest extends Specification with Injectable with Mockito {
       TestUtils.insertTestTournamentIntoDatabase
 
       //when
-      val cities = cityDao.getAllWithinTerritoryCascade(ter4)
+      val cities = cityDao.getAllWithinTerritoryCascade(ter4.code)
 
       //then
       cities should have size 7

@@ -15,11 +15,11 @@ import scala.slick.jdbc.JdbcBackend
 //todo: a w sumie to czemu tego nie wstrzykiwać?
 object DBMock extends Mockito {
 
-  val ter5 = new Territory(5, "World", 1112129931, None, "W", false, true)
-  val ter4 = new Territory(4, "Europe", 112129931, Some(ter5), "EU", false, true)
-  val ter3 = new Territory(3, "Poland", 12129931, Some(ter4), "PL", true, true)
-  val ter2 = new Territory(2, "Lubelskie", 2129931, Some(ter3), "PLPK", false, true)
-  val ter1 = new Territory(1, "Podkarpackie", 2129951, Some(ter3), "PLPK", false, true)
+  val ter5 = new Territory("W", "World", 1112129931, None, false, true)
+  val ter4 = new Territory("EU", "Europe", 112129931, Some(ter5), false, true)
+  val ter3 = new Territory("PL", "Poland", 12129931, Some(ter4), true, true)
+  val ter2 = new Territory("PLLU", "Lubelskie", 2129931, Some(ter3), false, true)
+  val ter1 = new Territory("PLPK", "Podkarpackie", 2129951, Some(ter3), false, true)
 
   val city1 = new City(1, "Rzeszów", 182028, 4, ter1, 0, 0)
   val city2 = new City(2, "Przemyśl", 64276, 2, ter1, 0, 0)
@@ -31,7 +31,7 @@ object DBMock extends Mockito {
 
   val rules = GameRules(0, 1, 3)
 
-  val tr = new Territory(1, "test-territory", 22, None, "CD", false, false)
+  val tr = new Territory("CD", "test-territory", 22, None, false, false)
   val tour1 = new TournamentImpl(tr, city1 :: city2 :: Nil, "Test 1 tournament", Nil, Some(1))(rules)(new Module {})
 
   def prepareCityDaoMockData(cityDao: CityDao): CityDao = {
@@ -40,14 +40,14 @@ object DBMock extends Mockito {
     cityDao.find(org.mockito.Matchers.eq(Long.box(3)))(any[JdbcBackend#Session]) returns Some(city3)
     cityDao.find(org.mockito.Matchers.eq(Long.box(4)))(any[JdbcBackend#Session]) returns Some(city4)
     cityDao.find(org.mockito.Matchers.eq(Long.box(99)))(any[JdbcBackend#Session]) returns None
-    cityDao.update(any[City])(any[JdbcBackend#Session]) returns 1
+    cityDao.update(any[City], any[Long])(any[JdbcBackend#Session]) returns {}
   }
 
   def prepareTerritoryDaoMockData(territoryDao: TerritoryDao): TerritoryDao = {
-    territoryDao.fromId(org.mockito.Matchers.eq(Long.box(1)))(any[JdbcBackend#Session]) returns Some(ter1)
-    territoryDao.fromId(org.mockito.Matchers.eq(Long.box(2)))(any[JdbcBackend#Session]) returns Some(ter2)
-    territoryDao.fromId(org.mockito.Matchers.eq(Long.box(3)))(any[JdbcBackend#Session]) returns Some(ter3)
-    territoryDao.fromId(org.mockito.Matchers.eq(Long.box(99)))(any[JdbcBackend#Session]) returns None
+    territoryDao.find(org.mockito.Matchers.eq("PLPK"))(any[JdbcBackend#Session]) returns Some(ter1)
+    territoryDao.find(org.mockito.Matchers.eq("PLLU"))(any[JdbcBackend#Session]) returns Some(ter2)
+    territoryDao.find(org.mockito.Matchers.eq("PL"))(any[JdbcBackend#Session]) returns Some(ter3)
+    territoryDao.find(org.mockito.Matchers.eq("KKK"))(any[JdbcBackend#Session]) returns None
 
     territoryDao.getChildrenTerritories(org.mockito.Matchers.eq(ter5))(any[JdbcBackend#Session]) returns List(ter4)
     territoryDao.getChildrenTerritories(org.mockito.Matchers.eq(ter4))(any[JdbcBackend#Session]) returns List(ter3)
