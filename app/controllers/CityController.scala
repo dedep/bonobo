@@ -8,9 +8,9 @@ import models.territory.City
 import play.api.mvc.{AnyContent, Action}
 import scaldi.{Injectable, Injector}
 
-class CityController(implicit inj: Injector) extends BaseCrudController[City, Long] with Injectable {
+class CityController(implicit inj: Injector) extends BaseCrudController[City] with Injectable {
   override protected val validator: BaseCrudValidator[City] = inject[CityValidator]
-  override protected val dao: BaseCrudDao[City, Long] = inject[CityDao]
+  override protected val dao: BaseCrudDao[City] = inject[CityDao]
   override protected val dto: JsonDtoService[City] = CityDto
 
   def findCity(id: Long) = serveHttpResponseWithDB {

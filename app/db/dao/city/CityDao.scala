@@ -7,7 +7,7 @@ import models.territory.City
 import scala.slick.jdbc.JdbcBackend
 import scala.slick.lifted.Query
 
-trait CityDao extends BaseCrudDao[City, Long] {
+trait CityDao extends BaseCrudDao[City] {
 
   val selectQuery: Query[(CitiesTable, TerritoriesTable), (CityDBRow, TerritoryDBRow), Seq]
 
@@ -25,7 +25,7 @@ trait CityDao extends BaseCrudDao[City, Long] {
 
   override def findAll(implicit rs: JdbcBackend#Session): List[City] = ???
 
-  def getAllWithinTerritoryCascade(territoryCode: String)(implicit rs: JdbcBackend#Session): List[City]
+  def getAllWithinTerritoryCascade(territoryCode: Long)(implicit rs: JdbcBackend#Session): List[City]
 
-  def getAllWithinTerritory(territoryCode: String)(implicit rs: JdbcBackend#Session): List[City]
+  def getAllWithinTerritory(territoryCode: Long)(implicit rs: JdbcBackend#Session): List[City]
 }

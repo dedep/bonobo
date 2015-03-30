@@ -5,12 +5,12 @@ import db.dao.BaseCrudDao
 import models.dto.JsonDtoService
 import play.api.libs.json.JsArray
 
-abstract class BaseCrudController[A, B] extends BaseController {
+abstract class BaseCrudController[A] extends BaseController {
   protected val validator: BaseCrudValidator[A]
   protected val dto: JsonDtoService[A]
-  protected val dao: BaseCrudDao[A, B]
+  protected val dao: BaseCrudDao[A]
 
-  def find(id: B) = serveHttpResponseWithDB {
+  def find(id: Long) = serveHttpResponseWithDB {
     implicit rs =>
       dao.find(id)(rs.dbSession).map { entity =>
         validator.validateGetRequest(entity)(rs.dbSession)
@@ -41,7 +41,7 @@ abstract class BaseCrudController[A, B] extends BaseController {
     }
   }
 
-  def delete(id: B) = serveHttpResponseWithTransactionalDB {
+  def delete(id: Long) = serveHttpResponseWithTransactionalDB {
     implicit rs => {
       dao.find(id)(rs.dbSession).map(obj => {
         validator.validateDeleteRequest(obj)(rs.dbSession)
@@ -51,7 +51,7 @@ abstract class BaseCrudController[A, B] extends BaseController {
     }
   }
 
-  def edit(id: B) = serveHttpResponseWithTransactionalDB {
+  def edit(id: Long) = serveHttpResponseWithTransactionalDB {
     implicit rs => {
       dao.find(id)(rs.dbSession).map(obj => {
         dto.form.bindFromRequest.fold(

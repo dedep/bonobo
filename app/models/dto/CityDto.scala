@@ -16,14 +16,14 @@ case class CityDto(id: Long, name: String, population: Int, latitude: Double, lo
   override val toJson: JsValue = format.writes(this)
 
   override val toObject: City = {
-    val container = new Territory(territory.code, territory.name, 0, None, false, false)
+    val container = new Territory(territory.id, territory.code, territory.name, 0, None, false, false)
     new City(id, name, population, points, container, latitude, longitude)
   }
 }
 
 object CityDto extends JsonDtoService[City] {
   override def parse(c: City): CityDto = {
-    val containerDto = ContainerDto(c.territory.name, c.territory.code)
+    val containerDto = ContainerDto(c.id, c.territory.name, c.territory.code)
     CityDto(c.id, c.name, c.population, c.latitude, c.longitude, containerDto, c.points, c.territory.modifiable)
   }
 

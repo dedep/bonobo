@@ -20,7 +20,7 @@ import utils.FunLogger._
 
 import scala.slick.jdbc.JdbcBackend
 
-class TerritoryController(implicit inj: Injector) extends BaseCrudController[Territory, String] with Injectable {
+class TerritoryController(implicit inj: Injector) extends BaseCrudController[Territory] with Injectable {
   private implicit val log = Logger(LoggerFactory.getLogger("app"))
 
   private val cityDao = inject[CityDao]
@@ -65,7 +65,7 @@ class TerritoryController(implicit inj: Injector) extends BaseCrudController[Ter
     territoryDao.find(territoryCode) match {
       case None => NotFound(s"Territory with ID = $territoryCode does not exists.")
       case Some(t: Territory) =>
-        val cities = cityDao.getAllWithinTerritoryCascade(t.code)
+        val cities = cityDao.getAllWithinTerritoryCascade(t.id)
         if (cities.length < 2) {
           PreconditionFailed("Tournament requires at least 2 cities in territory.")
         }

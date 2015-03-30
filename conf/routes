@@ -9,10 +9,10 @@ OPTIONS        /*all                        @controllers.AppController.preflight
 # Territories
 GET            /territory/:t                @controllers.TerritoryController.findByCode(t: String)
 GET            /json/territory              @controllers.TerritoryController.findAll()
-GET            /json/territory/:t           @controllers.TerritoryController.find(t: String)
+GET            /json/territory/:t           @controllers.TerritoryController.find(t: Long)
 POST           /json/territory              @controllers.TerritoryController.create()
-POST           /json/territory/:t           @controllers.TerritoryController.edit(t: String)
-DELETE         /json/territory/:t           @controllers.TerritoryController.delete(t: String)
+POST           /json/territory/:t           @controllers.TerritoryController.edit(t: Long)
+DELETE         /json/territory/:t           @controllers.TerritoryController.delete(t: Long)
 
 # Cities
 GET            /city/$c<[0-9]+>             @controllers.CityController.findCity(c: Long)
