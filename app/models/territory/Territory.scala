@@ -1,8 +1,10 @@
 package models.territory
 
+import models.BaseEntity
+
 //todo: jakiś mechanizm trzeba zdefiniować żeby nie zapętlić hierarchii terytoriów
-class Territory(val id: Long, val code: String, val name: String, val population: Long, parent: => Option[Territory],
-                val isCountry: Boolean, val modifiable: Boolean) extends Containable {
+class Territory(override val id: Long, val code: String, val name: String, val population: Long, parent: => Option[Territory],
+                val isCountry: Boolean, val modifiable: Boolean) extends Containable with BaseEntity {
 
   lazy val container = parent
 

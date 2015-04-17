@@ -1,8 +1,18 @@
 package db.dao
 
-import scala.slick.jdbc.JdbcBackend
+import models.BaseEntity
 
-trait BaseReadDao[A] {
-  def find(key: Long)(implicit rs: JdbcBackend#Session): Option[A]
-  def findAll(implicit rs: JdbcBackend#Session): List[A]
+import scala.slick.jdbc.JdbcBackend
+import models.Common._
+import play.api.db.slick.Config.driver.simple._
+
+trait BaseReadDao[A <: BaseEntity] extends BaseDao[A]{
+  def find(ids: Seq[Id])(implicit rs: JdbcBackend#Session): Option[A] =
+    fromFilter(_.id === ids.last).headOption
+
+  def findAll(ids: Seq[Id])(implicit rs: JdbcBackend#Session): List[A] =
+    ds.list.map(_.toEntity)
+
+  protected def fromFilter(filter: TableType => Column[Boolean])(implicit rs: JdbcBackend#Session): List[A] =
+    ds.filter(filter).list.map(_.toEntity)
 }

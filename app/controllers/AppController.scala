@@ -40,6 +40,6 @@ class AppController(implicit inj: Injector) extends BaseController with Injectab
   }
 
   def preflight(all: String) = serveHttpResponse {
-    Ok("").withHeaders(corsHeaders:_*)
+    Ok("")
   }
 }

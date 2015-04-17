@@ -83,7 +83,7 @@ class TerritoryDaoTest extends Specification with Injectable with Mockito {
       val t1 = new Territory("PLSL", "Śląskie", 2000, None, false, false)
 
       //when
-      territoryDao.save(t1)
+      territoryDao.insert(t1)
 
       //then
       val query = session.prepareStatement("SELECT code, name, population, container FROM territories WHERE territories.code = ?")
@@ -122,7 +122,7 @@ class TerritoryDaoTest extends Specification with Injectable with Mockito {
       TestUtils.insertTestTournamentIntoDatabase
 
       //when
-      val territories = territoryDao.getChildrenTerritories(ter3)
+      val territories = territoryDao.getChildrenTerritories(ter3.id)
 
       //then
       territories should have size 2

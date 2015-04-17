@@ -3,41 +3,41 @@
 # ~~~~
 
 # Home page
-GET            /                            @controllers.AppController.world
-OPTIONS        /*all                        @controllers.AppController.preflight(all: String)
+GET            /                                 @controllers.AppController.world
+OPTIONS        /*all                             @controllers.AppController.preflight(all: String)
 
 # Territories
-GET            /territory/:t                @controllers.TerritoryController.findByCode(t: String)
-GET            /json/territory              @controllers.TerritoryController.findAll()
-GET            /json/territory/:t           @controllers.TerritoryController.find(t: Long)
-POST           /json/territory              @controllers.TerritoryController.create()
-POST           /json/territory/:t           @controllers.TerritoryController.edit(t: Long)
-DELETE         /json/territory/:t           @controllers.TerritoryController.delete(t: Long)
+GET            /territory/:t                     @controllers.TerritoryController.findByCode(t: String)
+GET            /json/territory                   @controllers.TerritoryController.findAll()
+GET            /json/territory/:t                @controllers.TerritoryController.find(t: models.Common.Id)
+POST           /json/territory                   @controllers.TerritoryController.create()
+POST           /json/territory/:t                @controllers.TerritoryController.edit(t: models.Common.Id)
+DELETE         /json/territory/:t                @controllers.TerritoryController.delete(t: models.Common.Id)
 
 # Cities
-GET            /city/$c<[0-9]+>             @controllers.CityController.findCity(c: Long)
-POST           /city/update                 @controllers.AppController.updateCitiesDefinitions
-GET            /json/territory/:t/city/:c   @controllers.CityController.find(t: String, c: Long)
-GET            /json/territory/:t/city      @controllers.CityController.findAll(t: String)
-POST           /json/territory/:t/city      @controllers.CityController.create(t: String)
-POST           /json/territory/:t/city/:c   @controllers.CityController.edit(t: String, c: Long)
-DELETE         /json/territory/:t/city/:c   @controllers.CityController.delete(t: String, c: Long)
+GET            /city/$c<[0-9]+>                  @controllers.CityController.findCity(c: Long)
+POST           /city/update                      @controllers.AppController.updateCitiesDefinitions
+GET            /json/territory/:t/city/:c        @controllers.CityController.find(t: models.Common.Id, c: models.Common.Id)
+GET            /json/territory/:t/city           @controllers.CityController.findAll(t: models.Common.Id)
+POST           /json/territory/:t/city           @controllers.CityController.create(t: models.Common.Id)
+POST           /json/territory/:t/city/:c        @controllers.CityController.edit(t: models.Common.Id, c: models.Common.Id)
+DELETE         /json/territory/:t/city/:c        @controllers.CityController.delete(t: models.Common.Id, c: models.Common.Id)
 
 # Tournaments
-POST           /tournament/new              @controllers.TerritoryController.startTournament()
-POST           /tournament/process          @controllers.TournamentController.processNextStep()
-GET            /tournament/:t               @controllers.TournamentController.find(t: Long)
+POST           /tournament/new                   @controllers.TerritoryController.startTournament()
+POST           /tournament/process               @controllers.TournamentController.processNextStep()
+GET            /tournament/:t                    @controllers.TournamentController.find(t: Long)
 
 # Rounds
-GET            /round/filter                @controllers.RoundController.findWithFilter
-GET            /round/:t                    @controllers.RoundController.find(t: Long)
+GET            /round/filter                     @controllers.RoundController.findWithFilter
+GET            /round/:t                         @controllers.RoundController.find(t: Long)
 
 # Matches
-GET            /match/:t                    @controllers.MatchController.find(t: Long)
+GET            /match/:t                         @controllers.MatchController.find(t: Long)
 
 # Units
-GET            /unit/:t                     @controllers.UnitController.find(t: Long)
+GET            /unit/:t                          @controllers.UnitController.find(t: Long)
 
 # Static resources
-GET            /assets/*file                controllers.Assets.at(path="/public", file)
-GET            /javascriptRoutes            @controllers.AppController.javascriptRoutes
+GET            /assets/*file                     controllers.Assets.at(path="/public", file)
+GET            /javascriptRoutes                 @controllers.AppController.javascriptRoutes

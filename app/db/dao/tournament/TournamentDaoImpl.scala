@@ -38,7 +38,7 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
     val status = TournamentStatus.withName(row.status)
     val rules = rulesDao.fromTournamentId(row.id)
       .getOrElse(throw new IllegalStateException("Inconsistent DB state while looking for tournament rules in " + row.id))
-    val territory = territoryDao.find(row.territoryId)
+    val territory = territoryDao.find(row.territoryId :: Nil)
       .getOrElse(throw new IllegalStateException("Unknown territory " + row.territoryId))
 
     lazy val rounds = roundDao.getTournamentRounds(row.id)
@@ -78,7 +78,7 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
     val newTerritory = new Territory(t.territory.id, t.territory.code, t.territory.name, t.territory.population,
       t.territory.container, t.territory.isCountry, modifiable)
 
-    territoryDao.update(newTerritory)(rs)
+    territoryDao.update(newTerritory, t.territory.id)(rs)
   }
 
   private def updateTournamentRow(t: Tournament)(implicit rs: JdbcBackend#Session): Unit =

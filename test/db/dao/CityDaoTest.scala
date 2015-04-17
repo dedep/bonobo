@@ -58,7 +58,7 @@ class CityDaoTest extends Specification with Injectable with Mockito {
       val c1 = new City(1, "Warszawa", 1000, 2, ter1, 0, 0)
 
       //when
-      val cityId = cityDao.save(c1)
+      val cityId = cityDao.insert(c1)
 
       //then
       val query = session.prepareStatement("SELECT id, name, population, points, container FROM cities WHERE cities.id = ?")
@@ -82,7 +82,7 @@ class CityDaoTest extends Specification with Injectable with Mockito {
       val c1 = new City(1, "Warszawa", 1000, 2, t1, 0, 0)
 
       //when - then
-      cityDao.save(c1) must throwA(new IllegalStateException("City cannot refer to non-existent territory"))
+      cityDao.insert(c1) must throwA(new IllegalStateException("City cannot refer to non-existent territory"))
     }
   }
 

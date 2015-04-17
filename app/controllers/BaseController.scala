@@ -12,12 +12,6 @@ trait BaseController extends Controller {
   private implicit lazy val log = Logger(LoggerFactory.getLogger("request"))
   private lazy val appLog = Logger(LoggerFactory.getLogger("app"))
 
-  protected val corsHeaders: List[(String, String)] = Map(
-    "Access-Control-Allow-Origin" -> Play.current.configuration.getString("web.url").getOrElse(""),
-    "Access-Control-Allow-Headers" -> "Accept, Content-Type",
-    "Access-Control-Allow-Methods" -> "GET, POST, DELETE, OPTIONS"
-  ).toList
-
   protected def serveHttpResponseWithTransactionalDB(requestHandler: DBSessionRequest[AnyContent] => Result) =
     serveHttpResponseWithDB { implicit rs =>
       rs.dbSession.withTransaction {
@@ -36,7 +30,7 @@ trait BaseController extends Controller {
   }
   
   private def prepareFinalResponse(block: => Result)(request: Request[AnyContent]): Result =
-    (try {
+    try {
       block.log(response => {
         "REQUEST: " + request.method + " " + request.path + "\n" +
           "Headers: " + request.headers.toSimpleMap + "\n" +
@@ -50,5 +44,5 @@ trait BaseController extends Controller {
       case e: Exception =>
         InternalServerError("There was an internal error during request.")
           .logException(r => "Error occurred during request processing.", e)(appLog).error()
-    }).withHeaders(corsHeaders: _*)
+    }
 }

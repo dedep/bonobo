@@ -99,6 +99,7 @@ CREATE TABLE units_cities
   PRIMARY KEY(city_id, unit_id)
 );
 
+-- todo: przeanalizować
 CREATE INDEX territories_container_idx ON territories(container);
 CREATE INDEX territories_code_idx ON territories(code);
 CREATE INDEX cities_container_idx ON cities(container);
