@@ -1,5 +1,6 @@
-package models.dto
+package dto
 
+import dto.model.CityDto
 import models.territory.{Territory, City}
 import org.specs2.mutable.Specification
 import play.api.libs.json.{JsObject, JsString, JsNumber}

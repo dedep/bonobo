@@ -7,5 +7,6 @@ import scaldi.play.ScaldiSupport
 
 object Global extends WithFilters(CorsHeadersFilter, LoggingFilter) with GlobalSettings with ScaldiSupport {
   override def applicationModule: Injector =
-    new ControllerModule :: new DaoModule :: new ServiceModule :: new ValidatorModule :: new RowMapperModule
+    new ControllerModule :: new DaoModule :: new ServiceModule :: new ValidatorModule :: new RowMapperModule ::
+    new DtoMapperModule
 }

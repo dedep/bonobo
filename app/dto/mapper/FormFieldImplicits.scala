@@ -1,4 +1,4 @@
-package models.dto
+package dto.mapper
 
 import play.api.data.format.Formatter
 

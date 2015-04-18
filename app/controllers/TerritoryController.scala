@@ -1,19 +1,17 @@
 package controllers
 
 import com.typesafe.scalalogging.slf4j.Logger
-import controllers.validator.{BaseCrudValidator, TerritoryValidator}
-import db.dao.{TournamentDao, TerritoryDao, CityDao, BaseCrudDao}
-import models.dto.{JsonDtoService, TerritoryDto}
+import controllers.validator.TerritoryValidator
+import db.dao.{TournamentDao, TerritoryDao, CityDao}
+import dto.mapper.TerritoryDtoMapper
 import models.territory.Territory
 import models.tournament.{GameRules, TournamentImpl}
 import org.slf4j.LoggerFactory
 import play.api.data.Forms._
 import play.api.data._
 import play.api.db.slick._
-import play.api.libs.json.JsArray
 import play.api.mvc.{Action, AnyContent, Result}
 import scaldi.{Injectable, Injector}
-import utils.FunLogger._
 
 import scala.slick.jdbc.JdbcBackend
 
@@ -25,7 +23,7 @@ class TerritoryController(implicit inj: Injector) extends BaseCrudController[Ter
   private val tournamentDao = inject[TournamentDao]
 
   override protected val validator = inject[TerritoryValidator]
-  override protected val dto = TerritoryDto //todo: inject
+  override protected val dto = inject[TerritoryDtoMapper]
   override protected val dao = inject[TerritoryDao]
 
   def findByCode(code: String) = serveHttpResponseWithDB { implicit rs =>
@@ -74,5 +72,13 @@ class TerritoryController(implicit inj: Injector) extends BaseCrudController[Ter
           Ok(successMsg)
         }
     }
+  }
+
+  def findTerritoryByCode(code: String) = serveHttpResponseWithDB {
+    implicit rs =>
+      dao.find(code)(rs.dbSession).map { entity =>
+        validator.validateGetRequest(entity)(rs.dbSession)
+        Ok(dto.parse(entity).toJson)
+      }.getOrElse(NotFound)
   }
 }

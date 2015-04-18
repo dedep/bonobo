@@ -9,7 +9,8 @@ OPTIONS        /*all                             @controllers.AppController.pref
 # Territories
 GET            /territory/:t                     @controllers.TerritoryController.findByCode(t: String)
 GET            /json/territory                   @controllers.TerritoryController.findAll()
-GET            /json/territory/:t                @controllers.TerritoryController.find(t: models.Common.Id)
+GET            /json/territory/$t<[0-9]+>        @controllers.TerritoryController.find(t: models.Common.Id)
+GET            /json/territory/:t                @controllers.TerritoryController.findTerritoryByCode(t: String)
 POST           /json/territory                   @controllers.TerritoryController.create()
 POST           /json/territory/:t                @controllers.TerritoryController.edit(t: models.Common.Id)
 DELETE         /json/territory/:t                @controllers.TerritoryController.delete(t: models.Common.Id)

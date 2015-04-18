@@ -2,15 +2,15 @@ package controllers
 
 import controllers.validator.BaseCrudValidator
 import db.dao.BaseCrudDao
+import dto.mapper.BaseDtoMapper
 import models.BaseEntity
 import models.Common._
-import models.dto.JsonDtoService
 import play.api.libs.json.JsArray
 
 abstract class BaseReadController[A <: BaseEntity] extends BaseController {
 
   protected val validator: BaseCrudValidator[A]
-  protected val dto: JsonDtoService[A]
+  protected val dto: BaseDtoMapper[A]
   protected val dao: BaseCrudDao[A]
 
   def find(routeIds: Id*) = serveHttpResponseWithDB {

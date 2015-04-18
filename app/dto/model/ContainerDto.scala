@@ -1,4 +1,4 @@
-package models.dto
+package dto.model
 
 import play.api.data.Forms._
 

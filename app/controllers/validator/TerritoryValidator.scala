@@ -1,7 +1,6 @@
 package controllers.validator
 
 import db.dao.TerritoryDao
-import models.dto.{JsonDto, TerritoryDto}
 import models.territory.Territory
 import scaldi.{Injectable, Injector}
 
