@@ -2,10 +2,7 @@ package controllers
 
 import com.typesafe.scalalogging.slf4j.Logger
 import controllers.validator.{BaseCrudValidator, TerritoryValidator}
-import db.dao.BaseCrudDao
-import db.dao.city.CityDao
-import db.dao.territory.TerritoryDao
-import db.dao.tournament.TournamentDao
+import db.dao.{TournamentDao, TerritoryDao, CityDao, BaseCrudDao}
 import models.dto.{JsonDtoService, TerritoryDto}
 import models.territory.Territory
 import models.tournament.{GameRules, TournamentImpl}
@@ -65,7 +62,7 @@ class TerritoryController(implicit inj: Injector) extends BaseCrudController[Ter
     territoryDao.find(territoryCode) match {
       case None => NotFound(s"Territory with ID = $territoryCode does not exists.")
       case Some(t: Territory) =>
-        val cities = cityDao.getAllWithinTerritoryCascade(t.id)
+        val cities = cityDao.getAllWithinTerritoryCascade(t.id.get)
         if (cities.length < 2) {
           PreconditionFailed("Tournament requires at least 2 cities in territory.")
         }

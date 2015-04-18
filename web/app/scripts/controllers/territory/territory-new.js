@@ -4,7 +4,6 @@ angular.module('bonobo.webapp')
   .controller('TerritoryNewCtrl', function ($scope, TerritoryDao, $window, $location) {
 
     $scope.territory = {
-      id: -1,
       name: "",
       population: "",
       code: "",
@@ -23,7 +22,7 @@ angular.module('bonobo.webapp')
 
       submit: function() {
         TerritoryDao.save($scope.territory, function() {
-          $location.path("/territory/" + $scope.territory.code);
+          $location.path("/territory/");
         });
       },
 

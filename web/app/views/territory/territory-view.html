@@ -17,7 +17,7 @@
 <div class="document-section" ng-show="territoryFound">
     <div class="document-item">Total population: {{territory.population | number}}</div>
     <div class="document-item" ng-hide="hideContainer()">Container:
-        <a ng-href="#territory/{{territory.parent.code}}">{{territory.parent.name}}</a>
+        <a ng-href="#territory/{{territory.parent.id}}">{{territory.parent.name}}</a>
     </div>
 </div>
 

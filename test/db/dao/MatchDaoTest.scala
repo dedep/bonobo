@@ -1,8 +1,8 @@
 package db.dao
 
-import db.dao._match.{MatchDaoImpl, MatchDao}
-import db.dao.round.{RoundDaoImpl, RoundDao}
-import db.dao.unit.{UnitDao, UnitDaoImpl}
+import db.dao._match.MatchDaoImpl
+import db.dao.round.RoundDaoImpl
+import db.dao.unit.UnitDaoImpl
 import models._match.PlayedMatch
 import models._match.result.{Draw, WinB}
 import models.reverse.{RoundUnitInfo, RoundInfo, TournamentInfo}

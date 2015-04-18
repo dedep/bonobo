@@ -1,9 +1,7 @@
 package db.dao
 
-import db.dao.city.CityDao
-import db.dao.round.RoundDao
-import db.dao.territory.TerritoryDao
-import db.dao.tournament.{TournamentDao, TournamentDaoImpl}
+import db.dao.{TerritoryDao, RoundDao, CityDao}
+import db.dao.tournament.TournamentDaoImpl
 import models.territory.{Territory, City}
 import models.tournament.{GameRules, Tournament, TournamentImpl}
 import modules.{MockModule, DBMock}

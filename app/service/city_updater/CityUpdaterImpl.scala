@@ -2,7 +2,7 @@ package service.city_updater
 
 import akka.util.Timeout
 import com.typesafe.scalalogging.slf4j.Logger
-import db.dao.city.CityDao
+import db.dao.CityDao
 import models.territory.City
 import org.slf4j.LoggerFactory
 import play.api.Play.current
@@ -38,7 +38,7 @@ class CityUpdaterImpl(implicit inj: Injector) extends CityUpdater with Injectabl
 
       log.info("Got successful response for city [" + city.name + "] from GeoNames Web Service")
 
-      cityDao.update(updatedCity, updatedCity.id)
+      cityDao.update(updatedCity, updatedCity.id.get)
 
       true
     } catch {

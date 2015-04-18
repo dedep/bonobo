@@ -1,6 +1,6 @@
 package controllers
 
-import db.dao._match.MatchDao
+import db.dao.MatchDao
 import scaldi.{Injectable, Injector}
 
 class MatchController(implicit inj: Injector) extends BaseController with Injectable {

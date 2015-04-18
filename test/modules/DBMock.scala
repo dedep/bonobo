@@ -1,10 +1,6 @@
 package modules
 
-import db.dao._match.MatchDao
-import db.dao.city.CityDao
-import db.dao.round.RoundDao
-import db.dao.territory.TerritoryDao
-import db.dao.unit.UnitDao
+import db.dao._
 import models.territory.{City, Territory}
 import models.tournament.{GameRules, TournamentImpl}
 import org.specs2.mock.Mockito

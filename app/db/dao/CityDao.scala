@@ -1,17 +1,16 @@
-package db.dao.city
+package db.dao
 
-import db.dao.BaseCrudDao
-import db.row.{TerritoryDBRow, CityDBRow}
+import db.row.model.{TerritoryRow, CityRow}
 import db.table.{CitiesTable, TerritoriesTable}
-import models.territory.City
 import models.Common._
+import models.territory.City
 
 import scala.slick.jdbc.JdbcBackend
 import scala.slick.lifted.Query
 
 trait CityDao extends BaseCrudDao[City] {
 
-  val selectQuery: Query[(CitiesTable, TerritoriesTable), (CityDBRow, TerritoryDBRow), Seq]
+  val selectQuery: Query[(CitiesTable, TerritoriesTable), (CityRow, TerritoryRow), Seq]
 
   override def findAll(ids: Seq[Id])(implicit rs: JdbcBackend#Session): List[City] =
     getAllWithinTerritoryCascade(ids.last)
@@ -22,8 +21,8 @@ trait CityDao extends BaseCrudDao[City] {
 
   def getAllWithinTerritory(territoryId: Id)(implicit rs: JdbcBackend#Session): List[City]
 
-  def fromRow(row: (CityDBRow, TerritoryDBRow))(implicit rs: JdbcBackend#Session): City
+  def fromRow(row: (CityRow, TerritoryRow))(implicit rs: JdbcBackend#Session): City
 
-  override protected type RowType = CityDBRow
+  override protected type RowType = CityRow
   override protected type TableType = CitiesTable
 }

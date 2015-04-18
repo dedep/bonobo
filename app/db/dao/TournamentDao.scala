@@ -1,4 +1,4 @@
-package db.dao.tournament
+package db.dao
 
 import models.territory.Territory
 import models.tournament.Tournament

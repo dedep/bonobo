@@ -1,9 +1,9 @@
 package modules
 
-import db.row.{TerritoryDBRowService, CityDBRowService}
+import db.row.mapper.{TerritoryRowMapper, CityRowMapper}
 import scaldi.Module
 
 class RowMapperModule extends Module {
-  bind [CityDBRowService] to new CityDBRowService
-  bind [TerritoryDBRowService] to new TerritoryDBRowService
+  bind [CityRowMapper] to new CityRowMapper
+  bind [TerritoryRowMapper] to new TerritoryRowMapper
 }

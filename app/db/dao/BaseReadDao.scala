@@ -6,7 +6,7 @@ import scala.slick.jdbc.JdbcBackend
 import models.Common._
 import play.api.db.slick.Config.driver.simple._
 
-trait BaseReadDao[A <: BaseEntity] extends BaseDao[A]{
+abstract class BaseReadDao[A <: BaseEntity] extends BaseDao[A]{
   def find(ids: Seq[Id])(implicit rs: JdbcBackend#Session): Option[A] =
     fromFilter(_.id === ids.last).headOption
 

@@ -1,7 +1,6 @@
-package db.dao.territory
+package db.dao
 
-import db.dao.BaseCrudDao
-import db.row.TerritoryDBRow
+import db.row.model.TerritoryRow
 import db.table.TerritoriesTable
 import models.territory.Territory
 
@@ -10,7 +9,7 @@ import scala.slick.lifted.Query
 
 trait TerritoryDao extends BaseCrudDao[Territory] {
 
-  val selectQuery: Query[TerritoriesTable, TerritoryDBRow, Seq]
+  val selectQuery: Query[TerritoriesTable, TerritoryRow, Seq]
 
   def find(code: String)(implicit rs: JdbcBackend#Session): Option[Territory]
 
@@ -18,6 +17,6 @@ trait TerritoryDao extends BaseCrudDao[Territory] {
 
   def getAllWithinTerritoryCascade(territoryId: Long)(implicit rs: JdbcBackend#Session): List[Territory]
 
-  override protected type RowType = TerritoryDBRow
+  override protected type RowType = TerritoryRow
   override protected type TableType = TerritoriesTable
 }

@@ -1,7 +1,7 @@
-package db.dao.territory
+package db.dao
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db.row.TerritoryDBRowService
+import db.row.mapper.TerritoryRowMapper
 import db.table.TerritoriesTable
 import models.territory.Territory
 import org.slf4j.LoggerFactory
@@ -15,7 +15,7 @@ class TerritoryDaoImpl(implicit inj: Injector) extends TerritoryDao with Injecta
   private implicit val log = Logger(LoggerFactory.getLogger("app"))
 
   override protected val ds = TableQuery[TerritoriesTable]
-  override protected val dbRowService = inject[TerritoryDBRowService]
+  override protected val dbRowService = inject[TerritoryRowMapper]
 
   override val selectQuery = for (territory <- ds) yield territory
 
@@ -26,7 +26,7 @@ class TerritoryDaoImpl(implicit inj: Injector) extends TerritoryDao with Injecta
     def iterate(territoryCode: Long, acc: List[Territory]): List[Territory] = {
       getChildrenTerritories(territoryId) match {
         case Nil => acc
-        case tr  => acc ::: tr.flatMap(t => iterate(t.id, List(t)))
+        case tr  => acc ::: tr.flatMap(t => iterate(t.id.get, List(t)))
       }
     }
 

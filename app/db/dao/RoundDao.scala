@@ -1,4 +1,4 @@
-package db.dao.round
+package db.dao
 
 import models.round.Round
 

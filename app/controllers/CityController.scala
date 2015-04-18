@@ -1,8 +1,7 @@
 package controllers
 
 import controllers.validator.{CityValidator, BaseCrudValidator}
-import db.dao.BaseCrudDao
-import db.dao.city.CityDao
+import db.dao.{CityDao, BaseCrudDao}
 import models.dto.{CityDto, JsonDtoService}
 import models.territory.City
 import scaldi.{Injectable, Injector}

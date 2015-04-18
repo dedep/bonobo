@@ -1,7 +1,7 @@
 package db.dao
 
-import db.dao.territory.{TerritoryDaoImpl, TerritoryDao}
-import db.dao.unit.{UnitDao, UnitDaoImpl}
+import db.dao.territory.TerritoryDao
+import db.dao.unit.UnitDaoImpl
 import models.reverse.{RoundInfo, TournamentInfo}
 import models.round.PlayoffRound
 import models.tournament.GameRules

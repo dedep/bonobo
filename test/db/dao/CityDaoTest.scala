@@ -1,7 +1,7 @@
 package db.dao
 
-import db.dao.city.{CityDao, CityDaoImpl}
-import db.dao.territory.TerritoryDao
+import db.dao.TerritoryDao
+import db.dao.city.CityDaoImpl
 import models.territory.{Territory, City}
 import modules.MockModule
 import org.specs2.mock.Mockito

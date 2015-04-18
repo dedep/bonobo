@@ -1,9 +1,6 @@
-package db.dao.tournament
+package db.dao
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db.dao.city.CityDao
-import db.dao.round.RoundDao
-import db.dao.territory.TerritoryDao
 import db.table._
 import models.team.Team
 import models.territory.Territory
@@ -74,16 +71,16 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
   }
 
   private def updateTournamentsTerritoryModifiableTrait(t: Tournament)(implicit rs: JdbcBackend#Session) = {
-    val modifiable = getActiveTournamentsWithinTerritory(t.territory.id)(rs).isEmpty
+    val modifiable = getActiveTournamentsWithinTerritory(t.territory.id.get)(rs).isEmpty
     val newTerritory = new Territory(t.territory.id, t.territory.code, t.territory.name, t.territory.population,
       t.territory.container, t.territory.isCountry, modifiable)
 
-    territoryDao.update(newTerritory, t.territory.id)(rs)
+    territoryDao.update(newTerritory, t.territory.id.get)(rs)
   }
 
   private def updateTournamentRow(t: Tournament)(implicit rs: JdbcBackend#Session): Unit =
     ds.filter(_.id === t.id.get)
-      .update(TournamentDBRow(t.id.get, t.name, t.status.toString, t.territory.id))
+      .update(TournamentDBRow(t.id.get, t.name, t.status.toString, t.territory.id.get))
 
   private def updateTournamentCitiesRow(t: Tournament)(implicit rs: JdbcBackend#Session): Unit =
     t.teams.zip(t.teamsInGame).foreach { case (city, plays) =>
@@ -102,9 +99,9 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
   private def save(t: Tournament)(implicit rs: JdbcBackend#Session): Long = {
     "".log(x => "Before saving new tournament " + t.name).info()
 
-    val newIndex = ds.map(_.autoInc) returning ds.map(_.id) += NewTournamentDBRow(t.name, t.status.toString, t.territory.id)
+    val newIndex = ds.map(_.autoInc) returning ds.map(_.id) += NewTournamentDBRow(t.name, t.status.toString, t.territory.id.get)
     citiesDs.filter(_.tournamentId === newIndex).delete
-    citiesDs ++= t.teams.map(city => (city.id, newIndex.toLong, true))
+    citiesDs ++= t.teams.map(city => (city.id.get, newIndex.toLong, true))
     rulesDs += (newIndex, t.gameRules.winPoints, t.gameRules.drawPoints, t.gameRules.losePoints)
 
     newIndex
@@ -115,7 +112,7 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
     getActiveTournamentsWithCustomFilter(f => true)
 
   override def getActiveTournamentsWithinTerritory(territory: Territory)(implicit rs: JdbcBackend#Session): List[Tournament] =
-    getActiveTournamentsWithCustomFilter(_.territoryId === territory.id)
+    getActiveTournamentsWithCustomFilter(_.territoryId === territory.id.get)
 
   override def getActiveTournamentsWithinTerritory(territoryId: Long)(implicit rs: JdbcBackend#Session): List[Tournament] =
     getActiveTournamentsWithCustomFilter(_.territoryId === territoryId)

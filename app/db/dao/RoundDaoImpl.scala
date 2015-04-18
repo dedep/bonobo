@@ -1,10 +1,8 @@
-package db.dao.round
+package db.dao
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db.dao.city.CityDao
-import db.dao.tournament.TournamentRulesDao
-import db.dao.unit.UnitDao
-import db.table.{TournamentsTable, RoundsCitiesTable, RoundsTable}
+import db.dao.{UnitDao, TournamentRulesDao}
+import db.table.{RoundsCitiesTable, RoundsTable, TournamentsTable}
 import models.Common.Pot
 import models.reverse.TournamentInfo
 import models.round.{GroupRound, PlayoffRound, Round, RoundStatus}
@@ -75,7 +73,7 @@ class RoundDaoImpl(implicit inj: Injector) extends RoundDao with Injectable {
     val newIndex = (ds returning ds.map(_.id)) += (r.name, r.getClass.getName, r.stepIndex,
       r.isPreliminary, parentTournamentId, r.status.toString)
 
-    citiesDs ++= r.teams.map(city => (newIndex, city.id,
+    citiesDs ++= r.teams.map(city => (newIndex, city.id.get,
       r.pots.zipWithIndex.filter(p => p._1.contains(city)).map(_._2).headOption))
 
     log.info("After saving new round " + r.name)

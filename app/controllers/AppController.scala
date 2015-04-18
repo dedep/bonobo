@@ -1,8 +1,7 @@
 package controllers
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db.dao.city.CityDao
-import db.dao.territory.TerritoryDao
+import db.dao.{TerritoryDao, CityDao}
 import org.slf4j.LoggerFactory
 import play.api.Routes
 import play.api.mvc.Action
@@ -24,7 +23,7 @@ class AppController(implicit inj: Injector) extends BaseController with Injectab
     implicit rs =>
       implicit val dbSession = rs.dbSession
 
-      val notUpdatedCount = cityDao.getAllWithinTerritoryCascade(territoryDao.find("W").get.id)
+      val notUpdatedCount = cityDao.getAllWithinTerritoryCascade(territoryDao.find("W").get.id.get)
         .map(city => cityUpdater.update(city))
         .count(_ == false)
         .log(x => "Cities update request finished. Not updated cities: " + x).info()

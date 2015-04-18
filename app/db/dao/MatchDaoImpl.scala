@@ -1,13 +1,12 @@
-package db.dao._match
+package db.dao
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db.dao.city.CityDao
-import db.dao.tournament.TournamentRulesDao
+import db.dao.{TournamentRulesDao, CityDao}
 import db.table._
 import models.Common.Fixture
 import models._match.PlayedMatch
 import models._match.result.{Draw, WinA, WinB}
-import models.reverse.{RoundUnitInfo, TournamentInfo, RoundInfo}
+import models.reverse.{RoundInfo, RoundUnitInfo, TournamentInfo}
 import models.territory.City
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
@@ -96,12 +95,12 @@ class MatchDaoImpl(implicit inj: Injector) extends MatchDao with Injectable {
     (
       unitId,
       fixtureNum,
-      m.aTeam.id,
+      m.aTeam.id.get,
       m match {
         case playedMatch: PlayedMatch => Some(playedMatch.result.aGoals)
         case _ => None
       },
-      m.bTeam.id,
+      m.bTeam.id.get,
       m match {
         case playedMatch: PlayedMatch => Some(playedMatch.result.bGoals)
         case _ => None

@@ -1,14 +1,14 @@
-package db.dao.city
+package db.dao
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db.dao.territory.TerritoryDao
-import db.row.{CityDBRowService, TerritoryDBRow, CityDBRow}
+import db.row.mapper.CityRowMapper
+import db.row.model.{TerritoryRow, CityRow}
 import db.table._
+import models.Common._
 import models.territory.City
 import org.slf4j.LoggerFactory
 import play.api.db.slick.Config.driver.simple._
 import scaldi.{Injectable, Injector}
-import models.Common._
 
 import scala.slick.jdbc.JdbcBackend
 import scala.slick.lifted.TableQuery
@@ -17,7 +17,7 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
   private implicit val log = Logger(LoggerFactory.getLogger("app"))
 
   override protected val ds = TableQuery[CitiesTable]
-  override protected val dbRowService = inject[CityDBRowService]
+  override protected val dbRowService = inject[CityRowMapper]
 
   private val territoryDao = inject[TerritoryDao]
 
@@ -36,16 +36,16 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
       .list
       .map(fromRow)
 
-  override def fromRow(row: (CityDBRow, TerritoryDBRow))(implicit rs: JdbcBackend#Session): City = row match {
-    case (citiesRow: CityDBRow, territoriesRow: TerritoryDBRow) =>
-      new City(citiesRow.id, citiesRow.name, citiesRow.population, citiesRow.points, territoriesRow.toEntity,
+  override def fromRow(row: (CityRow, TerritoryRow))(implicit rs: JdbcBackend#Session): City = row match {
+    case (citiesRow: CityRow, territoriesRow: TerritoryRow) =>
+      new City(Some(citiesRow.id), citiesRow.name, citiesRow.population, citiesRow.points, territoriesRow.toEntity,
         citiesRow.latitude, citiesRow.longitude)
   }
 
   override def getAllWithinTerritoryCascade(territoryId: Long)(implicit rs: JdbcBackend#Session): List[City] =
     territoryDao.getChildrenTerritories(territoryId) match {
       case Nil => getAllWithinTerritory(territoryId)
-      case tr => getAllWithinTerritory(territoryId) ::: tr.flatMap(c => getAllWithinTerritoryCascade(c.id))
+      case tr => getAllWithinTerritory(territoryId) ::: tr.flatMap(t => getAllWithinTerritoryCascade(t.id.get))
     }
 
   override def getAllWithinTerritory(territoryId: Long)(implicit rs: JdbcBackend#Session): List[City] =

@@ -31,7 +31,7 @@ angular.module('bonobo.webapp')
     };
 
     $scope.editTerritory = function() {
-      $location.path('/territory/' + $scope.territory.code + '/edit');
+      $location.path('/territory/' + $scope.territory.id + '/edit');
     };
 
     $scope.deleteTerritory = function() {

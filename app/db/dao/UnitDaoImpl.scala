@@ -1,11 +1,8 @@
-package db.dao.unit
+package db.dao
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db.dao._match.MatchDao
-import db.dao.city.CityDao
-import db.dao.tournament.TournamentRulesDao
 import db.table.{RoundsTable, TournamentsTable, UnitsCitiesTable, UnitsTable}
-import models.reverse.{TournamentInfo, RoundInfo}
+import models.reverse.{RoundInfo, TournamentInfo}
 import models.team.Team
 import models.territory.City
 import models.unit.{Group, Pair, RoundUnit, UnitTeamResult}
@@ -105,7 +102,7 @@ class UnitDaoImpl(implicit inj: Injector) extends UnitDao with Injectable {
 
     citiesDs ++= u.teams.map(team => {
       val teamResult = u.results.find(_.team == team).getOrElse(throw new IllegalStateException("Cannot find CityResult"))
-      (team.id,
+      (team.id.get,
         newIndex,
         teamResult.points,
         teamResult.goalsScored,
@@ -126,7 +123,7 @@ class UnitDaoImpl(implicit inj: Injector) extends UnitDao with Injectable {
       val teamResult =
         u.results.find(_.team.id == team.id).getOrElse(throw new IllegalStateException())
 
-      citiesDs.filter(c => c.cityId === team.id && c.unitId === u.id.get).update(team.id, u.id.get,
+      citiesDs.filter(c => c.cityId === team.id && c.unitId === u.id.get).update(team.id.get, u.id.get,
         teamResult.points,
         teamResult.goalsScored,
         teamResult.goalsConceded,

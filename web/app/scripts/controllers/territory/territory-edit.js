@@ -39,12 +39,12 @@ angular.module('bonobo.webapp')
 
       submit: function() {
         TerritoryDao.save({code: $scope.codeToEdit}, $scope.territory, function() {
-          $location.path("/territory/" + $scope.territory.code);
+          $location.path("/territory/" + $scope.territory.id);
         });
       },
 
       back: function() {
-        $location.path("/territory/" + $scope.territory.code);
+        $location.path("/territory/" + $scope.territory.id);
       }
     };
   })

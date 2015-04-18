@@ -25,10 +25,10 @@
   <tbody>
   <tr ng-repeat="t in territories | filter:search">
     <td>{{$index}}</td>
-    <td><a ng-href="#/territory/{{t.code}}">{{t.name}}</a></td>
+    <td><a ng-href="#/territory/{{t.id}}">{{t.name}}</a></td>
     <td>{{t.code}}</td>
     <td>{{t.population | number}}</td>
-    <td><a ng-href="#/territory/{{t.parent.code}}">{{t.parent.name}}</a></td>
+    <td><a ng-href="#/territory/{{t.parent.id}}">{{t.parent.name}}</a></td>
   </tr>
   </tbody>
 </table>

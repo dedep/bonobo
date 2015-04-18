@@ -1,6 +1,6 @@
 package controllers
 
-import db.dao.unit.UnitDao
+import db.dao.UnitDao
 import models.unit.RoundUnit
 import scaldi.{Injectable, Injector}
 

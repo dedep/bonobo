@@ -1,10 +1,11 @@
-package db.dao.tournament
+package db.dao
 
 import db.table.TournamentRulesTable
 import models.tournament.GameRules
+import play.api.db.slick.Config.driver.simple._
+
 import scala.slick.jdbc.JdbcBackend
 import scala.slick.lifted.TableQuery
-import play.api.db.slick.Config.driver.simple._
 
 class TournamentRulesDaoImpl extends TournamentRulesDao {
   val ds = TableQuery[TournamentRulesTable]

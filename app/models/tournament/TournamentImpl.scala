@@ -57,13 +57,13 @@ class TournamentImpl(override val territory: Territory, override val teams: List
       val roundName = "Round " + roundIndex
       val newRounds = new GroupRound(roundName, teams)(toTournamentInfo) :: rounds
       new TournamentImpl(this.territory, this.teams, name, newRounds, id, TournamentStatus.PLAYING,
-        this.teams.map(t => greedyIsTeamStillInGame(t.id, newRounds)))(gameRules)
+        this.teams.map(t => greedyIsTeamStillInGame(t.id.get, newRounds)))(gameRules)
     }
     else {
       val roundName = "Round " + roundIndex
       val newRounds = new PlayoffRound(roundName, teams)(toTournamentInfo) :: rounds
       new TournamentImpl(this.territory, this.teams, name, newRounds, id, TournamentStatus.PLAYING,
-        this.teams.map(t => greedyIsTeamStillInGame(t.id, newRounds)))(gameRules)
+        this.teams.map(t => greedyIsTeamStillInGame(t.id.get, newRounds)))(gameRules)
     }
   }
 
@@ -78,7 +78,7 @@ class TournamentImpl(override val territory: Territory, override val teams: List
     }
 
     new TournamentImpl(territory, this.teams, name, newRounds, id, status,
-      this.teams.map(t => greedyIsTeamStillInGame(t.id, newRounds)))(gameRules)
+      this.teams.map(t => greedyIsTeamStillInGame(t.id.get, newRounds)))(gameRules)
   }
 
   private def greedyIsTeamStillInGame(teamId: Long, rounds: List[Round]): Boolean = {

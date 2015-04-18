@@ -1,6 +1,6 @@
 package controllers.validator
 
-import db.dao.territory.TerritoryDao
+import db.dao.TerritoryDao
 import models.dto.{JsonDto, TerritoryDto}
 import models.territory.Territory
 import scaldi.{Injectable, Injector}
@@ -34,7 +34,7 @@ class TerritoryValidator(implicit inj: Injector) extends BaseCrudValidator[Terri
 
   private def isTerritoryStructureLooped(serverTerritory: Territory, frontTerritory: Territory)(implicit rs: JdbcBackend#Session): Boolean =
     frontTerritory.container.exists(parent => {
-      territoryDao.getAllWithinTerritoryCascade(serverTerritory.id).contains(parent)
+      territoryDao.getAllWithinTerritoryCascade(serverTerritory.id.get).contains(parent)
     })
 
   private def territoryCodeExists(territoryCode: String)(implicit rs: JdbcBackend#Session): Boolean =

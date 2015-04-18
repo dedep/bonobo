@@ -1,4 +1,4 @@
-package db.dao.unit
+package db.dao
 
 import models.team.Team
 import models.unit.RoundUnit

@@ -1,4 +1,4 @@
-package db.dao._match
+package db.dao
 
 import models.Common.Fixture
 

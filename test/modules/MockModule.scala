@@ -1,11 +1,6 @@
 package modules
 
-import db.dao._match.MatchDao
-import db.dao.city.CityDao
-import db.dao.round.RoundDao
-import db.dao.territory.TerritoryDao
-import db.dao.tournament.TournamentDao
-import db.dao.unit.UnitDao
+import db.dao._
 import org.specs2.mock.Mockito
 import scaldi.Module
 

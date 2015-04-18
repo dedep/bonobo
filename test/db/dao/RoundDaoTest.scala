@@ -1,7 +1,7 @@
 package db.dao
 
-import db.dao.round.{RoundDaoImpl, RoundDao}
-import db.dao.unit.UnitDao
+import db.dao.UnitDao
+import db.dao.round.RoundDaoImpl
 import models.reverse.TournamentInfo
 import models.round.{PlayoffRound, Round}
 import models.tournament.GameRules
