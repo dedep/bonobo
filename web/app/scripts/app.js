@@ -9,7 +9,8 @@ angular
     'utils.ajaxloader',
     'utils.autofocus',
     'utils.world-map',
-    'underscore'
+    'underscore',
+    'Orbicular'
   ])
   .constant('configuration', {
     SERVER_URL: 'http://localhost:9000/json',

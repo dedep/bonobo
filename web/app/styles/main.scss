@@ -3,7 +3,37 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
 
+@import "../bower_components/orbicular/orbicular.scss";
+@import url(http://fonts.googleapis.com/css?family=Noto+Sans);
+
+$backColor: #fff;
 $border-color: #e7e7e7;
+$lead-color: #B8E186;
+
+@include orbicular(
+$barColor:  $lead-color,    // The completed progress color
+$barBg:     #eee,       // The remaining progress color
+$barWidth:  8,          // The bar width is defined as a percentage of the width of the circle
+$contentBg: $backColor,    // The circle center
+$fontSize:  13,          // Content font-size as a percentage of the circle size
+$fontColor: #50a6d3,       // Content text color
+$transTime: 0s,       // Time to animate the movement
+$transFunc: linear     // transition timing
+//$shadow: 6px 6px 10px rgba(0,0,0,0.2)  // optional shadow (not default)
+);
+
+body {
+  padding: 30px 0;
+  background-color: $backColor;
+  font-family: "Noto Sans", sans-serif;
+  margin-bottom: 50px;
+}
+
+svg {
+  border: 1px $border-color solid;
+  height: 600px;
+  margin-top: 30px;
+}
 
 .browsehappy {
   margin: 0.2em 0;
@@ -13,8 +43,8 @@ $border-color: #e7e7e7;
 }
 
 .top {
-  margin-top:50px;
-  background: rgb(184, 225, 134) url('/images/bg.png');
+  margin-top:30px;
+  background: $lead-color url('/images/bg.png');
   padding-bottom: 26px;
   padding-top: 26px;
   box-shadow:0 -4px 0 rgba(0, 0, 0, 0.1) inset;
@@ -30,7 +60,7 @@ $border-color: #e7e7e7;
 }
 
 .navbar {
-  background-color: #ffffff;
+  background-color: $backColor;
 
   .navbar-item {
     cursor: pointer;
@@ -65,8 +95,7 @@ $border-color: #e7e7e7;
 }
 
 [bonobo-world-map] {
-  height: 600px;
-  border: 1px $border-color solid;
+  margin-top: 200px;
 
   .jvectormap-zoomin {
     display: none;
@@ -88,3 +117,14 @@ form {
     margin: 0.8em 0;
   }
 }
+
+orbicular {
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+

@@ -85,4 +85,14 @@ angular.module('bonobo.webapp')
     $scope.ok = function() {
       $modalInstance.close();
     };
+  })
+  .directive('fallbackSrc', function () {
+    var fallbackSrc = {
+      link: function postLink(scope, iElement, iAttrs) {
+        iElement.bind('error', function() {
+          angular.element(this).attr("src", iAttrs.fallbackSrc);
+        });
+      }
+    };
+    return fallbackSrc;
   });

@@ -14,14 +14,46 @@
     </span>
 </div>
 
-<div class="document-section" ng-show="territoryFound">
-    <div class="document-item">Total population: {{territory.population | number}}</div>
-    <div class="document-item" ng-hide="hideContainer()">Container:
-        <a ng-href="#territory/{{territory.parent.id}}">{{territory.parent.name}}</a>
-    </div>
+<div ng-show="territoryFound">
+  <div class="col-lg-2">
+    <orbicular total="100" progression="15" resize>
+      Population
+      {{territory.population | number}}
+    </orbicular>
+  </div>
+  <div class="col-lg-2">
+    <orbicular total="100" progression="45" resize>
+      Total Points<br/>
+      -
+    </orbicular>
+  </div>
+  <div class="col-lg-2">
+    <orbicular total="100" progression="30" resize>
+      Ranked as<br/>
+      -
+    </orbicular>
+  </div>
+  <div class="col-lg-2">
+    <orbicular total="100" progression="60" resize>
+      Cities<br/>
+      -
+    </orbicular>
+  </div>
+  <div class="col-lg-2">
+    <orbicular total="100" progression="75" resize>
+      Create Date<br/>
+      -
+    </orbicular>
+  </div>
+  <div class="col-lg-2">
+    <orbicular>
+      <img ng-if="territoryFound" fallback-src="images/flag/none.png"
+           ng-src="{{'images/flag/'+territory.code.toLowerCase()+'.png'}}">
+    </orbicular>
+  </div>
 </div>
 
-<div bonobo-world-map code='{{codeToFocus()}}' class="document-section" ng-show="territoryFound"></div>
+<div bonobo-world-map code='{{codeToFocus()}}' ng-show="territoryFound"></div>
 
 <script type="text/ng-template" id="removeTerritoryModal.html">
     <div class="modal-header">
