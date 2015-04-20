@@ -46,6 +46,10 @@ angular
         templateUrl: 'views/city/city-view.html',
         controller: 'CityViewCtrl'
       })
+      .when('/territory/:tCode/city', {
+        templateUrl: 'views/city/city-all.html',
+        controller: 'CityAllCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });

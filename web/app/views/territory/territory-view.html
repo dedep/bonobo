@@ -17,31 +17,31 @@
 <div ng-show="territoryFound">
   <div class="col-lg-2">
     <orbicular total="100" progression="15" resize>
-      Population
+      <div>Population</div>
       {{territory.population | number}}
     </orbicular>
   </div>
   <div class="col-lg-2">
     <orbicular total="100" progression="45" resize>
-      Total Points<br/>
+      <div>Total Points</div>
       -
     </orbicular>
   </div>
   <div class="col-lg-2">
     <orbicular total="100" progression="30" resize>
-      Ranked as<br/>
+      <div>Ranked as</div>
       -
     </orbicular>
   </div>
   <div class="col-lg-2">
     <orbicular total="100" progression="60" resize>
-      Cities<br/>
+      <div>Create Date</div>
       -
     </orbicular>
   </div>
   <div class="col-lg-2">
     <orbicular total="100" progression="75" resize>
-      Create Date<br/>
+      <div><a ng-href="#/territory/{{territory.id}}/city">Cities</a></div>
       -
     </orbicular>
   </div>

@@ -1,0 +1,35 @@
+<div class="document-header">
+    Cities of {{territory.name}}
+
+    <span class="action-icons">
+        <button class="btn btn-success" ng-click="addCity()">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </button>
+    </span>
+</div>
+
+<div class="input-group col-lg-12 filter-box">
+  <input id="filter" type="text" class="form-control" ng-model="search.name" placeholder="Type filter here..." autofocus>
+</div>
+
+<table class="table table-hover">
+  <thead>
+  <tr>
+    <th>#</th>
+    <th>Territory</th>
+    <th>Points</th>
+    <th>Population</th>
+    <th>Territory</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="c in cities | filter:search">
+    <td>{{$index}}</td>
+    <td><a ng-href="#/territory/{{c.territory.id}}/city/{{c.id}}">{{c.name}}</a></td>
+    <td>{{c.points | number}}</td>
+    <td>{{c.population | number}}</td>
+    <td><a ng-href="#/territory/{{c.territory.id}}">{{c.territory.name}}</a></td>
+  </tr>
+  </tbody>
+</table>
+

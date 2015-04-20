@@ -49,5 +49,5 @@ class CityDaoImpl(implicit inj: Injector) extends CityDao with Injectable {
     }
 
   override def getAllWithinTerritory(territoryId: Long)(implicit rs: JdbcBackend#Session): List[City] =
-    ds.filter(_.id === territoryId).map(_.id).list.map(t => find(t :: Nil).get)
+    selectQuery.filter(_._1.territoryId === territoryId).list.map(fromRow)
 }

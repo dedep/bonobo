@@ -3,6 +3,7 @@
 angular.module('bonobo.webapp')
   .factory('CityDao', ['$resource', 'configuration',
     function($resource, configuration) {
-      return $resource(configuration.SERVER_URL + '/territory/:tCode/city/:cityId');
+      return $resource(configuration.SERVER_URL + '/territory/:tCode/city/:cityId', {},
+        {findAll: {method: 'GET', isArray: true}});
     }
   ]);
