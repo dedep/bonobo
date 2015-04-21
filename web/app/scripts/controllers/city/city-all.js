@@ -6,6 +6,6 @@ angular.module('bonobo.webapp')
     $scope.territory = TerritoryDao.get({code: $routeParams.tCode});
 
     $scope.addCity = function() {
-      console.log("Not implemented yet!");
+      console.error("Not implemented yet!");
     }
   });

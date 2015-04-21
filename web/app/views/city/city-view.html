@@ -14,11 +14,42 @@
     </span>
 </div>
 
-<div class="document-section" ng-show="cityFound">
-  <div class="document-item">Total population: {{city.population | number}}</div>
-  <div class="document-item">Points: {{city.points}}</div>
-  <div class="document-item" ng-hide="hideContainer()">Container:
-    <a ng-href="#territory/{{city.territory.id}}">{{city.territory.name}}</a>
+<div ng-show="cityFound">
+  <div class="col-lg-2">
+    <orbicular total="100" progression="15" resize>
+      <div>Population</div>
+      {{city.population | number}}
+    </orbicular>
+  </div>
+  <div class="col-lg-2">
+    <orbicular total="100" progression="45" resize>
+      <div>Total Points</div>
+      {{city.points | number}}
+    </orbicular>
+  </div>
+  <div class="col-lg-2">
+    <orbicular total="100" progression="30" resize>
+      <div>Ranked as</div>
+      -
+    </orbicular>
+  </div>
+  <div class="col-lg-2">
+    <orbicular total="100" progression="60" resize>
+      <div>Create Date</div>
+      -
+    </orbicular>
+  </div>
+  <div class="col-lg-2">
+    <orbicular total="100" progression="75" resize>
+      <div>Location</div>
+      {{city.latitude | number:1}}N {{city.longitude | number:1}}E <!-- todo: zahardkodowane N i E !-->
+    </orbicular>
+  </div>
+  <div class="col-lg-2">
+    <orbicular>
+      <img ng-if="cityFound" fallback-src="images/flag/none.png"
+           ng-src="{{'images/flag/city/'+city.name.toLowerCase()+'.png'}}">
+    </orbicular>
   </div>
 </div>
 
