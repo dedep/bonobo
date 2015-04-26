@@ -21,8 +21,8 @@ angular.module('bonobo.webapp')
       },
 
       submit: function() {
-        TerritoryDao.save($scope.territory, function() {
-          $location.path("/territory/");
+        TerritoryDao.save($scope.territory, function(res) {
+          $location.path("/territory/" + res.id);
         });
       },
 

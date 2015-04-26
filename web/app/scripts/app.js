@@ -42,6 +42,10 @@ angular
         templateUrl: 'views/territory/territory-all.html',
         controller: 'TerritoryAllCtrl'
       })
+      .when('/territory/:tCode/city/new', {
+        templateUrl: 'views/city/city-edit.html',
+        controller: 'CityNewCtrl'
+      })
       .when('/territory/:tCode/city/:cityId', {
         templateUrl: 'views/city/city-view.html',
         controller: 'CityViewCtrl'

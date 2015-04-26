@@ -2,7 +2,7 @@
   {{city.name}}
 
     <span class="action-icons" ng-show="cityFound">
-        <button class="btn btn-success">
+        <button class="btn btn-success" ng-click="newCity()">
           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         </button>
         <button class="btn btn-info">
@@ -42,7 +42,7 @@
   <div class="col-lg-2">
     <orbicular total="100" progression="75" resize>
       <div>Location</div>
-      {{city.latitude | number:1}}N {{city.longitude | number:1}}E <!-- todo: zahardkodowane N i E !-->
+      {{displayLatitude}} {{displayLongitude}}
     </orbicular>
   </div>
   <div class="col-lg-2">

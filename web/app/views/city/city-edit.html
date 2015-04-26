@@ -1,30 +1,74 @@
 <div class="document-header">
-  <span>New territory</span>
+  <span>New city</span>
 </div>
-<form name="editCity">
+
+<form class="form-horizontal" name="editCity" novalidate>
   <div class="form-group">
-    <label for="inputName">City name</label>
-    <input ng-model="city.name" type="text" class="form-control" id="inputName" placeholder="Enter name" required autofocus>
-  </div>
-  <div class="form-group">
-    <label for="inputPopulation">Population</label>
-    <input ng-model="city.population" type="number" class="form-control" id="inputPopulation" placeholder="Enter population" required>
-  </div>
-  <div class="form-group">
-    <label for="inputLatitude">Latitude</label>
-    <input ng-model="city.latitude" type="text" class="form-control" id="inputLatitude" placeholder="Enter latitude" required>
-  </div>
-  <div class="form-group">
-    <label for="inputLongitude">Longitude</label>
-    <input ng-model="city.longitude" type="text" class="form-control" id="inputLongitude" placeholder="Enter longitude" required>
-  </div>
-  <div class="form-group">
-    <label for="inputParent">Territory</label>
-    <select ng-model="city.territory" class="form-control" id="inputParent" required
-            ng-options="t.name for t in territories track by t.code">
-    </select>
+    <label for="inputName" class="col-sm-2 control-label">City name</label>
+    <div class="col-sm-10">
+      <input ng-model="city.name" ng-pattern="/^[0-9]{1,7}$/" type="text" class="form-control" id="inputName" placeholder="Enter name" name="name" required autofocus>
+      <div class="error-container" ng-show="editCity.name.$invalid && editCity.name.$dirty">
+        <div ng-show="editCity.name.$error.required">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          City name is required.
+        </div>
+      </div>
+    </div>
   </div>
 
-  <button ng-click="view.submit()" type="submit" ng-disabled="editTerritory.$invalid" class="btn btn-default btn-lg">Save</button>
-  <button ng-click="view.back()" type="button" class="btn btn-default btn-lg">Cancel</button>
+  <div class="form-group">
+    <label for="inputPopulation" class="col-sm-2 control-label">Population</label>
+    <div class="col-sm-10">
+      <input ng-model="city.population" type="number" class="form-control" id="inputPopulation" placeholder="Enter population" name="population" required>
+      <div class="error-container" ng-show="editCity.population.$invalid && editCity.population.$dirty">
+        <div ng-show="editCity.population.$error.required">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          City population is required.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="inputLongitude" class="col-sm-2 control-label">Population</label>
+    <div class="col-sm-10">
+      <input ng-model="city.longitude" type="number" class="form-control" id="inputLongitude" placeholder="Enter longitude" name="longitude" required>
+      <div class="error-container" ng-show="editCity.longitude.$invalid && editCity.longitude.$dirty">
+        <div ng-show="editCity.longitude.$error.required">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          Longitude is required and has to be a number.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="inputLatitude" class="col-sm-2 control-label">Latitude</label>
+    <div class="col-sm-10">
+      <input ng-model="city.latitude" type="number" class="form-control" id="inputLatitude" placeholder="Enter latitude" name="latitude" required>
+      <div class="error-container" ng-show="editCity.latitude.$invalid && editCity.latitude.$dirty">
+        <div ng-show="editCity.latitude.$error.required">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          Latitude is required and has to be a number.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="inputParent" class="col-sm-2 control-label">Territory</label>
+    <div class="col-sm-10">
+      <select ng-model="city.territory" class="form-control" id="inputParent" required
+              ng-options="t.name for t in territories track by t.code">
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button ng-click="view.submit()" type="submit" ng-disabled="editCity.$invalid" class="btn btn-default btn-lg">Save</button>
+      <button ng-click="view.back()" type="button" class="btn btn-default btn-lg">Cancel</button>
+    </div>
+  </div>
 </form>
+

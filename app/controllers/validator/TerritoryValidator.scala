@@ -18,10 +18,14 @@ class TerritoryValidator(implicit inj: Injector) extends BaseCrudValidator[Terri
       throw new ValidationException(s"Cannot set territories parent that is already its child")
     else if (serverSideEntity.code != frontSideEntity.code && territoryCodeExists(frontSideEntity.code))
       throw new ValidationException(s"Territory with code=${frontSideEntity.code} already exists")
+    else if (frontSideEntity.population <= 0)
+      throw new ValidationException("Illegal population number")
 
   override def validateCreateRequest(frontSideEntity: Territory)(implicit rs: JdbcBackend#Session): Unit =
     if (territoryCodeExists(frontSideEntity.code))
       throw new ValidationException(s"Territory with code=${frontSideEntity.code} already exists")
+    else if (frontSideEntity.population <= 0)
+      throw new ValidationException("Illegal population number")
 
   override def validateDeleteRequest(serverSideEntity: Territory)(implicit rs: JdbcBackend#Session): Unit =
     if (!serverSideEntity.modifiable)

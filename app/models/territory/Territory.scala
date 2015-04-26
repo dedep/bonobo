@@ -10,6 +10,8 @@ class Territory(override val id: Option[Long], val code: String, val name: Strin
   override lazy val getContainers: List[Territory] =
     container.map(t => appendParentContainers(t :: Nil)).getOrElse(Nil)
 
+  val isWorld = code == "W"
+
   def canEqual(other: Any): Boolean = other.isInstanceOf[Territory]
 
   override def equals(other: Any): Boolean = other match {

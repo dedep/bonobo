@@ -2,6 +2,7 @@ package controllers
 
 import models.BaseEntity
 import models.Common._
+import play.api.libs.json.Json
 
 abstract class BaseCrudController[A <: BaseEntity] extends BaseReadController[A] {
 
@@ -16,7 +17,7 @@ abstract class BaseCrudController[A <: BaseEntity] extends BaseReadController[A]
           validator.validateCreateRequest(obj)(rs.dbSession)
           val id = dao.insert(obj)(rs.dbSession)
 
-          Ok(s"Entity with id: $id has been successfully created.")
+          Ok(Json.obj("id" -> id))
         }
       )
     }
