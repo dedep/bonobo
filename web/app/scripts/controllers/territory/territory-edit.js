@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('bonobo.webapp')
+angular.module('bonobo.webapp')//todo: refaktor
   .controller('TerritoryEditCtrl', function ($scope, $routeParams, $location, TerritoryDao, _) {
     $scope.codeToEdit = $routeParams.code;
 
@@ -41,10 +41,6 @@ angular.module('bonobo.webapp')
         TerritoryDao.save({code: $scope.codeToEdit}, $scope.territory, function() {
           $location.path("/territory/" + $scope.territory.id);
         });
-      },
-
-      back: function() {
-        $location.path("/territory/" + $scope.territory.id);
       }
     };
   })

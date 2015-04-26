@@ -32,6 +32,7 @@ body {
 svg {
   border: 1px $border-color solid;
   height: 600px;
+  width: 100%;
   margin-top: 30px;
 }
 
@@ -95,7 +96,7 @@ svg {
 }
 
 [bonobo-world-map] {
-  margin-top: 200px;
+//  margin-top: 200px;
 
   .jvectormap-zoomin {
     display: none;

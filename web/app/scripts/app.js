@@ -10,7 +10,8 @@ angular
     'utils.autofocus',
     'utils.world-map',
     'underscore',
-    'Orbicular'
+    'Orbicular',
+    'toastr'
   ])
   .constant('configuration', {
     SERVER_URL: 'http://localhost:9000/json',
@@ -54,12 +55,53 @@ angular
         templateUrl: 'views/city/city-all.html',
         controller: 'CityAllCtrl'
       })
+      .when('/territory/:tCode/city/:cityId/edit', {
+        templateUrl: 'views/city/city-edit.html',
+        controller: 'CityEditCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
   })
+  .run(function($rootScope, $window){
+    $rootScope.back = function() {
+      $window.history.back();
+    }
+  })
   .controller('RootCtrl', function ($scope) {
     $scope.$on('$routeChangeSuccess', function() {
       $scope.alertMsg = null;
+    });
+  })
+  .config(function(toastrConfig) {
+    angular.extend(toastrConfig, {
+      allowHtml: false,
+      closeButton: false,
+      closeHtml: '<button>&times;</button>',
+      containerId: 'toast-container',
+      extendedTimeOut: 1000,
+      iconClasses: {
+        error: 'toast-error',
+        info: 'toast-info',
+        success: 'toast-success',
+        warning: 'toast-warning'
+      },
+      maxOpened: 0,
+      messageClass: 'toast-message',
+      newestOnTop: true,
+      onHidden: null,
+      onShown: null,
+      positionClass: 'toast-top-right',
+      preventDuplicates: false,
+      progressBar: false,
+      tapToDismiss: true,
+      target: 'body',
+      templates: {
+        toast: 'directives/toast/toast.html',
+        progressbar: 'directives/progressbar/progressbar.html'
+      },
+      timeOut: 5000,
+      titleClass: 'toast-title',
+      toastClass: 'toast'
     });
   });

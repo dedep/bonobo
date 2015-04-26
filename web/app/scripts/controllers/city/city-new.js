@@ -18,9 +18,7 @@ angular.module('bonobo.webapp')
     });
 
     $scope.view = {
-      back: function() {
-        $window.history.back(); // todo: do $rootScope
-      },
+      title: "New city",
       submit: function() {
         CityDao
           .create({tCode: $routeParams.tCode}, $scope.city).$promise

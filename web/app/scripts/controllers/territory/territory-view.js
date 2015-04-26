@@ -8,23 +8,18 @@ angular.module('bonobo.webapp')
     $scope.territory = TerritoryDao.get({code: $routeParams.code}, function() {
         $scope.territoryFound = true;
         $scope.appendHotKeys();
+
+        if ($scope.territory.isCountry) {
+          $scope.codeToFocus = $scope.territory.code;
+        } else {
+          $scope.codeToFocus = "";
+        }
+
       }, function() {
         $scope.$parent.alertMsg = 'Territory not found';
         $scope.territoryFound = false;
       }
     );
-
-    $scope.codeToFocus = function() {
-      if ($scope.territoryFound) {
-        if ($scope.territory.isCountry) {
-          return $scope.territory.code;
-        } else {
-          return "";
-        }
-      } else {
-        return "none";
-      }
-    };
 
     $scope.addTerritory = function() {
       $location.path('/territory/new');

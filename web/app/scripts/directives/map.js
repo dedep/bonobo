@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('utils.world-map', [])
-  .directive('bonoboWorldMap', ['$location',
-    function($location) {
+  .directive('bonoboWorldMap', ['$location', '$timeout',
+    function($location, $timeout) {
       return {
         scope: {
-          code: '@',
+          code: '=',
           markers: '='
         },
         link: function(scope, element) {
@@ -13,46 +13,55 @@ angular.module('utils.world-map', [])
             $('.jvectormap-label').remove();
           });
 
-          var refresh = function() {
-            $('.jvectormap-container').remove();
-
-            element.vectorMap({
-              map: 'world_mill_en',
-              scaleColors: ['#C8EEFF', '#0071A4'],
-              normalizeFunction: 'polynomial',
-              hoverOpacity: 0.7,
-              zoomMax: 100,
-              focusOn: scope.code,
-              markers: scope.markers,
-              regionsSelectable: true,
-              hoverColor: false,
-              markerStyle: {
-                initial: {
-                  fill: '#F8E23B',
-                  stroke: '#383f47'
-                }
-              },
-              backgroundColor: '#ffffff',
-              regionStyle: {
-                initial: {
-                  fill: '#B8E186'
-                },
-                selected: {
-                  fill: '#B8E186'
-                }
-              },
-              onRegionSelected: function(e, code, isSelected) {
-                if (isSelected) {
-                  scope.$apply(function() {
-                    $location.path('/territory/' + code);
-                  });
-                }
+          element.vectorMap({
+            map: 'world_mill_en',
+            scaleColors: ['#C8EEFF', '#0071A4'],
+            normalizeFunction: 'polynomial',
+            hoverOpacity: 0.7,
+            zoomMax: 100,
+            regionsSelectable: true,
+            hoverColor: false,
+            markerStyle: {
+              initial: {
+                fill: '#F8E23B',
+                stroke: '#383f47'
               }
-            });
-          };
+            },
+            backgroundColor: '#ffffff',
+            regionStyle: {
+              initial: {
+                fill: '#B8E186'
+              },
+              selected: {
+                fill: '#B8E186'
+              }
+            },
+            onRegionSelected: function(e, code, isSelected) {
+              if (isSelected) {
+                scope.$apply(function() {
+                  $location.path('/territory/' + code);
+                });
+              }
+            }
+          });
 
-          scope.$watch('code', refresh);
-          scope.$watch('markers', refresh);
+          var map = element.vectorMap('get', 'mapObject');
+
+          scope.$watch('code', function() {
+            if (scope.code) {
+              $timeout(function() {
+                map.setFocus([scope.code]);
+              })
+            }
+          });
+
+          scope.$watch('markers', function() {
+            if (scope.markers) {
+              $timeout(function() {
+                map.addMarkers(scope.markers);
+              })
+            }
+          });
         }
       };
     }]);

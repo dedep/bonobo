@@ -14,6 +14,10 @@ angular.module('bonobo.webapp')
       $scope.displayLongitude = GeoLocation.getLongitudeDesc($scope.city.longitude);
       $scope.displayLatitude = GeoLocation.getLatitudeDesc($scope.city.latitude);
 
+      $scope.editCity = function() {
+        $location.path("/territory/" + $routeParams.tCode + "/city/" + $routeParams.cityId + "/edit");
+      };
+
       $scope.cityFound = true;
     }, function() {
       $scope.$parent.alertMsg = 'City not found';
