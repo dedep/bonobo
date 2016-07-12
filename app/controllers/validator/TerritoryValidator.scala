@@ -7,11 +7,11 @@ import scaldi.{Injectable, Injector}
 import scala.slick.jdbc.JdbcBackend
 
 //todo: tests
-class TerritoryValidator(implicit inj: Injector) extends BaseCrudValidator[Territory] with Injectable {
+class TerritoryValidator(implicit inj: Injector) extends Injectable {
 
   private val territoryDao = inject[TerritoryDao]
 
-  override def validateEditRequest(serverSideEntity: Territory, frontSideEntity: Territory)(implicit rs: JdbcBackend#Session): Unit =
+  def validateEditRequest(serverSideEntity: Territory, frontSideEntity: Territory)(implicit rs: JdbcBackend#Session): Unit =
     if (!serverSideEntity.modifiable)
       throw new ValidationException(s"Territory is not modifiable")
     else if (isTerritoryStructureLooped(serverSideEntity, frontSideEntity))
@@ -21,19 +21,19 @@ class TerritoryValidator(implicit inj: Injector) extends BaseCrudValidator[Terri
     else if (frontSideEntity.population <= 0)
       throw new ValidationException("Illegal population number")
 
-  override def validateCreateRequest(frontSideEntity: Territory)(implicit rs: JdbcBackend#Session): Unit =
+  def validateCreateRequest(frontSideEntity: Territory)(implicit rs: JdbcBackend#Session): Unit =
     if (territoryCodeExists(frontSideEntity.code))
       throw new ValidationException(s"Territory with code=${frontSideEntity.code} already exists")
     else if (frontSideEntity.population <= 0)
       throw new ValidationException("Illegal population number")
 
-  override def validateDeleteRequest(serverSideEntity: Territory)(implicit rs: JdbcBackend#Session): Unit =
+  def validateDeleteRequest(serverSideEntity: Territory)(implicit rs: JdbcBackend#Session): Unit =
     if (!serverSideEntity.modifiable)
       throw new ValidationException(s"Territory is not modifiable")
 
-  override def validateGetRequest(serverSideEntity: Territory)(implicit rs: JdbcBackend#Session): Unit = {}
+  def validateGetRequest(serverSideEntity: Territory)(implicit rs: JdbcBackend#Session): Unit = {}
 
-  override def validateGetAllRequest(implicit rs: JdbcBackend#Session): Unit = {}
+  def validateGetAllRequest(implicit rs: JdbcBackend#Session): Unit = {}
 
   private def isTerritoryStructureLooped(serverTerritory: Territory, frontTerritory: Territory)(implicit rs: JdbcBackend#Session): Boolean =
     frontTerritory.container.exists(parent => {

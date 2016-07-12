@@ -1,6 +1,6 @@
 package controllers
 
-import controllers.validator.{BaseCrudValidator, CityValidator}
+import controllers.validator.CityValidator
 import db.dao.{BaseCrudDao, CityDao}
 import dto.mapper.{BaseDtoMapper, CityDtoMapper}
 import models.Common._
@@ -9,7 +9,7 @@ import play.api.libs.json.{JsArray, Json}
 import scaldi.{Injectable, Injector}
 
 class CityController(implicit inj: Injector) extends BaseController with Injectable {
-  protected val validator: BaseCrudValidator[City] = inject[CityValidator]
+  protected val validator: CityValidator = inject[CityValidator]
   protected val dao: BaseCrudDao[City] = inject[CityDao]
   protected val dto: BaseDtoMapper[City] = inject[CityDtoMapper]
 
