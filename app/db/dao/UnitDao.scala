@@ -1,6 +1,6 @@
 package db.dao
 
-import models.team.Team
+import models.territory.City
 import models.unit.RoundUnit
 
 import scala.slick.jdbc.JdbcBackend
@@ -12,5 +12,5 @@ trait UnitDao {
 
   def getAllWithinRound(roundId: Long)(implicit rs: JdbcBackend#Session): List[RoundUnit]
 
-  def getPromotedTeamsWithinRound(roundId: Long)(implicit rs: JdbcBackend#Session): List[Team]
+  def getPromotedTeamsWithinRound(roundId: Long)(implicit rs: JdbcBackend#Session): List[City]
 }

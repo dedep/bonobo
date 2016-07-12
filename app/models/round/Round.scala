@@ -2,12 +2,12 @@ package models.round
 
 import models.Common._
 import models.reverse.{RoundInfo, TournamentInfo}
-import models.team.Team
+import models.territory.City
 import models.unit.RoundUnit
 
 //TODO: przydałoby się rozróżnienie na Final Round - tam np. nie ma losowania
 trait Round {
-  val teams: List[Team]
+  val teams: List[City]
   val pots: List[Pot]
   val units: List[RoundUnit]
   val stepIndex: Int
@@ -21,11 +21,11 @@ trait Round {
 
   val tournamentInfo: TournamentInfo
 
-  def getPromotedTeams: List[Team] =
+  def getPromotedTeams: List[City] =
     if (!isFinished) throw new IllegalStateException("Round has not been finished yet")
     else units.flatMap(_.promotedTeams)
 
-  def getEliminatedTeams: List[Team] =
+  def getEliminatedTeams: List[City] =
     teams.diff(getPromotedTeams)
 
   def doStep(): Round = status match {

@@ -1,10 +1,9 @@
 package models.territory
 
 import models.BaseEntity
-import models.team.Team
 
-class City(override val id: Option[Long], override val name: String, val population: Int, val points: Int, container: => Territory,
-            val latitude: Double, val longitude: Double) extends Team(id, population, points, name) with Containable with BaseEntity {
+class City(val id: Option[Long], val name: String, val population: Int, val points: Int, container: => Territory,
+            val latitude: Double, val longitude: Double) extends Containable with BaseEntity {
 
   lazy val territory = container
 

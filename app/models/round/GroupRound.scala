@@ -4,7 +4,7 @@ import com.typesafe.scalalogging.slf4j.Logger
 import models.Common._
 import models.reverse.TournamentInfo
 import models.round.RoundStatus.RoundStatus
-import models.team.Team
+import models.territory.City
 import models.unit
 import models.unit.RoundUnit
 import org.slf4j.LoggerFactory
@@ -13,7 +13,7 @@ import scaldi.Injector
 import scala.util.Random
 
 class GroupRound(override val name: String,
-                 teamsCbn: => List[Team],
+                 teamsCbn: => List[City],
                  potsCbn: => List[Pot] = Nil,
                  unitsCbn: => List[RoundUnit] = Nil,
                  override val stepIndex: Int = 0,
@@ -47,7 +47,7 @@ class GroupRound(override val name: String,
     require(teams.size % GroupRound.GROUP_SIZE == 0)
 
     val potSize = teams.size / GroupRound.GROUP_SIZE
-    val newPots = (0 until GroupRound.GROUP_SIZE).map(i => teams.sortBy(_.rankPoints).reverse.drop(i * potSize).take(potSize)).toList
+    val newPots = (0 until GroupRound.GROUP_SIZE).map(i => teams.sortBy(_.points).reverse.drop(i * potSize).take(potSize)).toList
 
     new GroupRound(name, teams, newPots, units, stepIndex, id, RoundStatus.DRAW_UNITS)(tournamentInfo)
   }

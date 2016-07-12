@@ -28,7 +28,7 @@ class FiniteSampleMatchEvaluator extends MatchEvaluator {
     drawResult(balancePoint, matchPoint)
   }
 
-  def calcBalancePoint(m: Match) = (m.aTeam.value / (m.aTeam.value + m.bTeam.value)) * randomSample
+  def calcBalancePoint(m: Match) = (m.aTeam.population / (m.aTeam.population + m.bTeam.population)) * randomSample
 
   def drawPoint = Random.nextDouble() * randomSample
 

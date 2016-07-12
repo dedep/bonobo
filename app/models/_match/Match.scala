@@ -3,13 +3,13 @@ package models._match
 import com.typesafe.scalalogging.slf4j.Logger
 import models._match.result.MatchResult
 import models.reverse.RoundUnitInfo
-import models.team.Team
+import models.territory.City
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import scaldi.{Injectable, Injector}
 import service.game.evaluator.MatchEvaluator
 
-class Match(val aTeam: Team, val bTeam: Team, val id: Option[Long] = None)
+class Match(val aTeam: City, val bTeam: City, val id: Option[Long] = None)
            (val unitInfo: RoundUnitInfo)
            (implicit inj: Injector) extends Injectable {
 

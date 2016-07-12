@@ -1,7 +1,7 @@
 package service.game.promoter
 
 import models.Common._
-import models.team.Team
+import models.territory.City
 import models.tournament.GameRules
 import models.unit.{RoundUnit, UnitTeamResult}
 
@@ -11,7 +11,7 @@ import scala.util.Sorting
 //todo: np. group-3
 class PointsPromotionStrategy extends PromotionsStrategy {
 
-  override def findPromotedAndEliminatedTeams(unit: RoundUnit)(implicit gm: GameRules): (List[Team], List[Team]) = {
+  override def findPromotedAndEliminatedTeams(unit: RoundUnit)(implicit gm: GameRules): (List[City], List[City]) = {
     if (unit.matchesToPlay == 0) {
       val promotions = arbitrateFinalPromotions(unit)
       val eliminations = unit.teams.diff(promotions)
@@ -25,10 +25,10 @@ class PointsPromotionStrategy extends PromotionsStrategy {
     }
   }
 
-  private def arbitratePromotions(unit: RoundUnit)(implicit gm: GameRules): List[Team] =
+  private def arbitratePromotions(unit: RoundUnit)(implicit gm: GameRules): List[City] =
     findTeamsWithResult(unit, _.points > getPointsRequiredToBePromoted(unit))
 
-  private def arbitrateEliminations(unit: RoundUnit)(implicit gm: GameRules): List[Team] =
+  private def arbitrateEliminations(unit: RoundUnit)(implicit gm: GameRules): List[City] =
     findTeamsWithResult(unit, _.points < getPointsRequiredToBeEliminated(unit))
 
   private def findTeamsWithResult(unit: RoundUnit, f: (UnitTeamResult) => Boolean) =
@@ -44,6 +44,6 @@ class PointsPromotionStrategy extends PromotionsStrategy {
   private def getNthTeamPoints(unit: RoundUnit, n: Int) =
     Sorting.stableSort(unit.results).reverse(n).points
 
-  private def arbitrateFinalPromotions(unit: RoundUnit): List[Team] =
+  private def arbitrateFinalPromotions(unit: RoundUnit): List[City] =
     Sorting.stableSort(unit.results).reverse.take(unit.promotedTeamsSize).map(_.team).toList
 }

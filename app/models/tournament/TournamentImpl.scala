@@ -1,13 +1,12 @@
 package models.tournament
 
 import models.round.{GroupRound, PlayoffRound, Round}
-import models.team.Team
-import models.territory.Territory
+import models.territory.{City, Territory}
 import models.tournament.TournamentStatus.TournamentStatus
 import scaldi.Injector
 import utils.MathUtils
 
-class TournamentImpl(override val territory: Territory, override val teams: List[Team], override val name: String,
+class TournamentImpl(override val territory: Territory, override val teams: List[City], override val name: String,
                      roundsCbn: => List[Round] = Nil, override val id: Option[Long] = None,
                      override val status: TournamentStatus = TournamentStatus.NOT_STARTED, val playingTeams: List[Boolean] = Nil)
                     (override val gameRules: GameRules)
@@ -49,7 +48,7 @@ class TournamentImpl(override val territory: Territory, override val teams: List
       createNextRound(teams)
     }
 
-  private def createNextRound(teams: List[Team]): Tournament = {
+  private def createNextRound(teams: List[City]): Tournament = {
     val roundIndex = if (isPreliminaryRoundRequired) rounds.size else rounds.size + 1
 
     //todo: przenieść nazywanie rund to osobnego serwisu
@@ -87,7 +86,7 @@ class TournamentImpl(override val territory: Territory, override val teams: List
 
   private def isPreliminaryRoundRequired: Boolean = !MathUtils.isPowerOfTwo(teams.size)
 
-  private def getPreliminaryRoundTeams: List[Team] = teams.sortBy(_.rankPoints).take(getPreliminaryRoundTeamsNumber)
+  private def getPreliminaryRoundTeams: List[City] = teams.sortBy(_.points).take(getPreliminaryRoundTeamsNumber)
 
   private def getPreliminaryRoundTeamsNumber: Int = (teams.length - MathUtils.getFloorPowerOfTwoNumber(teams.length)) * 2
 }

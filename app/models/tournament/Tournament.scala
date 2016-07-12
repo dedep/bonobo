@@ -2,12 +2,11 @@ package models.tournament
 
 import models.reverse.TournamentInfo
 import models.round.Round
-import models.team.Team
-import models.territory.Territory
+import models.territory.{City, Territory}
 import models.tournament.TournamentStatus.TournamentStatus
 
 trait Tournament {
-  val teams: List[Team]
+  val teams: List[City]
   val rounds: List[Round]
   val name: String
   val id: Option[Long]

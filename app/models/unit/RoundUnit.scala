@@ -3,8 +3,8 @@ package models.unit
 import com.typesafe.scalalogging.slf4j.Logger
 import models.Common._
 import models._match.PlayedMatch
-import models.reverse.{RoundUnitInfo, RoundInfo}
-import models.team.Team
+import models.reverse.{RoundInfo, RoundUnitInfo}
+import models.territory.City
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import scaldi.Injector
@@ -14,11 +14,11 @@ import scala.util.Sorting
 trait RoundUnit {
   val fixtures: List[Fixture]
   val results: List[UnitTeamResult]
-  val teams: List[Team]
+  val teams: List[City]
   val id: Option[Long]
   val name: String
-  val promotedTeams: List[Team]
-  val eliminatedTeams: List[Team]
+  val promotedTeams: List[City]
+  val eliminatedTeams: List[City]
   val promotedTeamsSize: Int
   val roundInfo: RoundInfo
 

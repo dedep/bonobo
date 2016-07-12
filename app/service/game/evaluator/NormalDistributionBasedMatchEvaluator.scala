@@ -15,7 +15,7 @@ class NormalDistributionBasedMatchEvaluator extends MatchEvaluator {
   private val hostPremium = 0.15
 
   override def eval(m: Match): MatchResult = {
-    require(m.bTeam.value > 0 && m.aTeam.value > 0)
+    require(m.bTeam.population > 0 && m.aTeam.population > 0)
     log.info("Evaluating result of the following match: {}", m)
 
     val bp = calcBalancePoint(m)
@@ -31,7 +31,7 @@ class NormalDistributionBasedMatchEvaluator extends MatchEvaluator {
   }
 
   def calcBalancePoint(m: Match): Double =
-    (log2(m.aTeam.value.toDouble / m.bTeam.value.toDouble) / 2) + hostPremium
+    (log2(m.aTeam.population.toDouble / m.bTeam.population.toDouble) / 2) + hostPremium
 
   private def log2(x: Double) = Math.log(x) / Math.log(2)
 

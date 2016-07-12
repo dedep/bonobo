@@ -3,7 +3,6 @@ package db.dao
 import com.typesafe.scalalogging.slf4j.Logger
 import db.table.{RoundsTable, TournamentsTable, UnitsCitiesTable, UnitsTable}
 import models.reverse.{RoundInfo, TournamentInfo}
-import models.team.Team
 import models.territory.City
 import models.unit.{Group, Pair, RoundUnit, UnitTeamResult}
 import org.slf4j.LoggerFactory
@@ -60,13 +59,13 @@ class UnitDaoImpl(implicit inj: Injector) extends UnitDao with Injectable {
     (cities, results, promoted)
   }
 
-  private def getPromotedTeams(dbPromotedTeams: List[Option[Boolean]], teams: List[Team]): List[Team] =
+  private def getPromotedTeams(dbPromotedTeams: List[Option[Boolean]], teams: List[City]): List[City] =
     getTeamsWithPromotionStatus(dbPromotedTeams, teams, true)
 
-  private def getEliminatedTeams(dbPromotedTeams: List[Option[Boolean]], teams: List[Team]) =
+  private def getEliminatedTeams(dbPromotedTeams: List[Option[Boolean]], teams: List[City]) =
     getTeamsWithPromotionStatus(dbPromotedTeams, teams, false)
 
-  private def getTeamsWithPromotionStatus(dbPromotedTeams: List[Option[Boolean]], teams: List[Team], status: Boolean): List[Team] =
+  private def getTeamsWithPromotionStatus(dbPromotedTeams: List[Option[Boolean]], teams: List[City], status: Boolean): List[City] =
     dbPromotedTeams.zip(teams).filter(x => x._1.isDefined && x._1.get == status).map(_._2)
 
   override def saveOrUpdate(u: RoundUnit, parentRoundId: Long, fixturesToUpdate: Set[Int])(implicit rs: JdbcBackend#Session): Long = {
@@ -85,7 +84,7 @@ class UnitDaoImpl(implicit inj: Injector) extends UnitDao with Injectable {
       .log(x => "After Query-ing for units in round " + roundId).info()
   }
 
-  override def getPromotedTeamsWithinRound(roundId: Long)(implicit rs: JdbcBackend#Session): List[Team] = {
+  override def getPromotedTeamsWithinRound(roundId: Long)(implicit rs: JdbcBackend#Session): List[City] = {
     val ids = (for {
       unit <- ds
       cityUnit <- citiesDs
@@ -139,7 +138,7 @@ class UnitDaoImpl(implicit inj: Injector) extends UnitDao with Injectable {
     u.id.get
   }
 
-  private def isTeamPromoted(unit: RoundUnit, team: Team): Option[Boolean] =
+  private def isTeamPromoted(unit: RoundUnit, team: City): Option[Boolean] =
     unit.promotedTeams.contains(team) match {
       case true => Some(true)
       case false => unit.eliminatedTeams.contains(team) match {

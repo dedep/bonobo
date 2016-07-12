@@ -3,14 +3,14 @@ package models.unit
 import models.Common._
 import models._match.Match
 import models.reverse.RoundInfo
-import models.team.Team
+import models.territory.City
 import models.tournament.GameRules
 import scaldi.{Injectable, Injector}
 import service.game.promoter.PromotionsStrategy
 
-class Group(override val name: String, teamsCbn: => List[Team], fixturesCbn: => List[Fixture] = Nil, resultsCbn: => List[UnitTeamResult] = Nil,
+class Group(override val name: String, teamsCbn: => List[City], fixturesCbn: => List[Fixture] = Nil, resultsCbn: => List[UnitTeamResult] = Nil,
             override val id: Option[Long] = None, val generateFixtures: Boolean = true,
-            promotedTeamsCbn: => List[Team] = Nil, eliminatedTeamsCbn: => List[Team] = Nil)
+            promotedTeamsCbn: => List[City] = Nil, eliminatedTeamsCbn: => List[City] = Nil)
             (override val roundInfo: RoundInfo)
             (override implicit val inj: Injector)
   extends RoundUnit with Injectable {

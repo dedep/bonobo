@@ -2,8 +2,7 @@ package db.dao
 
 import com.typesafe.scalalogging.slf4j.Logger
 import db.table._
-import models.team.Team
-import models.territory.Territory
+import models.territory.{City, Territory}
 import models.tournament.{Tournament, TournamentImpl, TournamentStatus}
 import org.slf4j.LoggerFactory
 import play.api.db.slick.Config.driver.simple._
@@ -43,7 +42,7 @@ class TournamentDaoImpl(implicit inj: Injector) extends TournamentDao with Injec
     new TournamentImpl(territory, cities, row.name, rounds, Some(row.id), status, playingTeams)(rules)
   }
 
-  private def getTournamentCities(id: Long)(implicit rs: JdbcBackend#Session): (List[Team], List[Boolean]) = {
+  private def getTournamentCities(id: Long)(implicit rs: JdbcBackend#Session): (List[City], List[Boolean]) = {
     val tournamentTeams = citiesDs.filter(_.tournamentId === id).map(r => (r.cityId, r.isTeamStillPlaying))
       .list
     val teams = cityDao.fromId(tournamentTeams.map(_._1))
