@@ -6,13 +6,13 @@ import play.api.data.Form
 import play.api.data.Forms._
 import FormFieldImplicits._
 
-class CityDtoMapper extends BaseDtoMapper[City] {
-  override def parse(c: City): CityDto = {
+class CityDtoMapper {
+  def parse(c: City): CityDto = {
     val containerDto = ContainerDto(c.territory.id.get, c.territory.name, c.territory.code)
     CityDto(c.id, c.name, c.population, c.latitude, c.longitude, containerDto, c.points, c.territory.modifiable)
   }
 
-  override val form: Form[CityDto] = Form(mapping(
+  val form: Form[CityDto] = Form(mapping(
     "id" -> optional(longNumber),
     "name" -> text,
     "population" -> number,

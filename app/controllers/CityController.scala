@@ -2,7 +2,7 @@ package controllers
 
 import controllers.validator.CityValidator
 import db.dao.{BaseCrudDao, CityDao}
-import dto.mapper.{BaseDtoMapper, CityDtoMapper}
+import dto.mapper.CityDtoMapper
 import models.Common._
 import models.territory.City
 import play.api.libs.json.{JsArray, Json}
@@ -11,7 +11,7 @@ import scaldi.{Injectable, Injector}
 class CityController(implicit inj: Injector) extends BaseController with Injectable {
   protected val validator: CityValidator = inject[CityValidator]
   protected val dao: BaseCrudDao[City] = inject[CityDao]
-  protected val dto: BaseDtoMapper[City] = inject[CityDtoMapper]
+  protected val dto: CityDtoMapper = inject[CityDtoMapper]
 
   def findCity(id: Long) = serveHttpResponseWithDB {
     implicit rs => {
