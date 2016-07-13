@@ -1,7 +1,6 @@
 package db.dao
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db.dao.{UnitDao, TournamentRulesDao}
 import db.table.{RoundsCitiesTable, RoundsTable, TournamentsTable}
 import models.Common.Pot
 import models.reverse.TournamentInfo

@@ -1,7 +1,6 @@
 package db.dao
 
 import com.typesafe.scalalogging.slf4j.Logger
-import db.dao.{TournamentRulesDao, CityDao}
 import db.table._
 import models.Common.Fixture
 import models._match.PlayedMatch
